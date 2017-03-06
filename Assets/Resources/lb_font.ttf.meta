@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 53c045fe5c89cdf42a1297b5f849dfa4
+timeCreated: 1486492219
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Lindsay Becker
+  fontNames:
+  - Lindsay Becker
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

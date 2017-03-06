@@ -1,0 +1,269 @@
+********************************************************************************
+*                     Friday, February 10, 2017 6:30:27 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.dll" @Temp/UnityTempFile-02ae198e52b1e254eaad2270d6010104 
+Exit code: 1
+Elapsed time: 0.43 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (6 lines):
+0: Assets\Code\Network\NetManager.cs(4,27): error CS0234: The type or namespace name 'Commands' does not exist in the namespace 'Code.Network' (are you missing an assembly reference?)
+1: Assets\Code\Network\Server.cs(7,25): warning CS0114: 'Server.OnServerConnect(NetworkConnection)' hides inherited member 'NetworkManager.OnServerConnect(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+2: Assets\Code\Network\Server.cs(12,25): warning CS0114: 'Server.OnServerDisconnect(NetworkConnection)' hides inherited member 'NetworkManager.OnServerDisconnect(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+3: Assets\Code\Network\Server.cs(18,25): warning CS0114: 'Server.OnServerReady(NetworkConnection)' hides inherited member 'NetworkManager.OnServerReady(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+4: Assets\Code\Network\Server.cs(24,25): warning CS0114: 'Server.OnServerAddPlayer(NetworkConnection, short)' hides inherited member 'NetworkManager.OnServerAddPlayer(NetworkConnection, short)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+5: Assets\Code\Network\Server.cs(42,25): warning CS0114: 'Server.OnServerError(NetworkConnection, int)' hides inherited member 'NetworkManager.OnServerError(NetworkConnection, int)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+********************************************************************************
+*                     Friday, February 10, 2017 6:30:27 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp-firstpass.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.dll" @Temp/UnityTempFile-6d30225c9e81f2c44a9bd1ed8b005754 
+Exit code: 0
+Elapsed time: 0.43 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (0 lines):
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp-firstpass.dll
+Exit code: 0
+Elapsed time: 0.04 sec
+
+- pdb2mdb.exe output (0 lines):
+********************************************************************************
+*                     Friday, February 10, 2017 6:30:28 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.dll" @Temp/UnityTempFile-383809d964d737a448fe1044ebac2142 
+Exit code: 1
+Elapsed time: 0.35 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (6 lines):
+0: Assets\Code\Network\NetManager.cs(4,27): error CS0234: The type or namespace name 'Commands' does not exist in the namespace 'Code.Network' (are you missing an assembly reference?)
+1: Assets\Code\Network\Server.cs(7,25): warning CS0114: 'Server.OnServerConnect(NetworkConnection)' hides inherited member 'NetworkManager.OnServerConnect(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+2: Assets\Code\Network\Server.cs(12,25): warning CS0114: 'Server.OnServerDisconnect(NetworkConnection)' hides inherited member 'NetworkManager.OnServerDisconnect(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+3: Assets\Code\Network\Server.cs(18,25): warning CS0114: 'Server.OnServerReady(NetworkConnection)' hides inherited member 'NetworkManager.OnServerReady(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+4: Assets\Code\Network\Server.cs(24,25): warning CS0114: 'Server.OnServerAddPlayer(NetworkConnection, short)' hides inherited member 'NetworkManager.OnServerAddPlayer(NetworkConnection, short)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+5: Assets\Code\Network\Server.cs(42,25): warning CS0114: 'Server.OnServerError(NetworkConnection, int)' hides inherited member 'NetworkManager.OnServerError(NetworkConnection, int)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+********************************************************************************
+*                     Friday, February 10, 2017 6:30:28 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp-Editor-firstpass.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.Xml.dll" @Temp/UnityTempFile-90a6efd0298e49346940574be3b05180 
+Exit code: 0
+Elapsed time: 0.46 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (0 lines):
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp-Editor-firstpass.dll
+Exit code: 0
+Elapsed time: 0.03 sec
+
+- pdb2mdb.exe output (0 lines):
+********************************************************************************
+*                     Friday, February 10, 2017 6:30:33 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp-firstpass.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.dll" @Temp/UnityTempFile-b6f5de572cf439b4e9246ab4ae797d6b 
+Exit code: 0
+Elapsed time: 0.32 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (0 lines):
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp-firstpass.dll
+Exit code: 0
+Elapsed time: 0.04 sec
+
+- pdb2mdb.exe output (0 lines):
+********************************************************************************
+*                     Friday, February 10, 2017 6:30:34 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.dll" @Temp/UnityTempFile-0ac757f94e63ecb4a89e8e08f8371334 
+Exit code: 1
+Elapsed time: 0.36 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (6 lines):
+0: Assets\Code\Network\NetManager.cs(4,27): error CS0234: The type or namespace name 'Commands' does not exist in the namespace 'Code.Network' (are you missing an assembly reference?)
+1: Assets\Code\Network\Server.cs(7,25): warning CS0114: 'Server.OnServerConnect(NetworkConnection)' hides inherited member 'NetworkManager.OnServerConnect(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+2: Assets\Code\Network\Server.cs(12,25): warning CS0114: 'Server.OnServerDisconnect(NetworkConnection)' hides inherited member 'NetworkManager.OnServerDisconnect(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+3: Assets\Code\Network\Server.cs(18,25): warning CS0114: 'Server.OnServerReady(NetworkConnection)' hides inherited member 'NetworkManager.OnServerReady(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+4: Assets\Code\Network\Server.cs(24,25): warning CS0114: 'Server.OnServerAddPlayer(NetworkConnection, short)' hides inherited member 'NetworkManager.OnServerAddPlayer(NetworkConnection, short)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+5: Assets\Code\Network\Server.cs(42,25): warning CS0114: 'Server.OnServerError(NetworkConnection, int)' hides inherited member 'NetworkManager.OnServerError(NetworkConnection, int)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+********************************************************************************
+*                     Friday, February 10, 2017 6:30:34 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp-Editor-firstpass.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.Xml.dll" @Temp/UnityTempFile-952927a85d676524fb29fd7f6ff81956 
+Exit code: 0
+Elapsed time: 0.47 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (0 lines):
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp-Editor-firstpass.dll
+Exit code: 0
+Elapsed time: 0.04 sec
+
+- pdb2mdb.exe output (0 lines):
+********************************************************************************
+*                     Friday, February 10, 2017 6:31:05 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\unity\System.Xml.dll" @Temp/UnityTempFile-6310a20b9e0c6f849bd6af279c1070ca 
+Exit code: 0
+Elapsed time: 0.54 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (8 lines):
+0: Assets\Code\Network\Server.cs(7,25): warning CS0114: 'Server.OnServerConnect(NetworkConnection)' hides inherited member 'NetworkManager.OnServerConnect(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+1: Assets\Code\Network\Server.cs(12,25): warning CS0114: 'Server.OnServerDisconnect(NetworkConnection)' hides inherited member 'NetworkManager.OnServerDisconnect(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+2: Assets\Code\Network\Server.cs(18,25): warning CS0114: 'Server.OnServerReady(NetworkConnection)' hides inherited member 'NetworkManager.OnServerReady(NetworkConnection)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+3: Assets\Code\Network\Server.cs(24,25): warning CS0114: 'Server.OnServerAddPlayer(NetworkConnection, short)' hides inherited member 'NetworkManager.OnServerAddPlayer(NetworkConnection, short)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+4: Assets\Code\Network\Server.cs(42,25): warning CS0114: 'Server.OnServerError(NetworkConnection, int)' hides inherited member 'NetworkManager.OnServerError(NetworkConnection, int)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.
+5: Assets\Code\Network\NetMessage.cs(10,23): warning CS0649: Field 'CoordsMsg.Player' is never assigned to, and will always have its default value null
+6: Assets\Code\Network\NetMessage.cs(15,20): warning CS0649: Field 'TileInfo.Type' is never assigned to, and will always have its default value 0
+7: Assets\Code\Network\NetMessage.cs(11,23): warning CS0649: Field 'CoordsMsg.Message' is never assigned to, and will always have its default value null
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp.dll
+Exit code: 0
+Elapsed time: 0.05 sec
+
+- pdb2mdb.exe output (0 lines):
+********************************************************************************
+*                     Friday, February 10, 2017 6:31:06 PM                     *
+********************************************************************************
+CSharpCompilerWrapper.exe version: 2.0.3.30
+Platform: Windows
+Target assembly: Assembly-CSharp-Editor.dll
+Project directory: C:\Coding\Unity\NUP
+Target profile directory: C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0
+Unity 'Data' or 'Frameworks' directory: C:/Program Files/Unity/Editor/Data
+Compiler: Microsoft C# 6.0
+
+- Compilation -----------------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\csc.exe
+Arguments: -nostdlib+ -noconfig -nologo -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\mscorlib.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.Core.dll" -r:"C:\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.Xml.dll" @Temp/UnityTempFile-5d189621cd3939d4ba6fa7b9745b8b06 
+Exit code: 0
+Elapsed time: 0.48 sec
+
+- Compiler output (0 lines):
+
+- Compiler errors (0 lines):
+
+- PDB to MDB conversion --------------------------------------
+
+Process: C:\Coding\Unity\NUP\CSharp60Support\Roslyn\pdb2mdb.exe
+Arguments: Temp\Assembly-CSharp-Editor.dll
+Exit code: 0
+Elapsed time: 0.05 sec
+
+- pdb2mdb.exe output (0 lines):
