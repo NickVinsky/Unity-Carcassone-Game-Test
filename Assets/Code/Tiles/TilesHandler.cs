@@ -2,6 +2,7 @@
 using UnityEngine;
 using Object = UnityEngine.Object;
 using static Code.GameRegulars;
+using Random = UnityEngine.Random;
 
 namespace Code.Tiles
 {
@@ -167,6 +168,10 @@ namespace Code.Tiles
             TileOnMouse.transform.position = t;
         }
 
+        private static sbyte RandomRotate() {
+            return (sbyte) Random.Range(0, 4);
+        }
+
         public static void PickTileFromDeck() {
             if (DeckHandler.DeckIsEmpty()) return;
             TileOnMouse = new GameObject(TileOnMouseName);
@@ -176,9 +181,12 @@ namespace Code.Tiles
             Cursor.visible = false;
 
             var pickedTile = DeckHandler.GetRandomTile();
+            var rotates = RandomRotate();
             TileOnMouse.GetComponent<Tile>().InitTile(pickedTile);
+            TileOnMouse.GetComponent<Tile>().Rotates = rotates;
             TileOnMouse.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + pickedTile); // 80-All, 24-Vanilla
             TileOnMouse.GetComponent<SpriteRenderer>().sortingOrder = 3;
+            RotateGameObject(rotates, TileOnMouse);
         }
 
         public static void PickTileFromDeck(int index) {
@@ -190,9 +198,12 @@ namespace Code.Tiles
             Cursor.visible = false;
 
             var pickedTile = DeckHandler.GetTile(index);
+            var rotates = RandomRotate();
             TileOnMouse.GetComponent<Tile>().InitTile(pickedTile);
+            TileOnMouse.GetComponent<Tile>().Rotates = rotates;
             TileOnMouse.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + pickedTile); // 80-All, 24-Vanilla
             TileOnMouse.GetComponent<SpriteRenderer>().sortingOrder = 3;
+            RotateGameObject(rotates, TileOnMouse);
         }
 
         public static void ReturnTileToDeck() {
