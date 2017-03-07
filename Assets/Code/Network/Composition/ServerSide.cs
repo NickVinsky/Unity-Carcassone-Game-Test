@@ -11,6 +11,12 @@ namespace Code.Network.Composition {
         public string ChatHistory = string.Empty;
         public PlayerColor[] Queue;
 
+        public void NextPlayerTurn() {
+            var nextPlayerIndex = Net.Game.CurrentPlayerIndex + 1;
+            if (nextPlayerIndex >= Queue.Length) nextPlayerIndex = 0;
+            Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.NextPlayer, Value = nextPlayerIndex, Color = Queue[nextPlayerIndex]});
+        }
+
         public void CleanChat() { ChatHistory = string.Empty; }
         public void Log(string message) {
             MainMenuGUI.LogHost(message);
@@ -80,8 +86,8 @@ namespace Code.Network.Composition {
         }
 
         public void RefreshInGamePlayersList() {
-            List<PlayerColor> colorsToDelete = new List<PlayerColor>();
-            string l = string.Empty;
+            var colorsToDelete = new List<PlayerColor>();
+            var l = string.Empty;
             foreach (var q in Net.Server.Queue) {
                 if (Net.Player.Any(p => p.Color == q)) {
                     var playerName = Net.Player.First(p => p.Color == q).PlayerName;
@@ -102,9 +108,9 @@ namespace Code.Network.Composition {
         }
 
         public void AddToChatHistory(NetPackChatMessage m) {
-            string h = Net.Server.ChatHistory;
+            var h = Net.Server.ChatHistory;
             if (h != string.Empty) h += Environment.NewLine;
-            string newMessage = string.Empty;
+            var newMessage = string.Empty;
             if (m.IsInfoMessage) newMessage = "<color=#" + GameRegulars.ServerInfoColor + ">" + "[INFO] " + m.Message + "</color>";
             else newMessage = m.Player + ": " + m.Message;
             Net.Server.ChatHistory = h + newMessage;

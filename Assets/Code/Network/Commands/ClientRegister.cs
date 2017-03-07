@@ -115,19 +115,27 @@ namespace Code.Network.Commands {
                     break;
                 case Command.TilePicked:
                     Net.Game.TilePicked = true;
-                    TilesHandler.PickTileFromDeck(m.Value);
+                    TilesHandler.PickTileFromDeck(m.Value, TilesHandler.RandomRotate());
                     break;
                 case Command.TileNotPicked:
                     Net.Game.TilePicked = false;
                     break;
                 case Command.MouseCoordinates:
-                    Net.Game.tPos = m.transformPosition;
+                    Net.Game.tPos = m.Vect2;
                     break;
                 case Command.RotateTile:
                     TilesHandler.SetTileOnMouseRotation(m.Value);
                     break;
                 case Command.HighlightCell:
                     TilesHandler.HighlightCell(m.Text, m.Value);
+                    break;
+                case Command.PutTile:
+                    TilesHandler.PutTileFromMouse(m.Vect2);
+                    break;
+                case Command.NextPlayer:
+                    Net.Game.CurrentPlayerIndex = m.Value;
+                    Net.Game.CurrentPlayer = m.Color;
+                    if (Net.IsServer) Net.Server.RefreshInGamePlayersList();
                     break;
             }
         }

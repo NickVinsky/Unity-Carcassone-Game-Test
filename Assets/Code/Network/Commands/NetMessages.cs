@@ -19,7 +19,9 @@ namespace Code.Network.Commands {
         TilePicked,
         TileNotPicked,
         HighlightCell,
-        MouseCoordinates
+        PutTile,
+        MouseCoordinates,
+        NextPlayer
 }
 
     public class NetPackBlank : MessageBase {}
@@ -57,7 +59,7 @@ namespace Code.Network.Commands {
         public string Text;
         public int Value;
         public PlayerColor Color;
-        public Vector2 transformPosition;
-        public Vector2 mousePosition;
+        public Vector2 Vect2;
+        //public Vector2 mousePosition;
     }
 }

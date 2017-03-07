@@ -4,6 +4,8 @@ namespace Code.Tiles
 {
     internal class Tile : MonoBehaviour {
 
+        public int X, Y;
+
         public int Type;
 
         public Area[] This = {Area.Field, Area.Field, Area.Field, Area.Field};

@@ -68,14 +68,14 @@ namespace Code.Network.Composition {
 
         public void OnMouseOver(GameObject c) {
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return; // Проверка - мой ли сейчас ход
-            if (TilesHandler.TileCanBeAttachedTo(c)) {
+            if (TilesHandler.TileCanBeAttachedTo(c) && TileOnMouseExist()) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                 Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 1});
                 return;
             }
             if (TileOnMouseExist()) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CantAttachlColor;
-                Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 2});
+                Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 2});
                 return;
             }
             c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
@@ -102,21 +102,32 @@ namespace Code.Network.Composition {
 
         private bool TileOnMouseExist() { return TilePicked; }
 
-        private void PutTileFromMouse(GameObject o) {}
+        private void PutTileFromMouse(GameObject o) {
+            TilePicked = false;
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.TileNotPicked});
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.PutTile, Vect2 = Game.Grid.GetCellCoordinates(o)});
+        }
 
         private void RotateClockwise() {
             TilesHandler.RotateClockwise();
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RotateTile, Value = TilesHandler.GetTileOnMouseRotation()});
         }
-        private void RotateCounterClockwise() {}
+
+        private void RotateCounterClockwise() {
+            TilesHandler.RotateCounterClockwise();
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RotateTile, Value = TilesHandler.GetTileOnMouseRotation()});
+        }
+
         private void AttachTileToMouse() {
             var tp = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
             tp = new Vector3(tp.x, tp.y, 0f);
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.MouseCoordinates, transformPosition = tp});
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.MouseCoordinates, Vect2 = tp});
         }
+
         private void AttachTileToCoordinatesReceiver(Vector2 t) {
             TilesHandler.AttachTileToCoordinates(t);
         }
+
         private void ReturnTileToDeck() {}
 
     }

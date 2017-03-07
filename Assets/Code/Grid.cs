@@ -37,10 +37,12 @@ namespace Code
         }
 
         public Vector2 GetCellCoordinates(GameObject cell) {
-            char[] separatingChars = { '#', ':' };
-            var coordinates = cell.name.Split(separatingChars);
-            var x = Convert.ToInt32(coordinates[1]);
-            var y = Convert.ToInt32(coordinates[2]);
+            //char[] separatingChars = { '#', ':' };
+            //var coordinates = cell.name.Split(separatingChars);
+            //var x = Convert.ToInt32(coordinates[1]);
+            //var y = Convert.ToInt32(coordinates[2]);
+            var x = cell.GetComponent<Tile>().X;
+            var y = cell.GetComponent<Tile>().Y;
             return new Vector2(x, y);
         }
 
@@ -60,6 +62,8 @@ namespace Code
             tile.AddComponent<MouseOnGrid>();
             tile.AddComponent<Tile>();
             tile.GetComponent<Tile>().InitTile(0);
+            tile.GetComponent<Tile>().X = x;
+            tile.GetComponent<Tile>().Y = y;
             var position = new Vector3(_gridX * x, _gridY * y, 0.0f);
             tile.transform.position = position;
             tile.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("grid");

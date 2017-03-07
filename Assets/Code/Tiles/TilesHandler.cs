@@ -149,10 +149,24 @@ namespace Code.Tiles
             Cursor.visible = true;
             Game.Grid.CheckBounds(gridCell);
         }
+
+        // for online game
+        public static void PutTileFromMouse(Vector2 v) {
+            var gridCell  = GameObject.Find("cell#" + v.x + ":" + v.y);
+            gridCell.GetComponent<SpriteRenderer>().sprite = TileOnMouse.GetComponent<SpriteRenderer>().sprite;
+            gridCell.GetComponent<SpriteRenderer>().transform.Rotate(Vector3.back * GetRotateAngle(TileOnMouse));
+            gridCell.GetComponent<SpriteRenderer>().color = NormalColor;
+            gridCell.GetComponent<Tile>().Rotates = TileOnMouse.GetComponent<Tile>().Rotates;
+            gridCell.GetComponent<Tile>().InitTile(TileOnMouse.GetComponent<Tile>().Type);
+            Object.Destroy(TileOnMouse);
+            Cursor.visible = true;
+            Game.Grid.CheckBounds(gridCell);
+        }
+
         public static void SetStartTile(int startTileType) {
             var gridCell = GameObject.Find("cell#0:0");
             gridCell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + startTileType);
-            gridCell.AddComponent<Tile>();
+            //gridCell.AddComponent<Tile>();
             gridCell.GetComponent<Tile>().Rotates = 0;
             gridCell.GetComponent<Tile>().InitTile(startTileType);
         }
@@ -165,10 +179,10 @@ namespace Code.Tiles
         }
 
         public static void AttachTileToCoordinates(Vector3 t) {
-            TileOnMouse.transform.position = t;
+            if (TileOnMouseExist()) TileOnMouse.transform.position = t;
         }
 
-        private static sbyte RandomRotate() {
+        public static sbyte RandomRotate() {
             return (sbyte) Random.Range(0, 4);
         }
 
@@ -189,16 +203,16 @@ namespace Code.Tiles
             RotateGameObject(rotates, TileOnMouse);
         }
 
-        public static void PickTileFromDeck(int index) {
+        public static void PickTileFromDeck(int index, sbyte rotates) {
             if (DeckHandler.DeckIsEmpty()) return;
             TileOnMouse = new GameObject(TileOnMouseName);
             TileOnMouse.transform.SetParent(GameObject.Find(GameTable).transform);
             TileOnMouse.AddComponent<SpriteRenderer>();
             TileOnMouse.AddComponent<Tile>();
+            TileOnMouse.transform.position = new Vector3(Screen.width * 2, 0f, 0f);
             Cursor.visible = false;
 
             var pickedTile = DeckHandler.GetTile(index);
-            var rotates = RandomRotate();
             TileOnMouse.GetComponent<Tile>().InitTile(pickedTile);
             TileOnMouse.GetComponent<Tile>().Rotates = rotates;
             TileOnMouse.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + pickedTile); // 80-All, 24-Vanilla

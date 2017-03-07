@@ -139,6 +139,10 @@ namespace Code.Network.Commands {
         public static void GameHandler(NetworkMessage message) {
             var m = message.ReadMessage<NetPackGame>();
             switch (m.Command) {
+                case Command.PutTile:
+                    Net.Server.SendToAll(NetCmd.Game, m);
+                    Net.Server.NextPlayerTurn();
+                    break;
                 default:
                     Net.Server.SendToAll(NetCmd.Game, m);
                     break;
