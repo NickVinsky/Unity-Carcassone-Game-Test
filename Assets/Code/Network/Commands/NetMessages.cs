@@ -59,7 +59,7 @@ namespace Code.Network.Commands {
         public string Text;
         public int Value;
         public PlayerColor Color;
-        public Vector2 Vect2;
+        public Vector3 Vect3;
         //public Vector2 mousePosition;
     }
 }

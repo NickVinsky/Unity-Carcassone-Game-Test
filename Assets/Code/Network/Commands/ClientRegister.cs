@@ -121,7 +121,7 @@ namespace Code.Network.Commands {
                     Net.Game.TilePicked = false;
                     break;
                 case Command.MouseCoordinates:
-                    Net.Game.tPos = m.Vect2;
+                    Net.Game.tPos = m.Vect3;
                     break;
                 case Command.RotateTile:
                     Tile.OnMouse.SetRotation(m.Value);
@@ -130,7 +130,7 @@ namespace Code.Network.Commands {
                     Tile.Highlight(m.Text, m.Value);
                     break;
                 case Command.PutTile:
-                    Tile.OnMouse.Put(m.Vect2);
+                    Tile.OnMouse.Put(m.Vect3);
                     break;
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;

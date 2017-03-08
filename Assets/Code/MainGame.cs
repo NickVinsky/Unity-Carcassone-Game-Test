@@ -1,6 +1,5 @@
 ﻿using System;
 using Code.Game;
-using Code.GameComponents;
 using Code.Handlers;
 using Code.Network;
 using UnityEngine;
@@ -19,6 +18,7 @@ namespace Code {
         //public static bool TilePermit;
 
         private static float _cameraDistance = 5f;
+        private const float DragDelta = 0.0000001f; // default = 0.00001f
         //private static Vector3 _mousePosition;
         public enum State
         {
@@ -121,7 +121,7 @@ namespace Code {
             Vector3 actualPos = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
             Vector3 dragDelta = actualPos - _dragStartPos;
 
-            if (Math.Abs(dragDelta.x) < 0.00001f && Math.Abs(dragDelta.y) < 0.00001f) return;
+            if (Math.Abs(dragDelta.x) < DragDelta && Math.Abs(dragDelta.y) < 0.00001f) return;
 
             MouseState = State.Dragging;
             Camera.main.transform.Translate(-dragDelta);

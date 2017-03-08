@@ -27,6 +27,22 @@ namespace Code.Network.Composition {
             NetworkManager.singleton.client.Send(msgType, msg);
         }
 
+        public void Action(Command command) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command});
+        }
+
+        public void Action(Command command, int value) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Value = value});
+        }
+
+        public void Action(Command command, string text, int value) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Text = text, Value = value});
+        }
+
+        public void Action(Command command, Vector3 vect3) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vect3 = vect3});
+        }
+
         public void ChatMessage(string text) {
             var mToSend = new NetPackChatMessage {
                 Player = PlayerInfo.PlayerName,

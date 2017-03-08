@@ -43,7 +43,7 @@ namespace Code.Network.Composition {
         // This methods call when game is not offline
         // On client
         public void LocalClientUpadate(KeyInputHandler k) {
-            if (TileOnMouseExist()) AttachTileToCoordinatesReceiver(tPos);
+            if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
 
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return;  // Проверка - мой ли сейчас ход
             if (TileOnMouseExist()) AttachTileToMouse();
@@ -54,7 +54,7 @@ namespace Code.Network.Composition {
             if (Input.GetKeyDown(k.PickTileFromDeck)) {
                 if (!TileOnMouseExist() && !Deck.DeckIsEmpty()) {
                     var i = Deck.GenerateIndex();
-                    Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.TilePicked, Value = i});
+                    Net.Client.Action(Command.TilePicked, i);
                     AttachTileToMouse();
                 }
                 if (TileOnMouseExist()) RotateClockwise();
@@ -96,7 +96,7 @@ namespace Code.Network.Composition {
             if (TileOnMouseExist() || Deck.DeckIsEmpty()) return;
 
             var i = Deck.GenerateIndex();
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.TilePicked, Value = i});
+            Net.Client.Action(Command.TilePicked, i);
             AttachTileToMouse();
         }
 
@@ -104,28 +104,24 @@ namespace Code.Network.Composition {
 
         private void PutTileFromMouse(GameObject o) {
             TilePicked = false;
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.TileNotPicked});
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.PutTile, Vect2 = MainGame.Grid.GetCellCoordinates(o)});
+            Net.Client.Action(Command.TileNotPicked);
+            Net.Client.Action(Command.PutTile, MainGame.Grid.GetCellCoordinates(o));
         }
 
         private void RotateClockwise() {
             Tile.Rotate.Clockwise();
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RotateTile, Value = Tile.OnMouse.GetRotation()});
+            Net.Client.Action(Command.RotateTile, Tile.OnMouse.GetRotation());
         }
 
         private void RotateCounterClockwise() {
             Tile.Rotate.CounterClockwise();
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RotateTile, Value = Tile.OnMouse.GetRotation()});
+            Net.Client.Action(Command.RotateTile, Tile.OnMouse.GetRotation());
         }
 
         private void AttachTileToMouse() {
             var tp = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
             tp = new Vector3(tp.x, tp.y, 0f);
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.MouseCoordinates, Vect2 = tp});
-        }
-
-        private void AttachTileToCoordinatesReceiver(Vector2 t) {
-            Tile.AttachToCoordinates(t);
+            Net.Client.Action(Command.MouseCoordinates, tp);
         }
 
         private void ReturnTileToDeck() {}
