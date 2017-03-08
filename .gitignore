@@ -30,3 +30,4 @@ sysinfo.txt
 *.unitypackage
 .idea/.idea.NUP/.idea/workspace.xml
 CSharp70Support/compilation.log
+Project/
