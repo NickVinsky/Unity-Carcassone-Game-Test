@@ -1,13 +1,11 @@
-﻿using Code.Game;
-using Code.Handlers;
+﻿using Code.Handlers;
 using UnityEngine;
-using static Code.GameRegulars;
 
-namespace Code
+namespace Code.Game
 {
     public class Grid {
-        private readonly float _gridX = TileSizeX / 100;
-        private readonly float _gridY = TileSizeY / 100;
+        private readonly float _gridX = GameRegulars.TileSizeX / 100;
+        private readonly float _gridY = GameRegulars.TileSizeY / 100;
 
         private readonly int _sizeX;
         private readonly int _sizeY;
@@ -55,7 +53,7 @@ namespace Code
 
         private void AddCell(int x, int y) {
             var tile = new GameObject("cell#" + x + ":" + y);
-            tile.transform.SetParent(GameObject.Find(GameTable).transform);
+            tile.transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             tile.AddComponent<SpriteRenderer>();
             tile.AddComponent<BoxCollider2D>();
             tile.AddComponent<MouseOnGrid>();
@@ -67,7 +65,7 @@ namespace Code
             tile.transform.position = position;
             tile.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("grid");
             tile.GetComponent<SpriteRenderer>().sortingOrder = 1 ;
-            tile.GetComponent<SpriteRenderer>().color = NormalColor;
+            tile.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
         }
 
         public void AddCellsTop() {

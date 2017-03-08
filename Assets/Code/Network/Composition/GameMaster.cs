@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Code.Game;
-using Code.GameComponents;
 using Code.Handlers;
 using Code.Network.Commands;
 using UnityEngine;
@@ -15,7 +14,7 @@ namespace Code.Network.Composition {
         public PlayerColor CurrentPlayer = PlayerColor.NotPicked;
         public int CurrentPlayerIndex = -1;
 
-        public bool TilePicked = false;
+        public bool TilePicked;
         public Vector2 tPos;
 
         public void SetOnline() { _offline = false; }
