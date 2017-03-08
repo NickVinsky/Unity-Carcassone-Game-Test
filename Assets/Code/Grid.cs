@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Code.Game;
 using Code.Handlers;
-using Code.Tiles;
 using UnityEngine;
 using static Code.GameRegulars;
 
@@ -41,8 +40,8 @@ namespace Code
             //var coordinates = cell.name.Split(separatingChars);
             //var x = Convert.ToInt32(coordinates[1]);
             //var y = Convert.ToInt32(coordinates[2]);
-            var x = cell.GetComponent<Tile>().X;
-            var y = cell.GetComponent<Tile>().Y;
+            var x = cell.GetComponent<TileInfo>().X;
+            var y = cell.GetComponent<TileInfo>().Y;
             return new Vector2(x, y);
         }
 
@@ -60,10 +59,10 @@ namespace Code
             tile.AddComponent<SpriteRenderer>();
             tile.AddComponent<BoxCollider2D>();
             tile.AddComponent<MouseOnGrid>();
-            tile.AddComponent<Tile>();
-            tile.GetComponent<Tile>().InitTile(0);
-            tile.GetComponent<Tile>().X = x;
-            tile.GetComponent<Tile>().Y = y;
+            tile.AddComponent<TileInfo>();
+            tile.GetComponent<TileInfo>().InitTile(0);
+            tile.GetComponent<TileInfo>().X = x;
+            tile.GetComponent<TileInfo>().Y = y;
             var position = new Vector3(_gridX * x, _gridY * y, 0.0f);
             tile.transform.position = position;
             tile.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("grid");

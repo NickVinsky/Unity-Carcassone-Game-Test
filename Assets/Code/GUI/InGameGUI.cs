@@ -1,8 +1,9 @@
-﻿using Code.Network;
-using Code.Tiles;
+﻿using Code.Game;
+using Code.GameComponents;
+using Code.Network;
 using UnityEngine;
 using static Code.GameRegulars;
-using static Code.Tiles.DeckHandler;
+using static Code.Game.Deck;
 
 namespace Code.GUI {
     public class InGameGUI : CoreGUI {
@@ -58,9 +59,9 @@ namespace Code.GUI {
                 Net.Game.DeckClick(Camera.main.transform.position, GameObject.Find(DeckButton).GetComponent<RectTransform>().anchoredPosition);
                 return;
             }
-            if (TilesHandler.TileOnMouseExist() || DeckIsEmpty()) return;
-            TilesHandler.PickTileFromDeck();
-            TilesHandler.AttachTileToMouse();
+            if (Tile.OnMouse.Exist() || DeckIsEmpty()) return;
+            Tile.Pick();
+            Tile.AttachToMouse();
         }
         private static void DeckCounterClick() {
 

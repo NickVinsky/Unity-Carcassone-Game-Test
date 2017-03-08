@@ -1,14 +1,14 @@
 ﻿using System;
+using Code.Game;
+using Code.GameComponents;
 using Code.Handlers;
 using Code.Network;
-using Code.Tiles;
 using UnityEngine;
 using UnityEngine.UI;
-using static Code.Tiles.TilesHandler;
 using static Code.GameRegulars;
 
 namespace Code {
-    public class Game {
+    public class MainGame {
 
         // Use this for initialization
         private readonly KeyInputHandler _k = new KeyInputHandler();
@@ -19,7 +19,7 @@ namespace Code {
         //public static bool TilePermit;
 
         private static float _cameraDistance = 5f;
-        private static Vector3 _mousePosition;
+        //private static Vector3 _mousePosition;
         public enum State
         {
             None,
@@ -44,8 +44,8 @@ namespace Code {
                 GameObject.Find("PlayersPanel").transform.localScale = new Vector2(0f, 0f);
             }
             Grid.Make();
-            DeckHandler.InitVanillaDeck();
-            SetStartTile(20);
+            Deck.InitVanillaDeck();
+            Tile.SetStarting(20);
         }
 
         // Update is called once per frame
@@ -69,7 +69,7 @@ namespace Code {
                 Camera.main.orthographicSize = _cameraDistance;
             }
 
-            _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             if (!LobbyInspector.ChatField.GetComponent<InputField>().isFocused) {
                 if (Input.GetKey(_k.MoveCameraUp)) MoveCamera(false, true, 1);
@@ -89,21 +89,21 @@ namespace Code {
                 return;
             }
             #region Game_Logic_Local
-            if (TileOnMouseExist()) AttachTileToMouse();
+            if (Tile.OnMouse.Exist()) Tile.AttachToMouse();
             if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
 
-            if ((Input.GetKeyDown(_k.RotateTileClockwise) || Input.GetMouseButtonDown(1)) && TileOnMouseExist()) RotateClockwise();
-            if (Input.GetKeyDown(_k.RotateTileCounterClockwise) && TileOnMouseExist()) RotateCounterClockwise();
+            if ((Input.GetKeyDown(_k.RotateTileClockwise) || Input.GetMouseButtonDown(1)) && Tile.OnMouse.Exist()) Tile.Rotate.Clockwise();
+            if (Input.GetKeyDown(_k.RotateTileCounterClockwise) && Tile.OnMouse.Exist()) Tile.Rotate.CounterClockwise();
             if (Input.GetKeyDown(_k.PickTileFromDeck)) {
-                if (!TileOnMouseExist() && !DeckHandler.DeckIsEmpty()) {
-                    PickTileFromDeck();
-                    AttachTileToMouse();
+                if (!Tile.OnMouse.Exist() && !Deck.DeckIsEmpty()) {
+                    Tile.Pick();
+                    Tile.AttachToMouse();
                 }
-                if (TileOnMouseExist()) RotateClockwise();
+                if (Tile.OnMouse.Exist()) Tile.Rotate.Clockwise();
             }
             if (Input.GetKeyDown(_k.ReturnTileToDeck)) {
-                if (TileOnMouseExist()) {
-                    ReturnTileToDeck();
+                if (Tile.OnMouse.Exist()) {
+                    Tile.Return();
                 }
             }
             #endregion

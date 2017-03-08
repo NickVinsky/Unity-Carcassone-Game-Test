@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Code {
-    public class Deck<T> : List<T> {
+namespace Code.GameComponents {
+    public class TilesPack<T> : List<T> {
 
         public event EventHandler OnAddOrRemove;
 

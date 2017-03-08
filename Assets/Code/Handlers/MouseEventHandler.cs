@@ -1,7 +1,8 @@
-﻿using Code.Network;
+﻿using Code.Game;
+using Code.GameComponents;
+using Code.Network;
 using UnityEngine;
-using static Code.Game;
-using static Code.Tiles.TilesHandler;
+using static Code.MainGame;
 
 namespace Code.Handlers {
     public class MouseOnGrid : MonoBehaviour {
@@ -14,11 +15,11 @@ namespace Code.Handlers {
                 Net.Game.OnMouseOver(gameObject);
                 return;
             }
-            if (TileCanBeAttachedTo(gameObject)) {
+            if (Tile.Nearby.CanBeAttachedTo(gameObject)) {
                 GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                 return;
             }
-            if (TileOnMouseExist()) {
+            if (Tile.OnMouse.Exist()) {
                 GetComponent<SpriteRenderer>().color = GameRegulars.CantAttachlColor;
                 return;
             }
@@ -38,7 +39,7 @@ namespace Code.Handlers {
                 Net.Game.OnMouseUp(gameObject);
                 return;
             }
-            if (TileCanBeAttachedTo(gameObject) && MouseState != State.Dragging) PutTileFromMouse(gameObject);
+            if (Tile.Nearby.CanBeAttachedTo(gameObject) && MouseState != State.Dragging) Tile.OnMouse.Put(gameObject);
         }
 
         // Update is called once per frame

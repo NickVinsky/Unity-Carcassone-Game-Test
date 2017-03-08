@@ -1,7 +1,7 @@
 ﻿using System;
+using Code.Game;
 using Code.GUI;
 using Code.Network.Attributes;
-using Code.Tiles;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -115,7 +115,7 @@ namespace Code.Network.Commands {
                     break;
                 case Command.TilePicked:
                     Net.Game.TilePicked = true;
-                    TilesHandler.PickTileFromDeck(m.Value, TilesHandler.RandomRotate());
+                    Tile.Pick(m.Value, Tile.Rotate.Random());
                     break;
                 case Command.TileNotPicked:
                     Net.Game.TilePicked = false;
@@ -124,13 +124,13 @@ namespace Code.Network.Commands {
                     Net.Game.tPos = m.Vect2;
                     break;
                 case Command.RotateTile:
-                    TilesHandler.SetTileOnMouseRotation(m.Value);
+                    Tile.OnMouse.SetRotation(m.Value);
                     break;
                 case Command.HighlightCell:
-                    TilesHandler.HighlightCell(m.Text, m.Value);
+                    Tile.Highlight(m.Text, m.Value);
                     break;
                 case Command.PutTile:
-                    TilesHandler.PutTileFromMouse(m.Vect2);
+                    Tile.OnMouse.Put(m.Vect2);
                     break;
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;

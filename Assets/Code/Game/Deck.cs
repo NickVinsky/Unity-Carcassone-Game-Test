@@ -1,40 +1,45 @@
 ﻿using System;
+using Code.GameComponents;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-namespace Code.Tiles {
-    public static class DeckHandler {
-        public static Deck<int> Deck = new Deck<int>();
+namespace Code.Game {
+    public static class Deck {
+        private static TilesPack<int> _tilesPack = new TilesPack<int>();
+
+        public static void Add(int type) {
+            _tilesPack.Add(type);
+        }
 
         public static int GenerateIndex() {
-            var maxIndex = Deck.Count - 1;
+            var maxIndex = _tilesPack.Count - 1;
             var rnd = Random.Range(0, maxIndex);
             return rnd;
         }
 
         public static int GetRandomTile() {
             var rnd = GenerateIndex();
-            int result = Deck[rnd];
-            Deck.RemoveAt(rnd);
+            int result = _tilesPack[rnd];
+            _tilesPack.RemoveAt(rnd);
             return result;
         }
 
         public static int GetTile(int index) {
-            int result = Deck[index];
-            Deck.RemoveAt(index);
+            int result = _tilesPack[index];
+            _tilesPack.RemoveAt(index);
             return result;
         }
 
         public static int DeckSize() {
-            return Deck.Count;
+            return _tilesPack.Count;
         }
         public static bool DeckIsEmpty() {
-            return Deck.Count == 0;
+            return _tilesPack.Count == 0;
         }
         public static void InitVanillaDeck() {
-            Deck.OnAddOrRemove += EventOnAddOrRemove;
-            Deck.Clear();
+            _tilesPack.OnAddOrRemove += EventOnAddOrRemove;
+            _tilesPack.Clear();
             AddTilesToDeck(1, 4);
             AddTilesToDeck(2, 2);
             AddTileToDeck(3);
@@ -68,7 +73,7 @@ namespace Code.Tiles {
         }
 
         private static void AddTileToDeck(int type) {
-            Deck.Add(type);
+            _tilesPack.Add(type);
         }
 
         public static void EventOnAddOrRemove(object sender, EventArgs e) {

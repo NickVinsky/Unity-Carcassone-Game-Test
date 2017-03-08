@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
+using Code.Game;
+using Code.GameComponents;
 using Code.Handlers;
 using Code.Network.Commands;
-using Code.Tiles;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
@@ -52,8 +53,8 @@ namespace Code.Network.Composition {
                 RotateClockwise();
             if (Input.GetKeyDown(k.RotateTileCounterClockwise) && TileOnMouseExist()) RotateCounterClockwise();
             if (Input.GetKeyDown(k.PickTileFromDeck)) {
-                if (!TileOnMouseExist() && !DeckHandler.DeckIsEmpty()) {
-                    var i = DeckHandler.GenerateIndex();
+                if (!TileOnMouseExist() && !Deck.DeckIsEmpty()) {
+                    var i = Deck.GenerateIndex();
                     Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.TilePicked, Value = i});
                     AttachTileToMouse();
                 }
@@ -68,7 +69,7 @@ namespace Code.Network.Composition {
 
         public void OnMouseOver(GameObject c) {
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return; // Проверка - мой ли сейчас ход
-            if (TilesHandler.TileCanBeAttachedTo(c) && TileOnMouseExist()) {
+            if (Tile.Nearby.CanBeAttachedTo(c) && TileOnMouseExist()) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                 Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 1});
                 return;
@@ -88,14 +89,14 @@ namespace Code.Network.Composition {
         }
         public void OnMouseUp(GameObject c) {
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return; // Проверка - мой ли сейчас ход
-            if (TilesHandler.TileCanBeAttachedTo(c) && Game.MouseState != Game.State.Dragging) PutTileFromMouse(c);
+            if (Tile.Nearby.CanBeAttachedTo(c) && MainGame.MouseState != MainGame.State.Dragging) PutTileFromMouse(c);
         }
 
         public void DeckClick(Vector2 t, Vector2 m) {
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return;
-            if (TileOnMouseExist() || DeckHandler.DeckIsEmpty()) return;
+            if (TileOnMouseExist() || Deck.DeckIsEmpty()) return;
 
-            var i = DeckHandler.GenerateIndex();
+            var i = Deck.GenerateIndex();
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.TilePicked, Value = i});
             AttachTileToMouse();
         }
@@ -105,17 +106,17 @@ namespace Code.Network.Composition {
         private void PutTileFromMouse(GameObject o) {
             TilePicked = false;
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.TileNotPicked});
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.PutTile, Vect2 = Game.Grid.GetCellCoordinates(o)});
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.PutTile, Vect2 = MainGame.Grid.GetCellCoordinates(o)});
         }
 
         private void RotateClockwise() {
-            TilesHandler.RotateClockwise();
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RotateTile, Value = TilesHandler.GetTileOnMouseRotation()});
+            Tile.Rotate.Clockwise();
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RotateTile, Value = Tile.OnMouse.GetRotation()});
         }
 
         private void RotateCounterClockwise() {
-            TilesHandler.RotateCounterClockwise();
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RotateTile, Value = TilesHandler.GetTileOnMouseRotation()});
+            Tile.Rotate.CounterClockwise();
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RotateTile, Value = Tile.OnMouse.GetRotation()});
         }
 
         private void AttachTileToMouse() {
@@ -125,7 +126,7 @@ namespace Code.Network.Composition {
         }
 
         private void AttachTileToCoordinatesReceiver(Vector2 t) {
-            TilesHandler.AttachTileToCoordinates(t);
+            Tile.AttachToCoordinates(t);
         }
 
         private void ReturnTileToDeck() {}

@@ -1,6 +1,6 @@
 ﻿
 
-namespace Code.Tiles {
+namespace Code.Game {
     public enum Area {Empty, Field, Road, Town}
     public enum Side {
         Top = 0,

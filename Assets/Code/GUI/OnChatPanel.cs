@@ -4,10 +4,10 @@ using UnityEngine;
 public class OnChatPanel : MonoBehaviour {
 
     private void OnMouseOver() {
-        Game.MouseOnChat = true;
+        MainGame.MouseOnChat = true;
     }
 
     private void OnMouseExit() {
-        Game.MouseOnChat = false;
+        MainGame.MouseOnChat = false;
     }
 }

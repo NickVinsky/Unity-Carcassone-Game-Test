@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Code.Tiles
+namespace Code.Game
 {
-    internal class Tile : MonoBehaviour {
+    public class TileInfo : MonoBehaviour {
 
         public int X, Y;
 
