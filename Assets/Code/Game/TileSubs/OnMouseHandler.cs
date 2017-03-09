@@ -52,6 +52,7 @@ namespace Code.Game.TileSubs {
             Destroy();
             Cursor.visible = true;
             MainGame.Grid.CheckBounds(gridCell);
+            Tile.ShowPossibleFollowersLocations(gridCell);
         }
 
         // for online game
@@ -65,6 +66,7 @@ namespace Code.Game.TileSubs {
             Destroy();
             Cursor.visible = true;
             MainGame.Grid.CheckBounds(gridCell);
+            Tile.ShowPossibleFollowersLocations(gridCell);
         }
     }
 }

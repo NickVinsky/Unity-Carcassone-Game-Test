@@ -1,6 +1,4 @@
-﻿
-
-namespace Code.Game {
+﻿namespace Code.Game {
     public enum GameStage {
         Wait,
         Start,

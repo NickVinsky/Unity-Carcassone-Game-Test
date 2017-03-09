@@ -83,5 +83,9 @@ namespace Code.Game {
             OnMouse.Destroy();
             Cursor.visible = true;
         }
+
+        public static void ShowPossibleFollowersLocations(GameObject o) {
+            o.GetComponent<TileInfo>().ShowPossibleFollowersLocations(o);
+        }
     }
 }
