@@ -59,9 +59,11 @@ namespace Code.GUI {
                 Net.Game.DeckClick(Camera.main.transform.position, GameObject.Find(DeckButton).GetComponent<RectTransform>().anchoredPosition);
                 return;
             }
-            if (Tile.OnMouse.Exist() || DeckIsEmpty()) return;
+            if (MainGame.Stage != GameStage.Start) return;
+            if (DeckIsEmpty()) return;
             Tile.Pick();
             Tile.AttachToMouse();
+            MainGame.Stage = GameStage.PlacingTile;
         }
         private static void DeckCounterClick() {
 

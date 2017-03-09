@@ -8,7 +8,7 @@ namespace Code.Game {
         PlacingFollower
     }
 
-    public enum Area {Empty, Field, Road, Town}
+    public enum Area {Empty, Field, Road, City, Monastery}
 
     public enum Side {
         Top = 0,

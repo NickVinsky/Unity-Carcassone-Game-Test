@@ -57,6 +57,8 @@ namespace Code {
         public const string DeckButton = "Deck Button";
         public const string DeckCounter = "Deck Counter";
 
+        public const string ScoreText = "Score: ";
+
         public static readonly Color PlayerBlue = new Color(0f, 0.38f, 0.93f, 1f);
         public static readonly Color PlayerYellow = new Color(0.97f, 0.95f, 0.24f, 1f);
         public static readonly Color PlayerGreen = new Color(0.38f, 0.93f, 0f, 1f);

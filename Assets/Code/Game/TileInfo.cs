@@ -1,143 +1,169 @@
-﻿using Code.Network;
+﻿using System.Collections.Generic;
+using Code.Game.FollowerSubs;
 using UnityEngine;
 
-namespace Code.Game
-{
+namespace Code.Game {
     public class TileInfo : MonoBehaviour {
 
         public int X, Y;
 
         public int Type;
+        private FollowerInfo _follower = new FollowerInfo();
 
-        public Area[] This = {Area.Field, Area.Field, Area.Field, Area.Field};
+        private readonly Area[] _side = {Area.Empty, Area.Empty, Area.Empty, Area.Empty};
         public sbyte Rotates { get; set; } // 0 - 0 grad, 1 - 90 grad, 2 - 180 grad, 3 - 270 grad ; Clockwise
 
         //public bool[] Field = new bool[8];
 
-        // |1 2 3|
-        // |8 9 4|
-        // |7 6 5|
-        //
-        private bool[] _placeIsAvailable = {false,false,false,false,false,false,false,false,false};
-        private PlayerColor _owner = PlayerColor.NotPicked;
-        private Follower _follower = Follower.None;
-        private sbyte _location;
-        private GameObject _3DMeeple;
-
-        /*public Tile(Area top, Area right, Area bot, Area left) {
-            Rotates = 0;
-            This[(int) Side.Top] = top;
-            This[(int) Side.Right] = right;
-            This[(int) Side.Bot] = bot;
-            This[(int) Side.Left] = left;
-        }*/
-
-        public void AddFollower(PlayerColor owner, sbyte location) {
-            _owner = owner;
-            _location = location;
-        }
+        public Area GetSide(int side) { return _side[side]; }
 
         public void InitTile(int type) {
             Type = type;
-            This[(int) Side.Top] = Area.Field;
-            This[(int) Side.Right] = Area.Field;
-            This[(int) Side.Bot] = Area.Field;
-            This[(int) Side.Left] = Area.Field;
             switch (Type) {
                 case 0:
-                    This[(int) Side.Top] = Area.Empty;
-                    This[(int) Side.Right] = Area.Empty;
-                    This[(int) Side.Bot] = Area.Empty;
-                    This[(int) Side.Left] = Area.Empty;
+                    break;
+                case 1:
+                    AddMonastery();
+                    AddFields("01234567");
                     break;
                 case 2:
-                    This[(int) Side.Bot] = Area.Road;
+                    AddRoads("2");
+                    AddMonastery();
+                    AddFields("0134567");
                     break;
                 case 3:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Right] = Area.Town;
-                    This[(int) Side.Bot] = Area.Town;
-                    This[(int) Side.Left] = Area.Town;
+                    AddCities("0123");
                     break;
                 case 4:
                 case 5:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Right] = Area.Town;
-                    This[(int) Side.Left] = Area.Town;
+                    AddCities("013");
                     break;
                 case 6:
                 case 7:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Right] = Area.Town;
-                    This[(int) Side.Bot] = Area.Road;
-                    This[(int) Side.Left] = Area.Town;
+                    AddCities("013");
+                    AddRoads("2");
                     break;
                 case 8:
                 case 9:
                 case 14:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Left] = Area.Town;
+                    _side[(int) Side.Top] = Area.City;
+                    _side[(int) Side.Left] = Area.City;
                     break;
                 case 10:
                 case 11:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Right] = Area.Road;
-                    This[(int) Side.Bot] = Area.Road;
-                    This[(int) Side.Left] = Area.Town;
+                    _side[(int) Side.Top] = Area.City;
+                    _side[(int) Side.Right] = Area.Road;
+                    _side[(int) Side.Bot] = Area.Road;
+                    _side[(int) Side.Left] = Area.City;
                     break;
                 case 12:
                 case 13:
-                    This[(int) Side.Right] = Area.Town;
-                    This[(int) Side.Left] = Area.Town;
+                    _side[(int) Side.Right] = Area.City;
+                    _side[(int) Side.Left] = Area.City;
                     break;
                 case 15:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Bot] = Area.Town;
+                    _side[(int) Side.Top] = Area.City;
+                    _side[(int) Side.Bot] = Area.City;
                     break;
                 case 16:
-                    This[(int) Side.Top] = Area.Town;
+                    _side[(int) Side.Top] = Area.City;
                     break;
                 case 17:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Bot] = Area.Road;
-                    This[(int) Side.Left] = Area.Road;
+                    _side[(int) Side.Top] = Area.City;
+                    _side[(int) Side.Bot] = Area.Road;
+                    _side[(int) Side.Left] = Area.Road;
                     break;
                 case 18:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Right] = Area.Road;
-                    This[(int) Side.Bot] = Area.Road;
+                    _side[(int) Side.Top] = Area.City;
+                    _side[(int) Side.Right] = Area.Road;
+                    _side[(int) Side.Bot] = Area.Road;
                     break;
                 case 19:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Right] = Area.Road;
-                    This[(int) Side.Bot] = Area.Road;
-                    This[(int) Side.Left] = Area.Road;
+                    _side[(int) Side.Top] = Area.City;
+                    _side[(int) Side.Right] = Area.Road;
+                    _side[(int) Side.Bot] = Area.Road;
+                    _side[(int) Side.Left] = Area.Road;
                     break;
                 case 20:
-                    This[(int) Side.Top] = Area.Town;
-                    This[(int) Side.Right] = Area.Road;
-                    This[(int) Side.Left] = Area.Road;
+                    _side[(int) Side.Top] = Area.City;
+                    _side[(int) Side.Right] = Area.Road;
+                    _side[(int) Side.Left] = Area.Road;
                     break;
                 case 21:
-                    This[(int) Side.Top] = Area.Road;
-                    This[(int) Side.Bot] = Area.Road;
+                    _side[(int) Side.Top] = Area.Road;
+                    _side[(int) Side.Bot] = Area.Road;
                     break;
                 case 22:
-                    This[(int) Side.Bot] = Area.Road;
-                    This[(int) Side.Left] = Area.Road;
+                    _side[(int) Side.Bot] = Area.Road;
+                    _side[(int) Side.Left] = Area.Road;
                     break;
                 case 23:
-                    This[(int) Side.Right] = Area.Road;
-                    This[(int) Side.Bot] = Area.Road;
-                    This[(int) Side.Left] = Area.Road;
+                    _side[(int) Side.Right] = Area.Road;
+                    _side[(int) Side.Bot] = Area.Road;
+                    _side[(int) Side.Left] = Area.Road;
                     break;
                 case 24:
-                    This[(int) Side.Top] = Area.Road;
-                    This[(int) Side.Right] = Area.Road;
-                    This[(int) Side.Bot] = Area.Road;
-                    This[(int) Side.Left] = Area.Road;
+                    _side[(int) Side.Top] = Area.Road;
+                    _side[(int) Side.Right] = Area.Road;
+                    _side[(int) Side.Bot] = Area.Road;
+                    _side[(int) Side.Left] = Area.Road;
                     break;
             }
+        }
+
+        private void AddMonastery() {
+            _follower.AddLocation(Area.Monastery);
+        }
+
+        private void AddCities(string s) {
+            var nodes = new List<byte>();
+            foreach (var c in s) {
+                var i = (int) c;
+                _side[i] = Area.City;
+                nodes.Add((byte) i);
+            }
+            _follower.AddLocation(Area.City, nodes);
+        }
+
+        private void AddRoads(string s) {
+            var nodes = new List<byte>();
+            foreach (var c in s) {
+                var i = (int) c;
+                _side[i] = Area.Road;
+                nodes.Add((byte) i);
+            }
+            _follower.AddLocation(Area.Road, nodes);
+        }
+
+        private void AddFields(string s) {
+            var nodes = new List<byte>();
+            var lastChar = 'E';
+            foreach (var c in s) {
+                var i = (byte) c;
+                nodes.Add(i);
+                if (lastChar != 'E') {
+                    var last = (byte) lastChar;
+                    var sum = last + i;
+                    if (last + 1 == i) {
+                        switch (sum) {
+                            case 1:
+                                if (_follower.SideFree(0)) _side[0] = Area.Field;
+                                break;
+                            case 5:
+                                if (_follower.SideFree(1)) _side[1] = Area.Field;
+                                break;
+                            case 9:
+                                if (_follower.SideFree(2)) _side[2] = Area.Field;
+                                break;
+                            case 13:
+                                if (_follower.SideFree(3)) _side[3] = Area.Field;
+                                break;
+                        }
+                    }
+                }
+                lastChar = c;
+            }
+            _follower.AddLocation(Area.Field, nodes);
         }
     }
 }

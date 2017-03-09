@@ -90,9 +90,10 @@ namespace Code.Network.Composition {
             var l = string.Empty;
             foreach (var q in Net.Server.Queue) {
                 if (Net.Player.Any(p => p.Color == q)) {
-                    var playerName = Net.Player.First(p => p.Color == q).PlayerName;
+                    var curPlayer = Net.Player.First(p => p.Color == q);
                     var isMoving = q == Net.Game.CurrentPlayer ? "1" : "0";
-                    l += (int) q + isMoving + playerName + Environment.NewLine;
+                    l += (int) q + isMoving + curPlayer.FollowersNumber.ToString("D1") +
+                         curPlayer.Score.ToString("D4") + curPlayer.PlayerName + Environment.NewLine;
                 } else {
                     // Игрок больше не в игре
                     colorsToDelete.Add(q);

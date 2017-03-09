@@ -83,7 +83,7 @@ namespace Code.Network.Commands {
                 Net.StopCountdown();
             }
 
-            Net.Player.Add(new PlayerInformation{ID = m.ID, PlayerName = m.PlayerName});
+            Net.Player.Add(new PlayerInformation{ID = m.ID, PlayerName = m.PlayerName, FollowersNumber = GameRegulars.MaxFollowerNumbers, Score = 0});
             FormAndSendPlayersList();
         }
 

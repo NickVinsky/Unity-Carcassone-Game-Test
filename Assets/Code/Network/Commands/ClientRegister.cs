@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using Code.Game;
 using Code.GUI;
 using Code.Network.Attributes;
@@ -110,6 +111,7 @@ namespace Code.Network.Commands {
                     //GameObject.DontDestroyOnLoad(ChatPanel.transform.root);
                     Net.Game.CurrentPlayer = m.Color;
                     SceneManager.LoadScene(GameRegulars.SceneGame);
+                    Net.Game.Stage = Net.Game.CurrentPlayer == PlayerInfo.Color ? GameStage.Start : GameStage.Wait;
                     Net.Game.GameStarted();
                     Net.Client.Send(NetCmd.GameStartInfo, new NetPackChatMessage {RequesterID = PlayerInfo.ID});
                     break;
@@ -153,9 +155,14 @@ namespace Code.Network.Commands {
                 if (pList[i] == string.Empty) continue;
                 var pColor = (int) char.GetNumericValue(p[0]);
                 var pMoves = Convert.ToBoolean(char.GetNumericValue(p[1]));
-                var pName = p.Substring(2);
+                var pFollowersNumber = Convert.ToByte(char.GetNumericValue(p[2]));
+                var pScore = Convert.ToInt32(p.Substring(3, 4));
+                var pName = p.Substring(7);
                 o.transform.FindChild("Name").GetComponent<Text>().text = pName;
+                o.transform.FindChild("Score").GetComponent<Text>().text = GameRegulars.ScoreText + pScore;
                 o.transform.FindChild("Meeple").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
+                o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
+                o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
 
                 if (o.transform.FindChild("Name").GetComponent<Text>().text == PlayerInfo.PlayerName) PlayerInfo.MySlotNumberInGame = i;
 

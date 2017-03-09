@@ -113,15 +113,21 @@ namespace Code {
                     if (Input.GetKeyDown(_k.RotateTileClockwise) || Input.GetMouseButtonDown(1)) Tile.Rotate.Clockwise();
                     if (Input.GetKeyDown(_k.RotateTileCounterClockwise)) Tile.Rotate.CounterClockwise();
                     if (Input.GetKeyDown(_k.PickTileFromDeck)) Tile.Rotate.Clockwise();
-                    if (Input.GetKeyDown(_k.ReturnTileToDeck)) Tile.Return();
+                    if (Input.GetKeyDown(_k.ReturnTileToDeck)) {
+                        Tile.Return();
+                        Stage = GameStage.Start;
+                    }
                     //Stage = GameStage.PlacingFollower; // In MouseEventHandler.OnMouseUp()
                     break;
                 case GameStage.PlacingFollower:
                     Stage = GameStage.Start;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    //throw new ArgumentOutOfRangeException();
+                    Debug.Log("ArgumentOutOfRangeException");
+                    break;
             }
+
             #endregion
         }
 

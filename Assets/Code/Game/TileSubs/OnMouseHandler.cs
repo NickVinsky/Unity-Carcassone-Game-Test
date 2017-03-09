@@ -18,9 +18,22 @@ namespace Code.Game.TileSubs {
             return _tileOnMouse.GetComponent<TileInfo>();
         }
 
+        public sbyte GetRotation() {
+            return GetTile().Rotates;
+        }
+
+        public Area GetSide(int side) {
+            return GetTile().GetSide(side);
+        }
+
         public void SetPosition(Vector3 pos) {
             //if (!Exist()) return;
             _tileOnMouse.transform.position = pos;
+        }
+
+        public void SetRotation(int r) {
+            Tile.Rotate.Sprite(r, _tileOnMouse);
+            GetTile().Rotates = (sbyte)r;
         }
 
         public bool Exist() {
@@ -29,15 +42,6 @@ namespace Code.Game.TileSubs {
 
         public void Destroy() {
             Object.Destroy(_tileOnMouse);
-        }
-
-        public void SetRotation(int r) {
-            Tile.Rotate.Sprite(r, _tileOnMouse);
-            GetTile().Rotates = (sbyte)r;
-        }
-
-        public sbyte GetRotation() {
-            return GetTile().Rotates;
         }
 
         public void Put(GameObject gridCell) {

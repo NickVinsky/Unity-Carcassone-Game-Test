@@ -32,11 +32,11 @@ namespace Code.Game.TileSubs {
             return GameObject.Find("cell#" + (cellPos.x + x) + ":" + (cellPos.y + y));
         }
 
-        private bool CompareBySides(GameObject tileOnMouse, GameObject mainTile, Side sideOfMainTile) {
+        private bool CompareBySides(GameObject mainTile, Side sideOfMainTile) {
             GameObject neighborTile = GetBySide(sideOfMainTile, mainTile);
             if (neighborTile == null) return true;
             if (neighborTile.GetComponent<TileInfo>().Type == 0) return true;
-            return CheckAttachment(tileOnMouse, sideOfMainTile, neighborTile);
+            return CheckAttachment(sideOfMainTile, neighborTile);
         }
 
         public bool CheckNeighborTiles(GameObject mainTile) {
@@ -44,14 +44,14 @@ namespace Code.Game.TileSubs {
             var n = true;
             for (var i = 0; i < 4; i++) {
                 n = n && NullCheck(mainTile, (Side) i);
-                r = r && CompareBySides(Tile.OnMouse.Get(), mainTile, (Side) i);
+                r = r && CompareBySides(mainTile, (Side) i);
             }
             return r && !n;
         }
 
-        private bool CheckAttachment(GameObject tileOnMouse, Side sideOfMainTile, GameObject targetTile) {
-            if (tileOnMouse.GetComponent<TileInfo>().This[Tile.Rotate.Set((int) sideOfMainTile - tileOnMouse.GetComponent<TileInfo>().Rotates)] ==
-                targetTile.GetComponent<TileInfo>().This[Tile.Rotate.Set((int) GetOppositeSide(sideOfMainTile) - targetTile.GetComponent<TileInfo>().Rotates)]) {
+        private bool CheckAttachment(Side sideOfMainTile, GameObject targetTile) {
+            if (Tile.OnMouse.GetSide(Tile.Rotate.Set((int) sideOfMainTile - Tile.OnMouse.GetRotation())) ==
+                targetTile.GetComponent<TileInfo>().GetSide(Tile.Rotate.Set((int) GetOppositeSide(sideOfMainTile) - targetTile.GetComponent<TileInfo>().Rotates))) {
                 return true;
             }
             return false;

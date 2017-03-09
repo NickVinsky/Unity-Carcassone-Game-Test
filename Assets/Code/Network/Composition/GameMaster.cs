@@ -11,6 +11,7 @@ namespace Code.Network.Composition {
     public class GameMaster {
         private bool _offline = true;
         private bool _isStarted;
+        public GameStage Stage;
         public PlayerColor CurrentPlayer = PlayerColor.NotPicked;
         public int CurrentPlayerIndex = -1;
 
@@ -43,7 +44,40 @@ namespace Code.Network.Composition {
         // This methods call when game is not offline
         // On client
         public void LocalClientUpadate(KeyInputHandler k) {
-            if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
+            if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
+            switch (Stage) {
+                case GameStage.Wait:
+                    if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
+                    break;
+                case GameStage.Start:
+                    if (Input.GetKeyDown(k.PickTileFromDeck)) {
+                        if (!Deck.DeckIsEmpty()) {
+                            var i = Deck.GenerateIndex();
+                            Net.Client.Action(Command.TilePicked, i);
+                            AttachTileToMouse();
+                            Stage = GameStage.PlacingTile;
+                        }
+                    }
+                    break;
+                case GameStage.PlacingTile:
+                    Tile.AttachToMouse();
+                    if (Input.GetKeyDown(k.RotateTileClockwise) || Input.GetMouseButtonDown(1)) RotateClockwise();
+                    if (Input.GetKeyDown(k.RotateTileCounterClockwise)) RotateCounterClockwise();
+                    if (Input.GetKeyDown(k.PickTileFromDeck)) RotateClockwise();
+                    if (Input.GetKeyDown(k.ReturnTileToDeck)) ReturnTileToDeck();
+                    //Stage = GameStage.PlacingFollower; // OnMouseUp()
+                    break;
+                case GameStage.PlacingFollower:
+                    Stage = GameStage.Start;
+                    break;
+                default:
+                    //throw new ArgumentOutOfRangeException();
+                    Debug.Log("ArgumentOutOfRangeException");
+                    break;
+            }
+
+            #region OldLogic
+            /*if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
 
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return;  // Проверка - мой ли сейчас ход
             if (TileOnMouseExist()) AttachTileToMouse();
@@ -63,7 +97,8 @@ namespace Code.Network.Composition {
                 if (TileOnMouseExist()) {
                     ReturnTileToDeck();
                 }
-            }
+            }*/
+            #endregion
         }
 
         public void OnMouseOver(GameObject c) {
@@ -88,16 +123,19 @@ namespace Code.Network.Composition {
         }
         public void OnMouseUp(GameObject c) {
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return; // Проверка - мой ли сейчас ход
-            if (Tile.Nearby.CanBeAttachedTo(c) && MainGame.MouseState != MainGame.State.Dragging) PutTileFromMouse(c);
+            if (!Tile.Nearby.CanBeAttachedTo(c) || MainGame.MouseState == MainGame.State.Dragging) return;
+            PutTileFromMouse(c);
+            Stage = GameStage.PlacingFollower;
         }
 
         public void DeckClick(Vector2 t, Vector2 m) {
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return;
-            if (TileOnMouseExist() || Deck.DeckIsEmpty()) return;
-
+            if (Stage != GameStage.Start) return;
+            if (Deck.DeckIsEmpty()) return;
             var i = Deck.GenerateIndex();
             Net.Client.Action(Command.TilePicked, i);
             AttachTileToMouse();
+            Stage = GameStage.PlacingTile;
         }
 
         private bool TileOnMouseExist() { return TilePicked; }
@@ -124,7 +162,9 @@ namespace Code.Network.Composition {
             Net.Client.Action(Command.MouseCoordinates, tp);
         }
 
-        private void ReturnTileToDeck() {}
+        private void ReturnTileToDeck() {
+            Stage = GameStage.Start;
+        }
 
     }
 }
