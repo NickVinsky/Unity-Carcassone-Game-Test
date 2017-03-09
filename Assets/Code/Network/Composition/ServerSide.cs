@@ -60,7 +60,7 @@ namespace Code.Network.Composition {
         public string GetPlayerName(int id) {
             string result = string.Empty;
             try {
-                result = Net.Player.First(p => p.ConnectionId == id).PlayerName;
+                result = Net.Player.First(p => p.ID == id).PlayerName;
             } catch (Exception e) {
                 Debug.Log("GetPlayerNameExeption " + e.Message);
                 //Console.WriteLine(e);

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Code.Network;
+using UnityEngine;
 
 namespace Code.Game
 {
@@ -11,7 +12,17 @@ namespace Code.Game
         public Area[] This = {Area.Field, Area.Field, Area.Field, Area.Field};
         public sbyte Rotates { get; set; } // 0 - 0 grad, 1 - 90 grad, 2 - 180 grad, 3 - 270 grad ; Clockwise
 
-        public bool[] Field = new bool[8];
+        //public bool[] Field = new bool[8];
+
+        // |1 2 3|
+        // |8 9 4|
+        // |7 6 5|
+        //
+        private bool[] _placeIsAvailable = {false,false,false,false,false,false,false,false,false};
+        private PlayerColor _owner = PlayerColor.NotPicked;
+        private Follower _follower = Follower.None;
+        private sbyte _location;
+        private GameObject _3DMeeple;
 
         /*public Tile(Area top, Area right, Area bot, Area left) {
             Rotates = 0;
@@ -20,6 +31,11 @@ namespace Code.Game
             This[(int) Side.Bot] = bot;
             This[(int) Side.Left] = left;
         }*/
+
+        public void AddFollower(PlayerColor owner, sbyte location) {
+            _owner = owner;
+            _location = location;
+        }
 
         public void InitTile(int type) {
             Type = type;

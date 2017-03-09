@@ -97,7 +97,7 @@ namespace Code.Network {
                 }
             }
 
-            var discPlayer = Net.Player.First(p => p.ConnectionId == conn.connectionId);
+            var discPlayer = Net.Player.First(p => p.ID == conn.connectionId);
             var index = Net.Player.IndexOf(discPlayer);
             Net.Player.RemoveAt(index);
 

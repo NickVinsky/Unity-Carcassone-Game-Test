@@ -45,6 +45,10 @@ namespace Code.Game.TileSubs {
             o.GetComponent<SpriteRenderer>().transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
 
+        public sbyte Follower() {
+            return 0;
+        }
+
         public void Clockwise() {
             Tile.OnMouse.GetSprite().transform.Rotate(Vector3.back * 90);
             Tile.OnMouse.GetTile().Rotates = Set(1, Tile.OnMouse.GetTile().Rotates);

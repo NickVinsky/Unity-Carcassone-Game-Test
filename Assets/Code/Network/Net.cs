@@ -33,7 +33,7 @@ namespace Code.Network {
 
         public static void Reset() {
             PlayerSync.PlayerInfo.Color = PlayerColor.NotPicked;
-            PlayerSync.PlayerInfo.ConnectionId = -10;
+            PlayerSync.PlayerInfo.ID = -10;
             PlayerSync.PlayerInfo.IsRegistred = false;
             PlayerSync.PlayerInfo.WaitingForColorUpgrade = false;
             PlayerSync.PlayerInfo.IsReady = false;

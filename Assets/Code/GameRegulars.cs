@@ -84,6 +84,8 @@ namespace Code {
         public static readonly float TileSizeX = 88.0f;
         public static readonly float TileSizeY = 88.0f;
 
+        public const byte MaxFollowerNumbers = 7;
+
         #region Errors
         public const string JoinLogField = "JoinLog";
         public const string HostLogField = "HostLog";

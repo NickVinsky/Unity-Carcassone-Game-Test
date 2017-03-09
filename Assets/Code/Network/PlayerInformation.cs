@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Code.Network {
+﻿namespace Code.Network {
     /*
     public struct PlayerInfo {
         public static string PlayerName;
@@ -18,10 +16,20 @@ namespace Code.Network {
         Black = 5
     }
 
-    public struct PlayerInformation {
-        public string PlayerName;
-        public int ConnectionId;
-        public PlayerColor Color;
+    public interface IPlayerInfo {
+        string PlayerName { get; set;}
+        int ID { get; set;} // ConnectionId of player
+        PlayerColor Color { get; set;}
+        byte FollowersNumber { get; set;}
+        int Score { get; set;}
+    }
+
+    public struct PlayerInformation : IPlayerInfo{
+        public string PlayerName { get; set;}
+        public int ID { get; set;}
+        public PlayerColor Color { get; set;}
+        public byte FollowersNumber { get; set;}
+        public int Score { get; set;}
 
         public bool IsRegistred;
         public bool IsReady;

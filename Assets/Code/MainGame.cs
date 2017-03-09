@@ -13,6 +13,8 @@ namespace Code {
         private readonly KeyInputHandler _k = new KeyInputHandler();
         public static readonly Grid Grid = new Grid();
 
+        public static GameStage Stage;
+
         //private float _timer;
         //private bool _timerTrigger;
         //public static bool TilePermit;
@@ -20,8 +22,7 @@ namespace Code {
         private static float _cameraDistance = 5f;
         private const float DragDelta = 0.0000001f; // default = 0.00001f
         //private static Vector3 _mousePosition;
-        public enum State
-        {
+        public enum State {
             None,
             PreDragging,
             Dragging
@@ -46,6 +47,9 @@ namespace Code {
             Grid.Make();
             Deck.InitVanillaDeck();
             Tile.SetStarting(20);
+            PlayerSync.PlayerInfo.FollowersNumber = MaxFollowerNumbers;
+            PlayerSync.PlayerInfo.Score = 0;
+            Stage = GameStage.Start;
         }
 
         // Update is called once per frame
@@ -61,7 +65,7 @@ namespace Code {
 
             #endregion
 
-            #region Camera_Movement
+            #region CameraMovement
 
             if (!MouseOnChat) {
                 _cameraDistance -= Input.mouseScrollDelta.y * ScrollSpeed;
@@ -83,28 +87,40 @@ namespace Code {
             if ((MouseState == State.PreDragging || MouseState == State.Dragging) && Input.GetMouseButtonUp(0)) FinishDrag();
             #endregion
 
-
+            #region NetGame
             if (Net.Game.IsOnline()) {
                 Net.Game.LocalClientUpadate(_k);
                 return;
             }
-            #region Game_Logic_Local
-            if (Tile.OnMouse.Exist()) Tile.AttachToMouse();
-            if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
+            #endregion
 
-            if ((Input.GetKeyDown(_k.RotateTileClockwise) || Input.GetMouseButtonDown(1)) && Tile.OnMouse.Exist()) Tile.Rotate.Clockwise();
-            if (Input.GetKeyDown(_k.RotateTileCounterClockwise) && Tile.OnMouse.Exist()) Tile.Rotate.CounterClockwise();
-            if (Input.GetKeyDown(_k.PickTileFromDeck)) {
-                if (!Tile.OnMouse.Exist() && !Deck.DeckIsEmpty()) {
-                    Tile.Pick();
+            #region Game_Logic_Local
+            if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
+            switch (Stage) {
+                case GameStage.Wait:
+                    break;
+                case GameStage.Start:
+                    if (Input.GetKeyDown(_k.PickTileFromDeck)) {
+                        if (!Deck.DeckIsEmpty()) {
+                            Tile.Pick();
+                            Tile.AttachToMouse();
+                            Stage = GameStage.PlacingTile;
+                        }
+                    }
+                    break;
+                case GameStage.PlacingTile:
                     Tile.AttachToMouse();
-                }
-                if (Tile.OnMouse.Exist()) Tile.Rotate.Clockwise();
-            }
-            if (Input.GetKeyDown(_k.ReturnTileToDeck)) {
-                if (Tile.OnMouse.Exist()) {
-                    Tile.Return();
-                }
+                    if (Input.GetKeyDown(_k.RotateTileClockwise) || Input.GetMouseButtonDown(1)) Tile.Rotate.Clockwise();
+                    if (Input.GetKeyDown(_k.RotateTileCounterClockwise)) Tile.Rotate.CounterClockwise();
+                    if (Input.GetKeyDown(_k.PickTileFromDeck)) Tile.Rotate.Clockwise();
+                    if (Input.GetKeyDown(_k.ReturnTileToDeck)) Tile.Return();
+                    //Stage = GameStage.PlacingFollower; // In MouseEventHandler.OnMouseUp()
+                    break;
+                case GameStage.PlacingFollower:
+                    Stage = GameStage.Start;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
             #endregion
         }

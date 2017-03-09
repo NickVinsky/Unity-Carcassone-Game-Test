@@ -26,12 +26,21 @@ namespace Code.Network.Commands {
 
     public class NetPackBlank : MessageBase {}
 
-    public class NetPackPlayerInfo : MessageBase {
-        public string PlayerName = string.Empty;
-        public int ID = -10;
+    public class NetPackPlayerInfo : MessageBase, IPlayerInfo {
         public bool IsRegistred = false;
         public bool IsReady = false;
-        public PlayerColor Color = PlayerColor.NotPicked;
+
+        public string PlayerName { get; set; }
+        public int ID { get; set; }
+        public PlayerColor Color { get; set; }
+        public byte FollowersNumber { get; set; }
+        public int Score { get; set; }
+
+        public NetPackPlayerInfo() {
+            ID = -10;
+            PlayerName = string.Empty;
+            Color = PlayerColor.NotPicked;
+        }
     }
 
     public class NetPackChatMessage : MessageBase {

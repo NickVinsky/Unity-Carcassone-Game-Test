@@ -20,8 +20,8 @@ namespace Code.Network.Commands {
                 switch (m.Message) {
                     case "/myinfo":
                         string pInfo;
-                        var p = Net.Player.Single(s => s.ConnectionId == m.RequesterID);
-                        pInfo = "[AboutPlayer] Name#ID: " + p.PlayerName + "#" + p.ConnectionId;
+                        var p = Net.Player.Single(s => s.ID == m.RequesterID);
+                        pInfo = "[AboutPlayer] Name#ID: " + p.PlayerName + "#" + p.ID;
                         pInfo += ", Color: " + p.Color;
                         pInfo += ", Registered: " + p.IsRegistred;
                         Net.Server.CommandResponse(m, pInfo);
@@ -48,12 +48,12 @@ namespace Code.Network.Commands {
         public static void UpdatePlayerInfo(NetworkMessage message) {
             var sender = message.ReadMessage<NetPackPlayerInfo>();
 
-            var curPlayer = Net.Player.First(p => p.ConnectionId == sender.ID);
+            var curPlayer = Net.Player.First(p => p.ID == sender.ID);
             var index = Net.Player.IndexOf(curPlayer);
-            var lastID = Net.Player[index].ConnectionId;
+            var lastID = Net.Player[index].ID;
             var lastColor = Net.Player[index].Color;
 
-            curPlayer.ConnectionId = sender.ID;
+            curPlayer.ID = sender.ID;
             curPlayer.Color = sender.Color;
             curPlayer.PlayerName = sender.PlayerName;
             curPlayer.IsRegistred = sender.IsRegistred;
@@ -83,7 +83,7 @@ namespace Code.Network.Commands {
                 Net.StopCountdown();
             }
 
-            Net.Player.Add(new PlayerInformation{ConnectionId = m.ID, PlayerName = m.PlayerName});
+            Net.Player.Add(new PlayerInformation{ID = m.ID, PlayerName = m.PlayerName});
             FormAndSendPlayersList();
         }
 
@@ -96,7 +96,7 @@ namespace Code.Network.Commands {
         public static void ReformPlayersListWithAdding(NetworkMessage message) {
             var m = message.ReadMessage<NetPackPlayerInfo>();
             Net.Player.Add(new PlayerInformation {
-                ConnectionId = m.ID,
+                ID = m.ID,
                 PlayerName = m.PlayerName,
                 Color = m.Color,
                 IsRegistred = m.IsRegistred

@@ -1,5 +1,4 @@
 ﻿using Code.Game;
-using Code.GameComponents;
 using Code.Network;
 using UnityEngine;
 using static Code.MainGame;
@@ -15,11 +14,11 @@ namespace Code.Handlers {
                 Net.Game.OnMouseOver(gameObject);
                 return;
             }
-            if (Tile.Nearby.CanBeAttachedTo(gameObject)) {
-                GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
-                return;
-            }
-            if (Tile.OnMouse.Exist()) {
+            if (Stage == GameStage.PlacingTile) {
+                if (Tile.Nearby.CanBeAttachedTo(gameObject)) {
+                    GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
+                    return;
+                }
                 GetComponent<SpriteRenderer>().color = GameRegulars.CantAttachlColor;
                 return;
             }
@@ -32,14 +31,19 @@ namespace Code.Handlers {
             }
             GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
         }
+
         private void OnMouseDown() {
         }
+
         private void OnMouseUp() {
             if (Net.Game.IsOnline()) {
                 Net.Game.OnMouseUp(gameObject);
                 return;
             }
-            if (Tile.Nearby.CanBeAttachedTo(gameObject) && MouseState != State.Dragging) Tile.OnMouse.Put(gameObject);
+            if (Stage != GameStage.PlacingTile) return;
+            if (!Tile.Nearby.CanBeAttachedTo(gameObject) || MouseState == State.Dragging) return;
+            Tile.OnMouse.Put(gameObject);
+            Stage = GameStage.PlacingFollower;
         }
 
         // Update is called once per frame

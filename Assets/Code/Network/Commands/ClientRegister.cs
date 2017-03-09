@@ -18,7 +18,7 @@ namespace Code.Network.Commands {
             return Net.Client.MyInfo();
         }
         public static string MyInfoDebug() {
-            return "ID=" + PlayerInfo.ConnectionId + " ;Name=" + PlayerInfo.PlayerName + " ;Reg=" + PlayerInfo.IsRegistred +
+            return "ID=" + PlayerInfo.ID + " ;Name=" + PlayerInfo.PlayerName + " ;Reg=" + PlayerInfo.IsRegistred +
                    " ;Color=" + PlayerInfo.Color + " ;Ready=" + PlayerInfo.IsReady;
         }
 
@@ -82,7 +82,7 @@ namespace Code.Network.Commands {
         [ClientCommand(NetCmd.ConnIDReceive)]
         public static void ReceivePlayerID(NetworkMessage message) {
             var m = message.ReadMessage<NetPackPlayerInfo>();
-            PlayerInfo.ConnectionId = m.ID;
+            PlayerInfo.ID = m.ID;
             Net.Client.Send(NetCmd.FormPlayersList, MyInfo());
         }
 
@@ -111,7 +111,7 @@ namespace Code.Network.Commands {
                     Net.Game.CurrentPlayer = m.Color;
                     SceneManager.LoadScene(GameRegulars.SceneGame);
                     Net.Game.GameStarted();
-                    Net.Client.Send(NetCmd.GameStartInfo, new NetPackChatMessage {RequesterID = PlayerInfo.ConnectionId});
+                    Net.Client.Send(NetCmd.GameStartInfo, new NetPackChatMessage {RequesterID = PlayerInfo.ID});
                     break;
                 case Command.TilePicked:
                     Net.Game.TilePicked = true;

@@ -7,6 +7,18 @@ using static Code.Network.PlayerSync;
 namespace Code.Network.Composition {
     public class ClientSide {
 
+        public NetPackPlayerInfo MyInfo() {
+            return new NetPackPlayerInfo {
+                ID = PlayerInfo.ID,
+                PlayerName = PlayerInfo.PlayerName,
+                IsRegistred = PlayerInfo.IsRegistred,
+                IsReady = PlayerInfo.IsReady,
+                Color = PlayerInfo.Color,
+                FollowersNumber = PlayerInfo.FollowersNumber,
+                Score = PlayerInfo.Score
+            };
+        }
+
         public void Start() {
             NetworkManager.singleton.networkAddress = Net.NetworkAddress;
             NetworkManager.singleton.networkPort = Net.NetworkPort;
@@ -47,7 +59,7 @@ namespace Code.Network.Composition {
             var mToSend = new NetPackChatMessage {
                 Player = PlayerInfo.PlayerName,
                 Message = text,
-                RequesterID = PlayerInfo.ConnectionId
+                RequesterID = PlayerInfo.ID
             };
             Send(NetCmd.ChatMessage, mToSend);
         }
@@ -72,19 +84,9 @@ namespace Code.Network.Composition {
                 IsInfoMessage = true,
                 Player = "Server",
                 Message = sInfo,
-                RequesterID = PlayerInfo.ConnectionId
+                RequesterID = PlayerInfo.ID
             };
             Send(NetCmd.ChatMessage, mToSend);
-        }
-
-        public NetPackPlayerInfo MyInfo() {
-            return new NetPackPlayerInfo {
-                ID = PlayerInfo.ConnectionId,
-                PlayerName = PlayerInfo.PlayerName,
-                IsRegistred = PlayerInfo.IsRegistred,
-                IsReady = PlayerInfo.IsReady,
-                Color = PlayerInfo.Color
-            };
         }
     }
 }
