@@ -1,10 +1,12 @@
 ﻿using System;
 using Code.Game;
+using Code.Game.Data;
 using Code.Handlers;
 using Code.Network;
+using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.UI;
-using static Code.GameRegulars;
+using static Code.Game.Data.GameRegulars;
 
 namespace Code {
     public class MainGame {
@@ -39,17 +41,35 @@ namespace Code {
 
         public static bool MouseOnChat;
 
-        public void Init() {
-            if (!Net.Game.IsOnline()) {
-                GameObject.Find("ChatPanel").transform.localScale = new Vector2(0f, 0f);
-                GameObject.Find("PlayersPanel").transform.localScale = new Vector2(0f, 0f);
+        public static void ChangeGameStage(GameStage stage) {
+            if (Net.Game.IsOnline()) {
+                Net.Game.Stage = stage;
+
+                return;
             }
+            Stage = stage;
+        }
+
+        public void Init() {
             Grid.Make();
             Deck.InitVanillaDeck();
             Tile.SetStarting(20);
             PlayerSync.PlayerInfo.FollowersNumber = MaxFollowerNumbers;
             PlayerSync.PlayerInfo.Score = 0;
             Stage = GameStage.Start;
+
+            if (Net.Game.IsOnline()) return;
+            GameObject.Find("ChatPanel").transform.localScale = new Vector2(0f, 0f);
+            //GameObject.Find("PlayersPanel").transform.localScale = new Vector2(0f, 0f);
+            UpdateLocalPlayer();
+        }
+
+        public static void UpdateLocalPlayer() {
+            var curPlayer = PlayerSync.PlayerInfo;
+            var isMoving = "1";
+            var l = (int) curPlayer.Color + isMoving + curPlayer.FollowersNumber.ToString("D1") +
+                    curPlayer.Score.ToString("D4") + curPlayer.PlayerName;
+            Net.Client.RefreshInGamePlayersList(l);
         }
 
         // Update is called once per frame
@@ -110,7 +130,8 @@ namespace Code {
                     break;
                 case GameStage.PlacingTile:
                     Tile.AttachToMouse();
-                    if (Input.GetKeyDown(_k.RotateTileClockwise) || Input.GetMouseButtonDown(1)) Tile.Rotate.Clockwise();
+                    if (Input.GetKeyDown(_k.RotateTileClockwise) || Input.GetMouseButtonDown(1))
+                        Tile.Rotate.Clockwise();
                     if (Input.GetKeyDown(_k.RotateTileCounterClockwise)) Tile.Rotate.CounterClockwise();
                     if (Input.GetKeyDown(_k.PickTileFromDeck)) Tile.Rotate.Clockwise();
                     if (Input.GetKeyDown(_k.ReturnTileToDeck)) {
@@ -120,6 +141,13 @@ namespace Code {
                     //Stage = GameStage.PlacingFollower; // In MouseEventHandler.OnMouseUp()
                     break;
                 case GameStage.PlacingFollower:
+                    if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(_k.ReturnTileToDeck)) {
+                        Tile.LastPlaced().HideAll();
+                        Stage = GameStage.Finish;
+                    }
+                    break;
+                case GameStage.Finish:
+                    UpdateLocalPlayer();
                     Stage = GameStage.Start;
                     break;
                 default:

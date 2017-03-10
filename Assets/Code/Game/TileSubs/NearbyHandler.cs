@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Code.Game.Data;
+using UnityEngine;
 
 namespace Code.Game.TileSubs {
     public class NearbyHandler {

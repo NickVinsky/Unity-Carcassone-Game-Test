@@ -1,4 +1,5 @@
-﻿using Code.Handlers;
+﻿using Code.Game.Data;
+using Code.Handlers;
 using UnityEngine;
 
 namespace Code.Game
@@ -56,6 +57,7 @@ namespace Code.Game
             tile.transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             tile.AddComponent<SpriteRenderer>();
             tile.AddComponent<BoxCollider2D>();
+            tile.GetComponent<BoxCollider2D>().size = new Vector2(_gridX, _gridY);
             tile.AddComponent<MouseOnGrid>();
             tile.AddComponent<TileInfo>();
             tile.GetComponent<TileInfo>().InitTile(0);

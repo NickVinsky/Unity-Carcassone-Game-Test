@@ -45,8 +45,20 @@ namespace Code.Game.TileSubs {
             o.GetComponent<SpriteRenderer>().transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
 
-        public sbyte Follower() {
-            return 0;
+        public Vector2 Follower(sbyte rotates, Vector2 v) {
+            switch (rotates) {
+                case 1:
+                    v.y *= -1;
+                    break;
+                case 2:
+                    v.x *= -1;
+                    v.y *= -1;
+                    break;
+                case 3:
+                    v.x *= -1;
+                    break;
+            }
+            return v;
         }
 
         public void Clockwise() {

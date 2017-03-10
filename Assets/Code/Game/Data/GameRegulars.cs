@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Code {
+namespace Code.Game.Data {
     public struct GameRegulars {
         public static string[] ngTitleF = {"Empress","Queen","Princess","Mistress","Marquise","Countess","Duchess","Baronet","Frau","Abess"};
         public static string[] ngTitleM = {"Emperor","King","Prince","Duke","Marquis","Earl","Count","Viscount","Baron","Lord","Despot","Magister","Cardinal"};

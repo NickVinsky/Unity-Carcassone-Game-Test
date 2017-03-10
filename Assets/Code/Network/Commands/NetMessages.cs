@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Code.Game.Data;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Code.Network.Commands {
@@ -21,6 +22,7 @@ namespace Code.Network.Commands {
         HighlightCell,
         PutTile,
         MouseCoordinates,
+        Follower,
         NextPlayer
 }
 

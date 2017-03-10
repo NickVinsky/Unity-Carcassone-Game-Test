@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Code.Game;
+using Code.Game.Data;
 using Code.Handlers;
 using Code.Network.Commands;
 using UnityEngine;
@@ -68,6 +69,13 @@ namespace Code.Network.Composition {
                     //Stage = GameStage.PlacingFollower; // OnMouseUp()
                     break;
                 case GameStage.PlacingFollower:
+                    if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(k.ReturnTileToDeck)) {
+                        Tile.LastPlaced().HideAll();
+                        Stage = GameStage.Finish;
+                    }
+                    break;
+                case GameStage.Finish:
+
                     Stage = GameStage.Start;
                     break;
                 default:
@@ -125,7 +133,12 @@ namespace Code.Network.Composition {
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return; // Проверка - мой ли сейчас ход
             if (!Tile.Nearby.CanBeAttachedTo(c) || MainGame.MouseState == MainGame.State.Dragging) return;
             PutTileFromMouse(c);
-            Stage = GameStage.PlacingFollower;
+            if (PlayerSync.PlayerInfo.FollowersNumber > 0) {
+                Stage = GameStage.PlacingFollower;
+                Tile.ShowPossibleFollowersLocations(c);
+            } else {
+                Stage = GameStage.Finish;
+            }
         }
 
         public void DeckClick(Vector2 t, Vector2 m) {

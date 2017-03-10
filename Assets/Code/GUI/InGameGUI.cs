@@ -1,8 +1,9 @@
 ﻿using Code.Game;
+using Code.Game.Data;
 using Code.GameComponents;
 using Code.Network;
 using UnityEngine;
-using static Code.GameRegulars;
+using static Code.Game.Data.GameRegulars;
 using static Code.Game.Deck;
 
 namespace Code.GUI {

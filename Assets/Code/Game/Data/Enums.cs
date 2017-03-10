@@ -1,9 +1,10 @@
-﻿namespace Code.Game {
+﻿namespace Code.Game.Data {
     public enum GameStage {
         Wait,
         Start,
         PlacingTile,
-        PlacingFollower
+        PlacingFollower,
+        Finish
     }
 
     public enum Area {Empty, Field, Road, City, Monastery}

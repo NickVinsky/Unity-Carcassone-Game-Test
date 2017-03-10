@@ -3,7 +3,7 @@ using Code.Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Code.GameRegulars;
+using static Code.Game.Data.GameRegulars;
 using Random = UnityEngine.Random;
 
 namespace Code.GUI {

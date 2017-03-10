@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Code.Game.Data;
 using Code.Game.FollowerSubs;
 using UnityEngine;
 
@@ -45,15 +46,15 @@ namespace Code.Game {
                     break;
                 case 6:
                     AddCities("013", 0f, 0.2f);
-                    AddRoads("2", 0.009f, -0.307f);
-                    AddFields("4", 0.245f, -0.302f);
-                    AddFields("5", -0.211f, -0.32f);
+                    AddRoads("2", 0.024f, -0.349f);
+                    AddFields("4", 0.25f, -0.444f);
+                    AddFields("5", -0.206f, -0.433f);
                     break;
                 case 7:
                     AddCities("013", true, 0f, 0.2f);
-                    AddRoads("2", 0.009f, -0.307f);
-                    AddFields("4", 0.245f, -0.302f);
-                    AddFields("5", -0.211f, -0.32f);
+                    AddRoads("2", 0.024f, -0.349f);
+                    AddFields("4", 0.25f, -0.444f);
+                    AddFields("5", -0.206f, -0.433f);
                     break;
                 case 8:
                     AddCities("03", -0.144f, 0.395f);
@@ -127,12 +128,12 @@ namespace Code.Game {
                     AddFields("3456", -0.138f, -0.241f);
                     break;
                 case 21:
-                    AddRoads("02", 0.069f, 0f);
+                    AddRoads("02", 0f, -0.027f);
                     AddFields("1234", 0.279f, 0.219f);
                     AddFields("5670", -0.239f, -0.218f);
                     break;
                 case 22:
-                    AddRoads("23", -0.106f, -0.04f);
+                    AddRoads("23", -0.06f, -0.04f);
                     AddFields("012347", 0.279f, 0.219f);
                     AddFields("56", -0.239f, -0.218f);
                     break;
@@ -224,6 +225,19 @@ namespace Code.Game {
                 lastChar = c;
             }
             _follower.AddLocation(Area.Field, nodes, meeplePos);
+        }
+
+        public void AssignFollower(byte id) {
+            _follower.HideExcept(id);
+        }
+
+        public void AssignOpponentFollower(PlayerColor owner, byte id) {
+            GameObject o = gameObject;
+            _follower.Opponent(o, owner, id);
+        }
+
+        public void HideAll() {
+            _follower.HideAll();
         }
 
         public void ShowPossibleFollowersLocations(GameObject o) {

@@ -1,4 +1,5 @@
 ﻿
+using Code.Game.Data;
 using UnityEngine.Events;
 
 namespace Code.GUI {

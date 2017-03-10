@@ -1,4 +1,5 @@
 ﻿using System;
+using Code.Game.Data;
 using Code.GameComponents;
 using UnityEngine;
 using UnityEngine.UI;

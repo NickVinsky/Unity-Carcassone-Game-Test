@@ -1,4 +1,5 @@
 ﻿using System;
+using Code.Game.Data;
 using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -13,7 +14,7 @@ namespace Code.Network {
 
         public static float Timer;
         public static int TimerTicks;
-        public static bool Countdown = false;
+        public static bool Countdown;
 
         //public static GameObject PlayerInLobby = (GameObject) Resources.Load("Prefabs/PlayerLobby");
         //public static GameObject newPlayer;
@@ -106,15 +107,15 @@ namespace Code.Network {
         }
 
         public static void AddChatHistory(NetworkMessage message) {
-            NetPackChatMessage m = message.ReadMessage<NetPackChatMessage>();
+            var m = message.ReadMessage<NetPackChatMessage>();
             ChatHistory.GetComponent<Text>().text = m.Message;
         }
 
         public static void AddMsg(NetworkMessage message) {
-            NetPackChatMessage m = message.ReadMessage<NetPackChatMessage>();
-            string h = ChatHistory.GetComponent<Text>().text;
+            var m = message.ReadMessage<NetPackChatMessage>();
+            var h = ChatHistory.GetComponent<Text>().text;
             if (h != string.Empty) h += Environment.NewLine;
-            string newMessage = string.Empty;
+            string newMessage;
             if (m.IsInfoMessage) newMessage = "<color=#" + GameRegulars.ServerInfoColor + ">" + "[INFO] " + m.Message + "</color>";
             else newMessage = m.Player + ": " + m.Message;
             ChatHistory.GetComponent<Text>().text = h + newMessage;
@@ -124,8 +125,7 @@ namespace Code.Network {
             var m = message.ReadMessage<NetPackMessage>();
             var h = ChatHistory.GetComponent<Text>().text;
             if (h != string.Empty) h += Environment.NewLine;
-            var newMessage = string.Empty;
-            newMessage = m.Message.Equals("0") ?
+            var newMessage = m.Message.Equals("0") ?
                 "<color=#" + GameRegulars.ServerGameLaunchingColor + ">Launching game...</color>" :
                 "<color=#" + GameRegulars.ServerCountdownColor + ">" + "The game begins in " + m.Message +
                 "...</color>";

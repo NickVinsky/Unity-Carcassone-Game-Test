@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Code.Handlers {
     public class CameraHandler : MonoBehaviour {
-        readonly MainGame _mainGame = new MainGame();
-        readonly InGameGUI _inGameGui = new InGameGUI();
+        private readonly MainGame _mainGame = new MainGame();
+        private readonly InGameGUI _inGameGui = new InGameGUI();
 
         void Start () {
             _mainGame.Init();

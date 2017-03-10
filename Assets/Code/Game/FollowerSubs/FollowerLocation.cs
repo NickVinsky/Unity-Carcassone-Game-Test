@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using Code.Game.Data;
+using Code.Network;
 using UnityEngine;
+using static Code.Network.PlayerSync;
 
 namespace Code.Game.FollowerSubs {
     public class FollowerLocation {
+        private byte _id;
         private Area _type;
+        private PlayerColor _owner = PlayerColor.NotPicked;
 
         // Towns || Roads |
         // | 0 | || | 0 | |
@@ -22,7 +27,8 @@ namespace Code.Game.FollowerSubs {
         private Vector2 _meeplePos;
         private GameObject _sprite;
 
-        public FollowerLocation(Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
+        public FollowerLocation(byte id, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
+            _id = id;
             _type = type;
             _coatOfArms = coatOfArms;
             _meeplePos = meeplePos;
@@ -33,27 +39,62 @@ namespace Code.Game.FollowerSubs {
             }
         }
 
-        public FollowerLocation(Area type, Vector2 meeplePos) {
+        public FollowerLocation(byte id, Area type, Vector2 meeplePos) {
+            _id = id;
             _type = type;
             _coatOfArms = false;
             _meeplePos = meeplePos;
         }
 
+        public void SetOwner(GameObject o, PlayerColor owner) {
+            _owner = owner;
+            SpriteInit(o);
+            _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+        }
+
+        public void SetOwner() {
+            _owner = PlayerInfo.Color;
+            if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
+            if (_sprite.GetComponent<BoxCollider2D>() != null) {Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
+            //_sprite.GetComponent<BoxCollider2D>().enabled = false;
+            //_sprite.GetComponent<FollowerHook>().enabled = false;
+            _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+            ScoreCalc.ApplyFollower();
+            if (Net.Game.IsOnline()) {
+                var name = _sprite.transform.parent.gameObject.name;
+                Net.Client.SendFollower(_owner, _id, name);
+            }
+        }
+
         public byte[] GetNodes() { return _nodes; }
+        public bool CompareID(byte id){ return id == _id;}
 
         public bool IsBarrier() {
             return _type == Area.Road;
         }
 
         public void Show(GameObject o, sbyte rotates) {
-            _sprite = new GameObject();
-            _sprite.name = _type + "(" +_meeplePos.x + ";" + _meeplePos.y + ")";
+            SpriteInit(o);
+            _sprite.AddComponent<BoxCollider2D>();
+            _sprite.GetComponent<BoxCollider2D>().size = new Vector2(3f, 3f);
+            _sprite.AddComponent<Rigidbody2D>();
+            _sprite.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            _sprite.AddComponent<FollowerHook>();
+            _sprite.GetComponent<FollowerHook>().Id = _id;
+        }
+
+        private void SpriteInit(GameObject o) {
+            _sprite = new GameObject {name = _type + "(" + _meeplePos.x + ";" + _meeplePos.y + ")"};
             _sprite.transform.SetParent(o.transform);
             _sprite.transform.localScale = new Vector3(0.08f, 0.08f, 0);
             _sprite.transform.localPosition = _meeplePos;
             _sprite.AddComponent<SpriteRenderer>();
             _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("3dMeeple");
-            _sprite.GetComponent<SpriteRenderer>().sortingOrder = 3;
+            _sprite.GetComponent<SpriteRenderer>().sortingOrder = 2;
+        }
+
+        public void RemovePlacement() {
+            Object.Destroy(_sprite);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Code.Network {
+﻿namespace Code.Game.Data {
     /*
     public struct PlayerInfo {
         public static string PlayerName;

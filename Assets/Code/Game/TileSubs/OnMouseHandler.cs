@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Code.Game.Data;
+using Code.Handlers;
+using UnityEngine;
 
 namespace Code.Game.TileSubs {
     public class OnMouseHandler {
@@ -52,7 +54,9 @@ namespace Code.Game.TileSubs {
             Destroy();
             Cursor.visible = true;
             MainGame.Grid.CheckBounds(gridCell);
-            Tile.ShowPossibleFollowersLocations(gridCell);
+            ScoreCalc.Count(gridCell);
+            MainGame.UpdateLocalPlayer();
+            Tile.LastPlacedTile = gridCell;
         }
 
         // for online game
@@ -66,7 +70,9 @@ namespace Code.Game.TileSubs {
             Destroy();
             Cursor.visible = true;
             MainGame.Grid.CheckBounds(gridCell);
-            Tile.ShowPossibleFollowersLocations(gridCell);
+            ScoreCalc.Count(gridCell);
+
+            Tile.LastPlacedTile = gridCell;
         }
     }
 }

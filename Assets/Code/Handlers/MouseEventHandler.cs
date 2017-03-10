@@ -1,4 +1,5 @@
 ﻿using Code.Game;
+using Code.Game.Data;
 using Code.Network;
 using UnityEngine;
 using static Code.MainGame;
@@ -43,7 +44,13 @@ namespace Code.Handlers {
             if (Stage != GameStage.PlacingTile) return;
             if (!Tile.Nearby.CanBeAttachedTo(gameObject) || MouseState == State.Dragging) return;
             Tile.OnMouse.Put(gameObject);
-            Stage = GameStage.PlacingFollower;
+
+            if (PlayerSync.PlayerInfo.FollowersNumber > 0) {
+                Stage = GameStage.PlacingFollower;
+                Tile.ShowPossibleFollowersLocations(gameObject);
+            } else {
+                Stage = GameStage.Finish;
+            }
         }
 
         // Update is called once per frame

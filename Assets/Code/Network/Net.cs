@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Code.Game.Data;
 using Code.Network.Commands;
 using Code.Network.Composition;
 using UnityEngine;
@@ -90,13 +91,12 @@ namespace Code.Network {
         }
 
         public static string ColorCode(PlayerColor pColor) {
-            Color sourceColor = new Color();
-            sourceColor = Color(pColor);
-            string color = string.Empty;
-            for (int i = 0; i < 3; i++) {
+            var sourceColor = Color(pColor);
+            var color = string.Empty;
+            for (var i = 0; i < 3; i++) {
                 float clrComponent = sourceColor[i];
-                int hexValue = Convert.ToInt32(255 * clrComponent);
-                string hexCode = hexValue.ToString("X");
+                var hexValue = Convert.ToInt32(255 * clrComponent);
+                var hexCode = hexValue.ToString("X");
                 if (hexCode.Length == 1) hexCode = "0" + hexCode;
                 Debug.Log("Iteration " + i + " src = " + sourceColor[i] + " ; hex = " + "(" + hexValue + ")" + hexCode);
                 color += hexCode;

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Code.Game.Data;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 

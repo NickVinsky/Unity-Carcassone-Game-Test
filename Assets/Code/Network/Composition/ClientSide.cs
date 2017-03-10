@@ -1,7 +1,10 @@
-﻿using Code.GUI;
+﻿using System;
+using Code.Game.Data;
+using Code.GUI;
 using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 using static Code.Network.PlayerSync;
 
 namespace Code.Network.Composition {
@@ -39,6 +42,10 @@ namespace Code.Network.Composition {
             NetworkManager.singleton.client.Send(msgType, msg);
         }
 
+        public void SendFollower(PlayerColor owner, byte id, string name) {
+            Action(Command.Follower, owner, id, name);
+        }
+
         public void Action(Command command) {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command});
         }
@@ -47,12 +54,52 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Value = value});
         }
 
+        public void Action(Command command, PlayerColor color, byte value, string text) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Color = color, Value = value, Text = text});
+        }
+
         public void Action(Command command, string text, int value) {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Text = text, Value = value});
         }
 
         public void Action(Command command, Vector3 vect3) {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vect3 = vect3});
+        }
+
+        public void RefreshInGamePlayersList(string m) {
+            string[] pList = m.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var lastI = 0;
+
+            for (int i = 0; i < pList.Length; i++) {
+                var p = pList[i];
+                var o = GameObject.Find("PlayerInGame(" + i + ")");
+                if (pList[i] == string.Empty) continue;
+                var pColor = (int) char.GetNumericValue(p[0]);
+                var pMoves = Convert.ToBoolean(char.GetNumericValue(p[1]));
+                var pFollowersNumber = Convert.ToByte(char.GetNumericValue(p[2]));
+                var pScore = Convert.ToInt32(p.Substring(3, 4));
+                var pName = p.Substring(7);
+                o.transform.FindChild("Name").GetComponent<Text>().text = pName;
+                o.transform.FindChild("Score").GetComponent<Text>().text = GameRegulars.ScoreText + pScore;
+                o.transform.FindChild("Meeple").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
+                o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
+                o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
+
+                if (o.transform.FindChild("Name").GetComponent<Text>().text == PlayerInfo.PlayerName) PlayerInfo.MySlotNumberInGame = i;
+
+                if (pMoves) {
+                    o.GetComponent<Image>().color = GameRegulars.CurMovingPlayerColor;
+                } else {
+                    o.GetComponent<Image>().color = PlayerInfo.MySlotNumberInGame == i ? GameRegulars.YourColor : GameRegulars.BlankColor;
+                }
+
+
+                lastI = i + 1;
+            }
+            for (int i = lastI; i < Net.MaxPlayers; i++) {
+                var o = GameObject.Find("PlayerInGame(" + i + ")");
+                o.transform.localScale = new Vector3(0f,0f,0f);
+            }
         }
 
         public void ChatMessage(string text) {

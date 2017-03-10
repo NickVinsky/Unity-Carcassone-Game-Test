@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Code.Game;
+using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Attributes;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using static Code.Network.PlayerSync;
 
 namespace Code.Network.Commands {
@@ -134,6 +133,9 @@ namespace Code.Network.Commands {
                 case Command.PutTile:
                     Tile.OnMouse.Put(m.Vect3);
                     break;
+                case Command.Follower:
+                    Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value);
+                    break;
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;
                     Net.Game.CurrentPlayer = m.Color;
@@ -146,7 +148,8 @@ namespace Code.Network.Commands {
         public static void InGamePlayers(NetworkMessage message) {
             var m = message.ReadMessage<NetPackMessage>().Message;
 
-            string[] pList = m.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            Net.Client.RefreshInGamePlayersList(m);
+            /*string[] pList = m.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var lastI = 0;
 
             for (int i = 0; i < pList.Length; i++) {
@@ -178,7 +181,7 @@ namespace Code.Network.Commands {
             for (int i = lastI; i < Net.MaxPlayers; i++) {
                 var o = GameObject.Find("PlayerInGame(" + i + ")");
                 o.transform.localScale = new Vector3(0f,0f,0f);
-            }
+            }*/
         }
         #endregion
     }

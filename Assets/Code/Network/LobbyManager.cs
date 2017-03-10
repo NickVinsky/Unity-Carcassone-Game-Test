@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Commands;
 using UnityEngine;

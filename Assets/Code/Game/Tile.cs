@@ -1,4 +1,5 @@
-﻿using Code.Game.TileSubs;
+﻿using Code.Game.Data;
+using Code.Game.TileSubs;
 using UnityEngine;
 
 namespace Code.Game {
@@ -6,6 +7,16 @@ namespace Code.Game {
         public static OnMouseHandler OnMouse = new OnMouseHandler();
         public static RotateHandler Rotate = new RotateHandler();
         public static NearbyHandler Nearby = new NearbyHandler();
+
+        public static GameObject LastPlacedTile { get; set; }
+
+        public static TileInfo LastPlaced() { return LastPlacedTile.GetComponent<TileInfo>(); }
+
+        public static TileInfo GetParent(GameObject o) {
+            return o.transform.parent.gameObject.GetComponent<TileInfo>();
+        }
+
+        public static TileInfo Get(string name) { return GameObject.Find(name).GetComponent<TileInfo>(); }
 
         public static bool Exist(GameObject cell) {
             return cell.GetComponent<TileInfo>().Type != 0;
