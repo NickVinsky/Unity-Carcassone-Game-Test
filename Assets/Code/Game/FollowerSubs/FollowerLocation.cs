@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Code.Game.Data;
 using Code.Network;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Code.Game.FollowerSubs {
         private byte _id;
         private Area _type;
         public Area Type {get { return _type; }}
+        public int Link { get; set; }
 
         private PlayerColor _owner = PlayerColor.NotPicked;
 
@@ -42,6 +44,7 @@ namespace Code.Game.FollowerSubs {
             for (int i = 0; i < nLen; i++) {
                 _nodes[i] = nodes[i];
             }
+            Link = -1;
         }
 
         public FollowerLocation(byte id, Area type, Vector2 meeplePos) {
@@ -49,6 +52,7 @@ namespace Code.Game.FollowerSubs {
             _type = type;
             _coatOfArms = false;
             _meeplePos = meeplePos;
+            Link = -1;
         }
 
         private byte Trim(byte node, byte rotate) {
@@ -82,7 +86,10 @@ namespace Code.Game.FollowerSubs {
             for (var i = 0; i < l; i++) {
                 rNodes[i] = Trim(_nodes[i], rotate);
             }
+            _nodes = rNodes;
         }
+
+        public PlayerColor GetOwner() { return _owner; }
 
         public void SetOwner(GameObject o, PlayerColor owner) {
             _owner = owner;
@@ -103,6 +110,10 @@ namespace Code.Game.FollowerSubs {
                 var name = _sprite.transform.parent.gameObject.name;
                 Net.Client.SendFollower(_owner, _id, name);
             }
+        }
+
+        public bool ContainsAnyOf(byte[] pattern) {
+            return _nodes.Any(n => pattern.Any(p => n == p));
         }
 
         public byte[] GetNodes() { return _nodes; }
