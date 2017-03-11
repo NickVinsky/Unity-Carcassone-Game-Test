@@ -23,6 +23,7 @@ namespace Code.Network.Commands {
         PutTile,
         MouseCoordinates,
         Follower,
+        FinishTurn,
         NextPlayer
 }
 

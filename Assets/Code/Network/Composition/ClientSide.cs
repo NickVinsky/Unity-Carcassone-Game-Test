@@ -66,6 +66,10 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vect3 = vect3});
         }
 
+        public void UpdateScore() {
+            Send(NetCmd.RefreshScore, MyInfo());
+        }
+
         public void RefreshInGamePlayersList(string m) {
             string[] pList = m.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var lastI = 0;

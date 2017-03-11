@@ -60,6 +60,7 @@ namespace Code.Game.FollowerSubs {
             //_sprite.GetComponent<FollowerHook>().enabled = false;
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
             ScoreCalc.ApplyFollower();
+            MainGame.ChangeGameStage(GameStage.Finish);
             if (Net.Game.IsOnline()) {
                 var name = _sprite.transform.parent.gameObject.name;
                 Net.Client.SendFollower(_owner, _id, name);

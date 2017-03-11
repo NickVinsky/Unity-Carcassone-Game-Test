@@ -40,6 +40,7 @@ namespace Code.Network.Composition {
             Net.Server.SendToAll(NetCmd.Game, new NetPackGame{Command = Command.Start, Color = CurrentPlayer});
         }
 
+        public bool MyTurn() { return CurrentPlayer == PlayerSync.PlayerInfo.Color; }
 
         // Update is called once per frame
         // This methods call when game is not offline
@@ -75,8 +76,9 @@ namespace Code.Network.Composition {
                     }
                     break;
                 case GameStage.Finish:
-
-                    Stage = GameStage.Start;
+                    Net.Client.UpdateScore();
+                    Net.Client.Action(Command.FinishTurn);
+                    Stage = GameStage.Wait;
                     break;
                 default:
                     //throw new ArgumentOutOfRangeException();
@@ -110,7 +112,7 @@ namespace Code.Network.Composition {
         }
 
         public void OnMouseOver(GameObject c) {
-            if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return; // Проверка - мой ли сейчас ход
+            if (!MyTurn()) return; // Проверка - мой ли сейчас ход
             if (Tile.Nearby.CanBeAttachedTo(c) && TileOnMouseExist()) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                 Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 1});
@@ -124,17 +126,21 @@ namespace Code.Network.Composition {
             c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
         }
         public void OnMouseExit(GameObject c) {
-            if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return; // Проверка - мой ли сейчас ход
+            if (!MyTurn()) return; // Проверка - мой ли сейчас ход
             if (c.GetComponent<SpriteRenderer>().color == GameRegulars.NormalColor) return;
             c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
             Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 0});
         }
         public void OnMouseUp(GameObject c) {
-            if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return; // Проверка - мой ли сейчас ход
+            if (!MyTurn()) return; // Проверка - мой ли сейчас ход
             if (!Tile.Nearby.CanBeAttachedTo(c) || MainGame.MouseState == MainGame.State.Dragging) return;
             PutTileFromMouse(c);
+        }
+
+        public void PostTilePut(Vector3 v) {
             if (PlayerSync.PlayerInfo.FollowersNumber > 0) {
                 Stage = GameStage.PlacingFollower;
+                var c  = GameObject.Find("cell#" + v.x + ":" + v.y);
                 Tile.ShowPossibleFollowersLocations(c);
             } else {
                 Stage = GameStage.Finish;
@@ -142,7 +148,7 @@ namespace Code.Network.Composition {
         }
 
         public void DeckClick(Vector2 t, Vector2 m) {
-            if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return;
+            if (!MyTurn()) return;
             if (Stage != GameStage.Start) return;
             if (Deck.DeckIsEmpty()) return;
             var i = Deck.GenerateIndex();

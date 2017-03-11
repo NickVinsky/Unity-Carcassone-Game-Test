@@ -54,11 +54,11 @@ namespace Code {
             Grid.Make();
             Deck.InitVanillaDeck();
             Tile.SetStarting(20);
-            PlayerSync.PlayerInfo.FollowersNumber = MaxFollowerNumbers;
-            PlayerSync.PlayerInfo.Score = 0;
             Stage = GameStage.Start;
 
             if (Net.Game.IsOnline()) return;
+            PlayerSync.PlayerInfo.FollowersNumber = MaxFollowerNumbers;
+            PlayerSync.PlayerInfo.Score = 0;
             GameObject.Find("ChatPanel").transform.localScale = new Vector2(0f, 0f);
             //GameObject.Find("PlayersPanel").transform.localScale = new Vector2(0f, 0f);
             UpdateLocalPlayer();

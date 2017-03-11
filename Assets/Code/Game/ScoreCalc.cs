@@ -1,5 +1,4 @@
-﻿using Code.Game.Data;
-using UnityEngine;
+﻿using UnityEngine;
 using static Code.Network.PlayerSync;
 
 namespace Code.Game {

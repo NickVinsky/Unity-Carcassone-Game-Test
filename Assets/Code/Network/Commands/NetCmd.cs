@@ -27,6 +27,7 @@
         public const short UpdatePlayerInfoAndReformPList = 69;
 
         public const short GameStartInfo = 71;
-        // next 72
+        public const short RefreshScore = 72;
+        // next 73
     }
 }

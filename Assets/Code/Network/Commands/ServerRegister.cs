@@ -18,15 +18,20 @@ namespace Code.Network.Commands {
             var m = message.ReadMessage<NetPackChatMessage>();
 
             if (m.Message.StartsWith("/")) {
+                string pInfo;
+                var p = Net.Player.Single(s => s.ID == m.RequesterID);
                 switch (m.Message) {
                     case "/myinfo":
-                        string pInfo;
-                        var p = Net.Player.Single(s => s.ID == m.RequesterID);
                         pInfo = "[AboutPlayer] Name#ID: " + p.PlayerName + "#" + p.ID;
                         pInfo += ", Color: " + p.Color;
                         pInfo += ", Registered: " + p.IsRegistred;
                         Net.Server.CommandResponse(m, pInfo);
                         break;
+                    case "/followers":
+                        pInfo = "[Followers] " + p.FollowersNumber + " left";
+                        Net.Server.CommandResponse(m, pInfo);
+                        break;
+
                     default:
                         Net.Server.CommandResponse(m, "Unknown command.");
                         break;
@@ -59,10 +64,14 @@ namespace Code.Network.Commands {
             curPlayer.PlayerName = sender.PlayerName;
             curPlayer.IsRegistred = sender.IsRegistred;
             curPlayer.IsReady = sender.IsReady;
+            curPlayer.FollowersNumber = sender.FollowersNumber;
+            curPlayer.Score = sender.Score;
 
             //if (lastID != curPlayer.ConnectionId || lastColor != curPlayer.Color) Net.Server.SendToAll(NetCmd.RefreshPlayersInfoAndReformPlayersList, NullMsg);
             if(index != -1) Net.Player[index] = curPlayer;
-            if (!Net.Game.IsStarted() && AllIsReady()) Net.StartCountdown();
+            if (Net.Game.IsStarted()) return;
+            if (AllIsReady()) Net.StartCountdown();
+            //if (!Net.Game.IsStarted() && AllIsReady()) Net.StartCountdown();
             //else Net.StopCountdown();
         }
 
@@ -100,7 +109,9 @@ namespace Code.Network.Commands {
                 ID = m.ID,
                 PlayerName = m.PlayerName,
                 Color = m.Color,
-                IsRegistred = m.IsRegistred
+                IsRegistred = m.IsRegistred,
+                FollowersNumber = GameRegulars.MaxFollowerNumbers,
+                Score = 0
             });
             if (Net.Game.IsStarted()) {
                 Net.Server.RefreshInGamePlayersList();
@@ -135,13 +146,19 @@ namespace Code.Network.Commands {
             Net.Server.RefreshInGamePlayersList();
         }
 
+        [ServerCommand(NetCmd.RefreshScore)]
+        public static void RefreshScore(NetworkMessage message) {
+            UpdatePlayerInfo(message);
+            Net.Server.RefreshInGamePlayersList();
+        }
+
 
         [ServerCommand(NetCmd.Game)]
         public static void GameHandler(NetworkMessage message) {
             var m = message.ReadMessage<NetPackGame>();
             switch (m.Command) {
-                case Command.PutTile:
-                    Net.Server.SendToAll(NetCmd.Game, m);
+                case Command.FinishTurn:
+                    //Net.Server.SendToAll(NetCmd.Game, m);
                     Net.Server.NextPlayerTurn();
                     break;
                 default:

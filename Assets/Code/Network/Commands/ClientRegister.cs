@@ -109,8 +109,11 @@ namespace Code.Network.Commands {
                     //var ChatPanel = GameObject.Find("ChatPanel");
                     //GameObject.DontDestroyOnLoad(ChatPanel.transform.root);
                     Net.Game.CurrentPlayer = m.Color;
+                    PlayerInfo.FollowersNumber = GameRegulars.MaxFollowerNumbers;
+                    PlayerInfo.Score = 0;
                     SceneManager.LoadScene(GameRegulars.SceneGame);
-                    Net.Game.Stage = Net.Game.CurrentPlayer == PlayerInfo.Color ? GameStage.Start : GameStage.Wait;
+                    Net.Client.UpdateScore();
+                    Net.Game.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;
                     Net.Game.GameStarted();
                     Net.Client.Send(NetCmd.GameStartInfo, new NetPackChatMessage {RequesterID = PlayerInfo.ID});
                     break;
@@ -132,6 +135,7 @@ namespace Code.Network.Commands {
                     break;
                 case Command.PutTile:
                     Tile.OnMouse.Put(m.Vect3);
+                    if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vect3);
                     break;
                 case Command.Follower:
                     Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value);
@@ -139,6 +143,7 @@ namespace Code.Network.Commands {
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;
                     Net.Game.CurrentPlayer = m.Color;
+                    Net.Game.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;
                     if (Net.IsServer) Net.Server.RefreshInGamePlayersList();
                     break;
             }
