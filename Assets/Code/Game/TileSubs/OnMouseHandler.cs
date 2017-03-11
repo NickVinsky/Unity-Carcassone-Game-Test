@@ -1,5 +1,4 @@
 ﻿using Code.Game.Data;
-using Code.Handlers;
 using UnityEngine;
 
 namespace Code.Game.TileSubs {
@@ -47,10 +46,13 @@ namespace Code.Game.TileSubs {
         }
 
         public void Put(GameObject gridCell) {
-            gridCell.GetComponent<SpriteRenderer>().sprite = GetSprite().sprite;
-            gridCell.GetComponent<SpriteRenderer>().transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));
-            gridCell.GetComponent<TileInfo>().Rotates = GetTile().Rotates;
-            gridCell.GetComponent<TileInfo>().InitTile(GetTile().Type);
+            var cSprite = gridCell.GetComponent<SpriteRenderer>();
+            cSprite.sprite = GetSprite().sprite;
+            cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));
+            var cTileInfo = gridCell.GetComponent<TileInfo>();
+            cTileInfo.Rotates = GetTile().Rotates;
+            cTileInfo.InitTile(GetTile().Type);
+            cTileInfo.ApplyRotation();
             Destroy();
             Cursor.visible = true;
             MainGame.Grid.CheckBounds(gridCell);
@@ -62,11 +64,14 @@ namespace Code.Game.TileSubs {
         // for online game
         public void Put(Vector2 v) {
             var gridCell  = GameObject.Find("cell#" + v.x + ":" + v.y);
-            gridCell.GetComponent<SpriteRenderer>().sprite = GetSprite().sprite;
-            gridCell.GetComponent<SpriteRenderer>().transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));
-            gridCell.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
-            gridCell.GetComponent<TileInfo>().Rotates = GetTile().Rotates;
-            gridCell.GetComponent<TileInfo>().InitTile(GetTile().Type);
+            var cSprite = gridCell.GetComponent<SpriteRenderer>();
+            cSprite.sprite = GetSprite().sprite;
+            cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));
+            cSprite.color = GameRegulars.NormalColor;
+            var cTileInfo = gridCell.GetComponent<TileInfo>();
+            cTileInfo.Rotates = GetTile().Rotates;
+            cTileInfo.InitTile(GetTile().Type);
+            cTileInfo.ApplyRotation();
             Destroy();
             Cursor.visible = true;
             MainGame.Grid.CheckBounds(gridCell);

@@ -59,5 +59,11 @@ namespace Code.Game.FollowerSubs {
                 loc.RemovePlacement();
             }
         }
+
+        public void RotateNodes(byte rotate) {
+            foreach (var loc in _possibleLocation) {
+                loc.Rotate(rotate);
+            }
+        }
     }
 }

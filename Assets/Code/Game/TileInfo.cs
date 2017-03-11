@@ -243,5 +243,9 @@ namespace Code.Game {
         public void ShowPossibleFollowersLocations(GameObject o) {
             _follower.Show(o, Rotates);
         }
+
+        public void ApplyRotation() {
+            _follower.RotateNodes((byte) Rotates);
+        }
     }
 }

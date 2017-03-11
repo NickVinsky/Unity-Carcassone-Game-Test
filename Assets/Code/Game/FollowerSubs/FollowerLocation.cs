@@ -3,6 +3,7 @@ using Code.Game.Data;
 using Code.Network;
 using UnityEngine;
 using static Code.Network.PlayerSync;
+using Object = UnityEngine.Object;
 
 namespace Code.Game.FollowerSubs {
     public class FollowerLocation {
@@ -44,6 +45,39 @@ namespace Code.Game.FollowerSubs {
             _type = type;
             _coatOfArms = false;
             _meeplePos = meeplePos;
+        }
+
+        private byte Trim(byte node, byte rotate) {
+            var rNode = node;
+            byte cap, add;
+            if (_type != Area.Field) {
+                if (_type == Area.Road || _type == Area.City) {
+                    cap = 3;
+                    add = 1;
+                } else {
+                    cap = 0;
+                    add = 0;
+                }
+            } else {
+                cap = 7;
+                add = 2;
+            }
+            if (cap == 0) return node;
+            rNode += (byte) (add * rotate);
+            while (rNode > cap) {
+                rNode -= (byte) (cap + 1);
+            }
+            //Debug.Log("r" + rotate + ": " + node + " => " + rNode + " " + _type);
+            return rNode;
+        }
+
+        public void Rotate(byte rotate) {
+            if (_nodes == null) return;
+            var l = _nodes.Length;
+            var rNodes = new byte[l];
+            for (var i = 0; i < l; i++) {
+                rNodes[i] = Trim(_nodes[i], rotate);
+            }
         }
 
         public void SetOwner(GameObject o, PlayerColor owner) {
