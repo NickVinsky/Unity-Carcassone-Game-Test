@@ -55,7 +55,7 @@ namespace Code.Network.Composition {
                     if (Input.GetKeyDown(k.PickTileFromDeck)) {
                         if (!Deck.DeckIsEmpty()) {
                             var i = Deck.GenerateIndex();
-                            Net.Client.Action(Command.TilePicked, i);
+                            Net.Client.Action(Command.TilePicked, i, Tile.Rotate.Random());
                             AttachTileToMouse();
                             Stage = GameStage.PlacingTile;
                         }

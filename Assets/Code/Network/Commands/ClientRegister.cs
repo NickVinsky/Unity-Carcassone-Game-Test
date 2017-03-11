@@ -119,7 +119,7 @@ namespace Code.Network.Commands {
                     break;
                 case Command.TilePicked:
                     Net.Game.TilePicked = true;
-                    Tile.Pick(m.Value, Tile.Rotate.Random());
+                    Tile.Pick(m.Value, m.Byte);
                     break;
                 case Command.TileNotPicked:
                     Net.Game.TilePicked = false;

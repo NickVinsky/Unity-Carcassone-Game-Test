@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Code.Game.TileSubs {
     public class RotateHandler {
 
-        public sbyte Random() {
-            return (sbyte) UnityEngine.Random.Range(0, 4);
+        public byte Random() {
+            return (byte) UnityEngine.Random.Range(0, 4);
         }
 
         public float GetAngle(GameObject tile) {

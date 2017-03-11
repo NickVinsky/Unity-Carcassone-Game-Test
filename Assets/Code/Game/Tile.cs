@@ -65,13 +65,13 @@ namespace Code.Game {
             var pickedTile = Deck.GetRandomTile();
             var rotates = Rotate.Random();
             OnMouse.GetTile().InitTile(pickedTile);
-            OnMouse.GetTile().Rotates = rotates;
+            OnMouse.GetTile().Rotates = (sbyte) rotates;
             OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + pickedTile); // 80-All, 24-Vanilla
             OnMouse.GetSprite().sortingOrder = 3;
             Rotate.Sprite(rotates, OnMouse.Get());
         }
 
-        public static void Pick(int index, sbyte rotates) {
+        public static void Pick(int index, byte rotates) {
             if (Deck.DeckIsEmpty()) return;
             OnMouse.Create();
             OnMouse.Get().transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
@@ -82,7 +82,7 @@ namespace Code.Game {
 
             var pickedTile = Deck.GetTile(index);
             OnMouse.GetTile().InitTile(pickedTile);
-            OnMouse.GetTile().Rotates = rotates;
+            OnMouse.GetTile().Rotates = (sbyte) rotates;
             OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + pickedTile); // 80-All, 24-Vanilla
             OnMouse.GetSprite().sortingOrder = 3;
             Rotate.Sprite(rotates, OnMouse.Get());

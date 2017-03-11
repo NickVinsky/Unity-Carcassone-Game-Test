@@ -64,6 +64,7 @@ namespace Code.Network.Commands {
         public bool CommandDone = false;
         public string Text;
         public int Value;
+        public byte Byte;
         public PlayerColor Color;
         public Vector3 Vect3;
         //public Vector2 mousePosition;
