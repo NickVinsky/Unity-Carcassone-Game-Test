@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Code.Game.Building;
+using UnityEngine;
 using static Code.Network.PlayerSync;
 
 namespace Code.Game {
@@ -6,6 +7,7 @@ namespace Code.Game {
 
         // After tile putting
         public static void Count(GameObject cell) {
+            Builder.Check(cell);
 
             //MainGame.ChangeGameStage(GameStage.Finish);
         }

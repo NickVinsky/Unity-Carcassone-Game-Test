@@ -11,6 +11,8 @@ namespace Code.Game.FollowerSubs {
 
         private GameObject _3DMeeple;
 
+        public List<FollowerLocation> GetLocations() { return _possibleLocation; }
+
         public void AddLocation(Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
             _possibleLocation.Add(new FollowerLocation(nextId, type, nodes, coatOfArms, meeplePos));

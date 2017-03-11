@@ -1,5 +1,6 @@
 ﻿using System;
 using Code.Game;
+using Code.Game.Building;
 using Code.Game.Data;
 using Code.Handlers;
 using Code.Network;
@@ -54,6 +55,7 @@ namespace Code {
             Grid.Make();
             Deck.InitVanillaDeck();
             Tile.SetStarting(20);
+            Builder.Init();
             Stage = GameStage.Start;
 
             if (Net.Game.IsOnline()) return;

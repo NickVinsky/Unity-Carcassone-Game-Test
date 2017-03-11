@@ -8,17 +8,34 @@ namespace Code.Game {
         public static RotateHandler Rotate = new RotateHandler();
         public static NearbyHandler Nearby = new NearbyHandler();
 
+        public static int StartingTile { get; set; }
+
         public static GameObject LastPlacedTile { get; set; }
 
         public static TileInfo LastPlaced() { return LastPlacedTile.GetComponent<TileInfo>(); }
 
-        public static TileInfo GetParent(GameObject o) {
-            return o.transform.parent.gameObject.GetComponent<TileInfo>();
-        }
+        public static TileInfo GetParent(GameObject o) { return o.transform.parent.gameObject.GetComponent<TileInfo>(); }
+
+        public static TileInfo GetStarting() { return GameObject.Find("cell#0:0").GetComponent<TileInfo>(); }
+
+        public static TileInfo Get(GameObject o) { return o.GetComponent<TileInfo>(); }
 
         public static TileInfo Get(string name) { return GameObject.Find(name).GetComponent<TileInfo>(); }
 
+        public static TileInfo Get(int x, int y) { return GameObject.Find("cell#" + x + ":" + y).GetComponent<TileInfo>(); }
+
+        public static Cell GetCoordinates(GameObject o) {
+            var x = o.GetComponent<TileInfo>().X;
+            var y = o.GetComponent<TileInfo>().Y;
+            return new Cell(x, y);
+        }
+
         public static bool Exist(GameObject cell) {
+            return cell.GetComponent<TileInfo>().Type != 0;
+        }
+
+        public static bool Exist(int x, int y) {
+            var cell = GameObject.Find("cell#" + x + ":" + y);
             return cell.GetComponent<TileInfo>().Type != 0;
         }
 
@@ -38,10 +55,11 @@ namespace Code.Game {
         }
 
         public static void SetStarting(int startTileType) {
+            StartingTile = startTileType;
             var gridCell = GameObject.Find("cell#0:0");
             gridCell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + startTileType);
             gridCell.GetComponent<TileInfo>().Rotates = 0;
-            gridCell.GetComponent<TileInfo>().InitTile(startTileType);
+            gridCell.GetComponent<TileInfo>().InitTile(StartingTile);
         }
 
         public static void AttachToMouse() {

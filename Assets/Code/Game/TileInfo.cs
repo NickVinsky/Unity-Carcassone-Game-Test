@@ -19,6 +19,12 @@ namespace Code.Game {
 
         public Area GetSide(int side) { return _side[side]; }
 
+        public List<FollowerLocation> GetLocations() { return _follower.GetLocations(); }
+
+        public Cell IntVector() {
+            return new Cell(X, Y);
+        }
+
         public void InitTile(int type) {
             Type = type;
             switch (Type) {

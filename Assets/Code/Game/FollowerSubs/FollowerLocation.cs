@@ -9,6 +9,8 @@ namespace Code.Game.FollowerSubs {
     public class FollowerLocation {
         private byte _id;
         private Area _type;
+        public Area Type {get { return _type; }}
+
         private PlayerColor _owner = PlayerColor.NotPicked;
 
         // Towns || Roads |
@@ -24,6 +26,8 @@ namespace Code.Game.FollowerSubs {
         //    | 5  4 |
         private byte[] _nodes;
         private bool _coatOfArms;
+
+        private bool _checked;
 
         private Vector2 _meeplePos;
         private GameObject _sprite;

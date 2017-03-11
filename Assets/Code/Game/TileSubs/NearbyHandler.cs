@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Code.Game.TileSubs {
     public class NearbyHandler {
+        private int _lastX, _lastY;
+        private TileInfo _lastTile;
+
         private Side GetOppositeSide(Side side) {
             return (Side)Tile.Rotate.Set((int) side + 2);
         }
@@ -21,6 +24,29 @@ namespace Code.Game.TileSubs {
 
         public GameObject Bot(Vector2 cellPos) {
             return GameObject.Find("cell#" + (int)cellPos.x + ":" + (int)(cellPos.y - 1));
+        }
+
+        public TileInfo GetLast() { return _lastTile; }
+
+        public bool Exist(int x, int y, byte side) {
+            switch (side) {
+                case 0:
+                    y++;
+                    break;
+                case 1:
+                    x++;
+                    break;
+                case 2:
+                    y--;
+                    break;
+                case 3:
+                    x--;
+                    break;
+            }
+            _lastX = x;
+            _lastY = y;
+            _lastTile = GameObject.Find("cell#" + x + ":" + y).GetComponent<TileInfo>();
+            return _lastTile.Type != 0;
         }
 
         private GameObject GetBySide(Side side, GameObject parentCell) {
