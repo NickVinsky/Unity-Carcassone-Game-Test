@@ -67,5 +67,7 @@ namespace Code.Game.FollowerSubs {
                 loc.Rotate(rotate);
             }
         }
+
+        public FollowerLocation GetFilled() { return _possibleLocation.FirstOrDefault(loc => loc.Filled); }
     }
 }

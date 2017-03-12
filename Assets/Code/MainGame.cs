@@ -4,7 +4,6 @@ using Code.Game.Building;
 using Code.Game.Data;
 using Code.Handlers;
 using Code.Network;
-using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.UI;
 using static Code.Game.Data.GameRegulars;
@@ -59,6 +58,7 @@ namespace Code {
             Stage = GameStage.Start;
 
             if (Net.Game.IsOnline()) return;
+            PlayerSync.PlayerInfo.Color = (PlayerColor) UnityEngine.Random.Range(1, 5);
             PlayerSync.PlayerInfo.FollowersNumber = MaxFollowerNumbers;
             PlayerSync.PlayerInfo.Score = 0;
             GameObject.Find("ChatPanel").transform.localScale = new Vector2(0f, 0f);

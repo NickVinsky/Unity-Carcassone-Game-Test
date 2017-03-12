@@ -26,6 +26,13 @@ namespace Code.Game {
             return result;
         }
 
+        public static int Get(int tile) {
+            for (int i = 0; i < _tilesPack.Count; i++) {
+                if (_tilesPack[i] == tile) return _tilesPack[i];
+            }
+            return 0;
+        }
+
         public static int GetTile(int index) {
             int result = _tilesPack[index];
             _tilesPack.RemoveAt(index);

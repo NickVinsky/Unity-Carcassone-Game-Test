@@ -46,6 +46,7 @@ namespace Code.Game.TileSubs {
         }
 
         public void Put(GameObject gridCell) {
+            gridCell.tag = GameRegulars.TileTag;
             var cSprite = gridCell.GetComponent<SpriteRenderer>();
             cSprite.sprite = GetSprite().sprite;
             cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));
@@ -64,6 +65,7 @@ namespace Code.Game.TileSubs {
         // for online game
         public void Put(Vector2 v) {
             var gridCell  = GameObject.Find("cell#" + v.x + ":" + v.y);
+            gridCell.tag = GameRegulars.TileTag;
             var cSprite = gridCell.GetComponent<SpriteRenderer>();
             cSprite.sprite = GetSprite().sprite;
             cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));

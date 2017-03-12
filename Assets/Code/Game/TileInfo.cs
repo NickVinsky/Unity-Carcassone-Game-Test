@@ -253,5 +253,7 @@ namespace Code.Game {
         public void ApplyRotation() {
             _follower.RotateNodes((byte) Rotates);
         }
+
+        public FollowerLocation GetFilledLoc() { return _follower.GetFilled(); }
     }
 }

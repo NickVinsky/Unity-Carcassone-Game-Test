@@ -57,6 +57,7 @@ namespace Code.Game {
         public static void SetStarting(int startTileType) {
             StartingTile = startTileType;
             var gridCell = GameObject.Find("cell#0:0");
+            gridCell.tag = GameRegulars.TileTag;
             gridCell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + startTileType);
             gridCell.GetComponent<TileInfo>().Rotates = 0;
             gridCell.GetComponent<TileInfo>().InitTile(StartingTile);
@@ -81,6 +82,7 @@ namespace Code.Game {
             Cursor.visible = false;
 
             var pickedTile = Deck.GetRandomTile();
+            //pickedTile = Deck.Get(2);
             var rotates = Rotate.Random();
             OnMouse.GetTile().InitTile(pickedTile);
             OnMouse.GetTile().Rotates = (sbyte) rotates;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Code.Game.Building;
 using Code.Game.Data;
 using Code.Network;
 using UnityEngine;
@@ -27,10 +28,12 @@ namespace Code.Game.FollowerSubs {
         //    |6    3|
         //    | 5  4 |
         private byte[] _nodes;
+        public bool Filled { get; }
         private bool _coatOfArms;
 
         private bool _checked;
 
+        public bool PosFree { get; set; }
         private Vector2 _meeplePos;
         private GameObject _sprite;
 
@@ -45,6 +48,12 @@ namespace Code.Game.FollowerSubs {
                 _nodes[i] = nodes[i];
             }
             Link = -1;
+            PosFree = true;
+            if (_type == Area.Field && Contains(new byte[] {0, 1, 2, 3, 4, 5, 6, 7})) {
+                Filled = true;
+            } else {
+                Filled = false;
+            }
         }
 
         public FollowerLocation(byte id, Area type, Vector2 meeplePos) {
@@ -53,6 +62,37 @@ namespace Code.Game.FollowerSubs {
             _coatOfArms = false;
             _meeplePos = meeplePos;
             Link = -1;
+            PosFree = true;
+            Filled = false;
+        }
+
+        public bool Contains(byte[] pattern) {
+            //Debug.Log("## _nodes[" + Builder.ArrayToString(_nodes) + "]/ ##pattern[" + Builder.ArrayToString(pattern) + "]");
+            foreach (var p in pattern) {
+                bool founded = _nodes.Any(n => n == p);
+                if (!founded) return false;
+            }
+            //Debug.Log("^true^");
+            return true;
+        }
+
+        public bool ContainsAnyOf(byte[] pattern) {
+            return _nodes.Any(n => pattern.Any(p => n == p));
+        }
+
+        public bool ContainsOnly(byte[] pattern) {
+            foreach (var n in _nodes) {
+                bool founded = pattern.Any(p => n == p);
+                if (!founded) return false;
+            }
+            return true;
+        }
+
+        public byte[] GetNodes() { return _nodes; }
+        public bool CompareID(byte id){ return id == _id;}
+
+        public bool IsBarrier() {
+            return _type == Area.Road;
         }
 
         private byte Trim(byte node, byte rotate) {
@@ -92,13 +132,17 @@ namespace Code.Game.FollowerSubs {
         public PlayerColor GetOwner() { return _owner; }
 
         public void SetOwner(GameObject o, PlayerColor owner) {
+            PosFree = false;
             _owner = owner;
+            Builder.SetOwner(this);
             SpriteInit(o);
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
         }
 
         public void SetOwner() {
+            PosFree = false;
             _owner = PlayerInfo.Color;
+            Builder.SetOwner(this);
             if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
             if (_sprite.GetComponent<BoxCollider2D>() != null) {Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
             //_sprite.GetComponent<BoxCollider2D>().enabled = false;
@@ -112,18 +156,8 @@ namespace Code.Game.FollowerSubs {
             }
         }
 
-        public bool ContainsAnyOf(byte[] pattern) {
-            return _nodes.Any(n => pattern.Any(p => n == p));
-        }
-
-        public byte[] GetNodes() { return _nodes; }
-        public bool CompareID(byte id){ return id == _id;}
-
-        public bool IsBarrier() {
-            return _type == Area.Road;
-        }
-
         public void Show(GameObject o, sbyte rotates) {
+            if (!PosFree) return;
             SpriteInit(o);
             _sprite.AddComponent<BoxCollider2D>();
             _sprite.GetComponent<BoxCollider2D>().size = new Vector2(3f, 3f);
