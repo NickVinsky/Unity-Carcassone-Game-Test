@@ -10,24 +10,26 @@ namespace Code.Game.FollowerSubs {
 
         //private Follower _follower = Follower.None;
 
-        private GameObject _3DMeeple;
+        //private GameObject _3DMeeple;
 
         public List<FollowerLocation> GetLocations() { return _possibleLocation; }
 
         public void AddLocation(TileInfo parent, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, nextId, type, nodes, coatOfArms, meeplePos));
+            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, coatOfArms, meeplePos));
             _parent = parent;
         }
 
         public void AddLocation(TileInfo parent, Area type, List<byte> nodes, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, nextId, type, nodes, false, meeplePos));
+            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, false, meeplePos));
+            _parent = parent;
         }
 
         public void AddLocation(TileInfo parent, Area type, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, nextId, type, meeplePos));
+            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, meeplePos));
+            _parent = parent;
         }
 
         public bool SideFree(byte side) {

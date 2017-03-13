@@ -252,6 +252,7 @@ namespace Code.Game {
 
         public void ShowPossibleFollowersLocations(GameObject o) {
             _follower.Show(o, Rotates);
+            if (gameObject.transform.childCount == 0) MainGame.ChangeGameStage(GameStage.Finish);
         }
 
         public void ApplyRotation() {
