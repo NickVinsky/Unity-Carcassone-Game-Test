@@ -165,7 +165,7 @@ namespace Code.Game {
         }
 
         private void AddMonastery() {
-            _follower.AddLocation(Area.Monastery, GameRegulars.FollowerPositionCenter);
+            _follower.AddLocation(this, Area.Monastery, GameRegulars.FollowerPositionCenter);
         }
 
         private void AddCities(string s, float x, float y) {
@@ -176,7 +176,7 @@ namespace Code.Game {
                 _side[i] = Area.City;
                 nodes.Add((byte) i);
             }
-            _follower.AddLocation(Area.City, nodes, meeplePos);
+            _follower.AddLocation(this, Area.City, nodes, meeplePos);
         }
 
         private void AddCities(string s, bool coatOfArms, float x, float y) {
@@ -187,7 +187,7 @@ namespace Code.Game {
                 _side[i] = Area.City;
                 nodes.Add((byte) i);
             }
-            _follower.AddLocation(Area.City, nodes, coatOfArms, meeplePos);
+            _follower.AddLocation(this, Area.City, nodes, coatOfArms, meeplePos);
         }
 
         private void AddRoads(string s, float x, float y) {
@@ -198,7 +198,7 @@ namespace Code.Game {
                 _side[i] = Area.Road;
                 nodes.Add((byte) i);
             }
-            _follower.AddLocation(Area.Road, nodes, meeplePos);
+            _follower.AddLocation(this, Area.Road, nodes, meeplePos);
         }
 
         private void AddFields(string s, float x, float y) {
@@ -230,7 +230,7 @@ namespace Code.Game {
                 }
                 lastChar = c;
             }
-            _follower.AddLocation(Area.Field, nodes, meeplePos);
+            _follower.AddLocation(this, Area.Field, nodes, meeplePos);
         }
 
         public void AssignFollower(byte id) {

@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Code.Game.FollowerSubs {
     public class FollowerInfo {
+        private TileInfo _parent;
         private List<FollowerLocation> _possibleLocation = new List<FollowerLocation>();
 
         private Follower _follower = Follower.None;
@@ -13,19 +14,20 @@ namespace Code.Game.FollowerSubs {
 
         public List<FollowerLocation> GetLocations() { return _possibleLocation; }
 
-        public void AddLocation(Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
+        public void AddLocation(TileInfo parent, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(nextId, type, nodes, coatOfArms, meeplePos));
+            _possibleLocation.Add(new FollowerLocation(parent, nextId, type, nodes, coatOfArms, meeplePos));
+            _parent = parent;
         }
 
-        public void AddLocation(Area type, List<byte> nodes, Vector2 meeplePos) {
+        public void AddLocation(TileInfo parent, Area type, List<byte> nodes, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(nextId, type, nodes, false, meeplePos));
+            _possibleLocation.Add(new FollowerLocation(parent, nextId, type, nodes, false, meeplePos));
         }
 
-        public void AddLocation(Area type, Vector2 meeplePos) {
+        public void AddLocation(TileInfo parent, Area type, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(nextId, type, meeplePos));
+            _possibleLocation.Add(new FollowerLocation(parent, nextId, type, meeplePos));
         }
 
         public bool SideFree(byte side) {

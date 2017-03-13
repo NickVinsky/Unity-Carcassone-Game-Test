@@ -156,7 +156,7 @@ namespace Code.Game.Building {
         public static City GetCity(FollowerLocation loc) {
             var city = Cities.FirstOrDefault(p => p.ID == loc.Link);
             if (city != null) return city;
-            Cities.Add(new City(Counter.Next(Area.City)));
+            Cities.Add(new City(Counter.Next(Area.City), loc.Parent.IntVector()));
             loc.Link = Counter.Cities;
             return Cities.Last();
         }
@@ -164,7 +164,7 @@ namespace Code.Game.Building {
         public static Road GetRoad(FollowerLocation loc) {
             var road = Roads.FirstOrDefault(p => p.ID == loc.Link);
             if (road != null) return road;
-            Roads.Add(new Road(Counter.Next(Area.Road)));
+            Roads.Add(new Road(Counter.Next(Area.Road), loc.Parent.IntVector()));
             loc.Link = Counter.Roads;
             return Roads.Last();
         }
@@ -172,7 +172,7 @@ namespace Code.Game.Building {
         public static Field GetField(FollowerLocation loc) {
             var field = Fields.FirstOrDefault(p => p.ID == loc.Link);
             if (field != null) return field;
-            Fields.Add(new Field(Counter.Next(Area.Field)));
+            Fields.Add(new Field(Counter.Next(Area.Field), loc.Parent.IntVector()));
             loc.Link = Counter.Fields;
             return Fields.Last();
         }
@@ -195,25 +195,25 @@ namespace Code.Game.Building {
             var startingTile = Tile.GetStarting();
             var v = startingTile.IntVector();
             foreach (var loc in startingTile.GetLocations()) {
-                Add(loc);
+                Add(loc, v);
             }
             foreach (var c in Cities) c.Debugger(Area.City);
             foreach (var c in Roads) c.Debugger(Area.Road);
             foreach (var c in Fields) c.Debugger(Area.Field);
         }
 
-        private static void Add(FollowerLocation loc) {
+        private static void Add(FollowerLocation loc, Cell v) {
             switch (loc.Type) {
                 case Area.Field:
-                    Fields.Add(new Field(Counter.Next(Area.Field)));
+                    Fields.Add(new Field(Counter.Next(Area.Field), v));
                     loc.Link = Counter.Fields;
                     break;
                 case Area.Road:
-                    Roads.Add(new Road(Counter.Next(Area.Road)));
+                    Roads.Add(new Road(Counter.Next(Area.Road), v));
                     loc.Link = Counter.Roads;
                     break;
                 case Area.City:
-                    Cities.Add(new City(Counter.Next(Area.City)));
+                    Cities.Add(new City(Counter.Next(Area.City), v));
                     loc.Link = Counter.Cities;
                     break;
                 case Area.Monastery:
@@ -255,8 +255,8 @@ namespace Code.Game.Building {
                     //Debug.Log("result1 " + nLoc.Contains(pattern));
                     //Debug.Log("result2 " + pLoc.ContainsAnyOf(Opposite(nLoc)));
 
-                    Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(pLoc.GetNodes()) + "] ContainsAnyOf Neighbor[" + ArrayToString(nLoc.GetNodes()) + "]");
-                    Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(nLoc.GetNodes()) + "] ContainsAllOf Pattern[" + ArrayToString(pattern) + "]");
+                    //Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(pLoc.GetNodes()) + "] ContainsAnyOf Neighbor[" + ArrayToString(nLoc.GetNodes()) + "]");
+                    //Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(nLoc.GetNodes()) + "] ContainsAllOf Pattern[" + ArrayToString(pattern) + "]");
                     if (pLoc.Filled) {
                         _temp.Add(nLoc);
                         continue;
@@ -277,13 +277,9 @@ namespace Code.Game.Building {
 
         private static void MergeTemp(FollowerLocation initiator) {
             if (_temp.Count == 0) return;
-            var applyCorrection = false;
-            var last = _temp.First().Link;
             foreach (var c in _temp) {
                 GetField(c).Add(initiator);
-                if (last != c.Link) applyCorrection = true;
             }
-            if (applyCorrection) GetField(_temp.First()).Correction(_temp.Count);
             _temp.Clear();
         }
 
@@ -292,7 +288,7 @@ namespace Code.Game.Building {
                 var pattern = ApplyPattern(loc.Type, freeSides);
                 if (loc.Type == Area.Monastery) continue;
                 if (loc.ContainsOnly(pattern)) {
-                    Add(loc);
+                    Add(loc, tile.IntVector());
                 }
             }
         }

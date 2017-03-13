@@ -3,7 +3,7 @@ using Code.Game.FollowerSubs;
 
 namespace Code.Game.Building {
     public class Road : Construction {
-        public Road(int id) : base(id) {}
+        public Road(int id, Cell v) : base(id, v) {}
 
         protected override bool Equals(Area type) { return type == Area.Road;}
 

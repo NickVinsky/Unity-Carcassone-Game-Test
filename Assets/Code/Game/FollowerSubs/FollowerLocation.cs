@@ -34,10 +34,14 @@ namespace Code.Game.FollowerSubs {
         private bool _checked;
 
         public bool PosFree { get; set; }
+
         private Vector2 _meeplePos;
         private GameObject _sprite;
 
-        public FollowerLocation(byte id, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
+        public TileInfo Parent { get; }
+
+        public FollowerLocation(TileInfo parent, byte id, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
+            Parent = parent;
             _id = id;
             _type = type;
             _coatOfArms = coatOfArms;
@@ -56,7 +60,8 @@ namespace Code.Game.FollowerSubs {
             }
         }
 
-        public FollowerLocation(byte id, Area type, Vector2 meeplePos) {
+        public FollowerLocation(TileInfo parent, byte id, Area type, Vector2 meeplePos) {
+            Parent = parent;
             _id = id;
             _type = type;
             _coatOfArms = false;

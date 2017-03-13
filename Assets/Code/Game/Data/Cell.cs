@@ -10,5 +10,7 @@
         public TileInfo Get() {
             return Tile.Get(X, Y).gameObject.GetComponent<TileInfo>();
         }
+
+        public string XY() { return "(" + X + ";" + Y + ")"; }
     }
 }
