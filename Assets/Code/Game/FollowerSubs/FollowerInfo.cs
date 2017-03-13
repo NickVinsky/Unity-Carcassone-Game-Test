@@ -64,6 +64,15 @@ namespace Code.Game.FollowerSubs {
             }
         }
 
+        public void RemovePlacement(int constructID) {
+            foreach (var loc in _possibleLocation) {
+                Debug.Log(loc.Type + " " + loc.GetID());
+                if (!loc.IsLinkedTo(constructID)) continue;
+                loc.RemovePlacement();
+                return;
+            }
+        }
+
         public void RotateNodes(byte rotate) {
             foreach (var loc in _possibleLocation) {
                 loc.Rotate(rotate);

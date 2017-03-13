@@ -11,13 +11,13 @@ namespace Code.Game.Building {
         protected List<PlayerColor> Owners;
         protected bool Finished { get; }
         protected List<Cell> LinkedTiles;
+        protected int ExtraPoints;
 
         protected Construction(int id, Cell v) {
             ID = id;
             Finished = false;
             Owners = new List<PlayerColor>();
-            LinkedTiles = new List<Cell>();
-            LinkedTiles.Add(v);
+            LinkedTiles = new List<Cell> {v};
             TilesMerged = 1;
         }
 
@@ -35,17 +35,29 @@ namespace Code.Game.Building {
             if (LinkedConstruct == ID) return;
             if (LinkedConstruct == -1) {
                 construct.Link = ID;
+                //AddExtraPoints(construct);
                 LinkedTile(construct.Parent.IntVector());
+                CalcNodesToFinish(construct.GetNodes().Length);
             } else {
                 Merge(construct);
-                Debug.logger.Log(LinkedConstruct + " = > " + ID);
             }
             if (HasOwner()) construct.PosFree = false;
         }
 
         public void SetOwner(FollowerLocation construct) {
             Owners.Add(construct.GetOwner());
+            CalcNodesToFinish();
         }
+
+        protected virtual void AddExtraPoints(FollowerLocation loc){}
+
+        protected virtual void AddNodesToFinish(int value){}
+
+        protected virtual void CalcNodesToFinish(){}
+
+        protected virtual void CalcNodesToFinish(int value){}
+
+        protected virtual void MergeExtraPoints(int value){}
 
         protected virtual bool Equals(Area type) { return false; }
 
@@ -61,12 +73,16 @@ namespace Code.Game.Building {
                 foreach (var loc in tile.Get().GetLocations()) {
                     if (!Equals(loc.Type)) continue;
                     if (loc.Link != former.ID) continue;
-                    Debug.logger.Log("MERGED " + loc.Link + " = > " + ID);
+                    //Debug.logger.Log("MERGED " + loc.Link + " = > " + ID);
                     loc.Link = ID;
+                    //AddExtraPoints(loc);
                     LinkedTile(loc.Parent.IntVector());
                     if (loc.GetOwner() != PlayerColor.NotPicked) Owners.Add(loc.GetOwner());
+                    AddNodesToFinish(loc.GetNodes().Length);
                 }
             }
+            MergeExtraPoints(former.ExtraPoints);
+            CalcNodesToFinish();
             Delete(former);
         }
 

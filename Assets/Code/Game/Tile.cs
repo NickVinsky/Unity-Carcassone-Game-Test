@@ -12,6 +12,8 @@ namespace Code.Game {
 
         public static GameObject LastPlacedTile { get; set; }
 
+        public static TileInfo LastCheckedTile { get; private set; }
+
         public static TileInfo LastPlaced() { return LastPlacedTile.GetComponent<TileInfo>(); }
 
         public static TileInfo GetParent(GameObject o) { return o.transform.parent.gameObject.GetComponent<TileInfo>(); }
@@ -37,7 +39,8 @@ namespace Code.Game {
         public static bool Exist(Cell v) {
             var cell = GameObject.Find("cell#" + v.X + ":" + v.Y);
             if (cell == null) return false;
-            return cell.GetComponent<TileInfo>().Type != 0;
+            LastCheckedTile = cell.GetComponent<TileInfo>();
+            return LastCheckedTile.Type != 0;
         }
 
         public static void Highlight(string name, int color) {

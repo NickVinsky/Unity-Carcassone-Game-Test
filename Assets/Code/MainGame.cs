@@ -2,6 +2,7 @@
 using Code.Game;
 using Code.Game.Building;
 using Code.Game.Data;
+using Code.GUI;
 using Code.Handlers;
 using Code.Network;
 using UnityEngine;
@@ -58,6 +59,8 @@ namespace Code {
             Stage = GameStage.Start;
 
             if (Net.Game.IsOnline()) return;
+            if (PlayerSync.PlayerInfo.PlayerName == null)
+                PlayerSync.PlayerInfo.PlayerName = MainMenuGUI.GetRandomName();
             PlayerSync.PlayerInfo.Color = (PlayerColor) UnityEngine.Random.Range(1, 5);
             PlayerSync.PlayerInfo.FollowersNumber = MaxFollowerNumbers;
             PlayerSync.PlayerInfo.Score = 0;

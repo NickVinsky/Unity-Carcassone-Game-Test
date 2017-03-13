@@ -246,6 +246,10 @@ namespace Code.Game {
             _follower.HideAll();
         }
 
+        public void RemovePlacement(int constructID) {
+            _follower.RemovePlacement(constructID);
+        }
+
         public void ShowPossibleFollowersLocations(GameObject o) {
             _follower.Show(o, Rotates);
         }

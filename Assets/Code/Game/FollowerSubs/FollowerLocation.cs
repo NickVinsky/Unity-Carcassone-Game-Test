@@ -29,7 +29,6 @@ namespace Code.Game.FollowerSubs {
         //    | 5  4 |
         private byte[] _nodes;
         public bool Filled { get; }
-        private bool _coatOfArms;
 
         public bool Indexed { get; set; }
 
@@ -40,11 +39,13 @@ namespace Code.Game.FollowerSubs {
 
         public TileInfo Parent { get; }
 
+        public bool CoatOfArms { get; }
+
         public FollowerLocation(TileInfo parent, byte id, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
             Parent = parent;
             _id = id;
             _type = type;
-            _coatOfArms = coatOfArms;
+            CoatOfArms = coatOfArms;
             _meeplePos = meeplePos;
             var nLen = nodes.Count;
             _nodes = new byte[nLen];
@@ -64,7 +65,7 @@ namespace Code.Game.FollowerSubs {
             Parent = parent;
             _id = id;
             _type = type;
-            _coatOfArms = false;
+            CoatOfArms = false;
             _meeplePos = meeplePos;
             Link = -1;
             PosFree = true;
@@ -103,6 +104,8 @@ namespace Code.Game.FollowerSubs {
 
         public byte[] GetNodes() { return _nodes; }
         public bool CompareID(byte id){ return id == _id;}
+        public bool IsLinkedTo(int id) { return Link == id; }
+        public int GetID() { return _id; }
 
         public bool IsBarrier() {
             return _type == Area.Road;

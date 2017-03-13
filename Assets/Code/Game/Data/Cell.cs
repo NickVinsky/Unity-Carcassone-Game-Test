@@ -12,6 +12,11 @@
             Y = v.Y;
         }
 
+        public Cell(Cell v, int x, int y) {
+            X = v.X + x;
+            Y = v.Y + y;
+        }
+
         public TileInfo Get() {
             return Tile.Get(this).gameObject.GetComponent<TileInfo>();
         }
@@ -20,6 +25,8 @@
         public Cell Right() { return new Cell(X + 1, Y);}
         public Cell Bot() { return new Cell(X, Y - 1);}
         public Cell Left() { return new Cell(X - 1, Y);}
+
+        public Cell Corner() { return new Cell(X - 1, Y - 1);}
 
         public void OffsetTop() { Y += 1; }
         public void OffsetRight() { X += 1; }

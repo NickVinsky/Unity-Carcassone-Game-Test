@@ -124,7 +124,7 @@ namespace Code.GUI {
             InitTextButton(_quitGameButton);*/
         }
 
-        private void GenerateName() {
+        public static string GetRandomName() {
             var genName = string.Empty;
             var rnd = Random.value;
             var IsMale = rnd > 0.5f;
@@ -143,7 +143,11 @@ namespace Code.GUI {
                     randName = ngNameF[Random.Range(0, ngNameF.Length)];
                     break;
             }
-            genName = randTitle + randNobPart + randName;
+            return randTitle + randNobPart + randName;
+        }
+
+        private static void GenerateName() {
+            var genName = GetRandomName();
             GameObject.Find(PlayerNameInputField).GetComponent<InputField>().text = genName;
         }
 

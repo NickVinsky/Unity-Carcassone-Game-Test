@@ -14,10 +14,10 @@ namespace Code.Game.Building {
             public static byte[] Left { get; set; }
         }
         private struct Counter {
-            public static int Cities { get; set; }
-            public static int Roads { get; set; }
-            public static int Fields { get; set; }
-            public static int Monasteries { get; set; }
+            public static int Cities { get; private set; }
+            public static int Roads { get; private set; }
+            public static int Fields { get; private set; }
+            public static int Monasteries { get; private set; }
 
             public static int Next(Area type) {
                 switch (type) {
@@ -39,21 +39,13 @@ namespace Code.Game.Building {
             }
         }
 
-        private static List<City> _cities = new List<City>();
-        private static List<Road> _roads = new List<Road>();
-        private static List<Field> _fields = new List<Field>();
-        private static List<Monastery> _monasteries = new List<Monastery>();
-
-        public static List<City> Cities {get { return _cities; }}
-        public static List<Road> Roads {get { return _roads; }}
-        public static List<Field> Fields {get { return _fields;}}
-        public static List<Monastery> Monasteries {get { return _monasteries; }}
-
-        private static List<FollowerLocation> _temp = new List<FollowerLocation>();
+        public static readonly List<City> Cities = new List<City>();
+        public static readonly List<Road> Roads = new List<Road>();
+        public static readonly List<Field> Fields = new List<Field>();
+        public static readonly List<Monastery> Monasteries = new List<Monastery>();
 
         public static string ArrayToString(byte[] array) {
-            if (array.Length == 0) return "Array is empty!";
-            return array.Aggregate(string.Empty, (current, a) => current + a);
+            return array.Length == 0 ? "Array is empty!" : array.Aggregate(string.Empty, (current, a) => current + a);
         }
 
         private static void SetPattern(Area area) {
@@ -73,7 +65,6 @@ namespace Code.Game.Building {
                     break;
             }
         }
-
         private static byte[] ApplyPattern(Area area, Side side) {
             SetPattern(area);
             switch (side) {
@@ -89,7 +80,6 @@ namespace Code.Game.Building {
                     throw new ArgumentOutOfRangeException(nameof(side), side, null);
             }
         }
-
         private static byte[] ApplyPattern(Area area, List<byte> freeSides) {
             SetPattern(area);
             var l = 0;
@@ -124,7 +114,6 @@ namespace Code.Game.Building {
             }
             return output;
         }
-
         private static byte[] Opposite(FollowerLocation loc) {
             var nodes = loc.GetNodes();
             var l = nodes.Length;
@@ -153,52 +142,20 @@ namespace Code.Game.Building {
             }
             return output;
         }
-
-        private static byte[] Opposite(byte[] loc, Area type) {
-            var nodes = loc;
-            var l = nodes.Length;
-            var output = new byte[l];
-            for (var i = 0; i < l; i++) {
-                var n = nodes[i];
-                switch (type) {
-                    case Area.Field:
-                        if (n == 0) output[i] = 5;
-                        else if (n == 1) output[i] = 4;
-                        else if (n == 2) output[i] = 7;
-                        else if (n == 3) output[i] = 6;
-                        else if (n == 4) output[i] = 1;
-                        else if (n == 5) output[i] = 0;
-                        else if (n == 6) output[i] = 3;
-                        else if (n == 7) output[i] = 2;
-                        break;
-                    case Area.Road:
-                    case Area.City:
-                        if (n == 0) output[i] = 2;
-                        else if (n == 1) output[i] = 3;
-                        else if (n == 2) output[i] = 0;
-                        else if (n == 3) output[i] = 1;
-                        break;
-                }
-            }
-            return output;
-        }
-
         public static City GetCity(FollowerLocation loc) {
             var city = Cities.FirstOrDefault(p => p.ID == loc.Link);
             if (city != null) return city;
-            Cities.Add(new City(Counter.Next(Area.City), loc.Parent.IntVector()));
+            Cities.Add(new City(Counter.Next(Area.City), loc.Parent.IntVector(), loc));
             loc.Link = Counter.Cities;
             return Cities.Last();
         }
-
         public static Road GetRoad(FollowerLocation loc) {
             var road = Roads.FirstOrDefault(p => p.ID == loc.Link);
             if (road != null) return road;
-            Roads.Add(new Road(Counter.Next(Area.Road), loc.Parent.IntVector()));
+            Roads.Add(new Road(Counter.Next(Area.Road), loc.Parent.IntVector(), loc));
             loc.Link = Counter.Roads;
             return Roads.Last();
         }
-
         public static Field GetField(FollowerLocation loc) {
             var field = Fields.FirstOrDefault(p => p.ID == loc.Link);
             if (field != null) return field;
@@ -206,7 +163,10 @@ namespace Code.Game.Building {
             loc.Link = Counter.Fields;
             return Fields.Last();
         }
-
+        public static Monastery GetMonastery(FollowerLocation loc) {
+            var monastery = Monasteries.FirstOrDefault(p => p.ID == loc.Link);
+            return monastery;
+        }
         public static void SetOwner(FollowerLocation construct) {
             switch (construct.Type) {
                 case Area.Field:
@@ -218,6 +178,9 @@ namespace Code.Game.Building {
                 case Area.City:
                     GetCity(construct).SetOwner(construct);
                     break;
+                case Area.Monastery:
+                    GetMonastery(construct).SetOwner(construct);
+                    break;
             }
         }
 
@@ -225,6 +188,7 @@ namespace Code.Game.Building {
             foreach (var c in Cities) c.Debugger(Area.City);
             foreach (var c in Roads) c.Debugger(Area.Road);
             foreach (var c in Fields) c.Debugger(Area.Field);
+            foreach (var c in Monasteries) c.Debugger(Area.Monastery);
         }
 
         public static void Init() {
@@ -243,28 +207,19 @@ namespace Code.Game.Building {
                     loc.Link = Counter.Fields;
                     break;
                 case Area.Road:
-                    Roads.Add(new Road(Counter.Next(Area.Road), v));
+                    Roads.Add(new Road(Counter.Next(Area.Road), v, loc));
                     loc.Link = Counter.Roads;
                     break;
                 case Area.City:
-                    Cities.Add(new City(Counter.Next(Area.City), v));
+                    Cities.Add(new City(Counter.Next(Area.City), v, loc));
                     loc.Link = Counter.Cities;
                     break;
                 case Area.Monastery:
-                    Monasteries.Add(new Monastery());
+                    if (loc.Link != -1) return;
+                    Monasteries.Add(new Monastery(Counter.Next(Area.Monastery), loc));
                     loc.Link = Counter.Monasteries;
                     break;
             }
-        }
-
-        private static byte[] LimitOppositePattern(FollowerLocation loc, byte[] pattern) {
-            var oppPattern = Opposite(pattern, loc.Type);
-            var output = new List<byte>();
-            foreach (var node in loc.GetNodes()) {
-                bool founded = oppPattern.Any(p => node == p);
-                if (founded) output.Add(node);
-            }
-            return output.ToArray();
         }
 
         private static byte[] FindCommonNodes(FollowerLocation pLoc, FollowerLocation nLoc, Side nSide) {
@@ -292,82 +247,53 @@ namespace Code.Game.Building {
                     foreach (var loc in neighborTile.GetLocations()) {
                         Connect(putedTile, side, loc);
                     }
-                    //MergeTemp(putedTile.GetFilledLoc());
                 } else {
                     freeSides.Add(i);
                 }
             }
             Create(putedTile, freeSides);
-            Debug.Log("[=======================] NEXT TURN [=======================]");
-            LogConstructions();
+            MonasteriesChecker(putedTile);
+            //Debug.Log("[=======================] NEXT TURN [=======================]");
+            //LogConstructions();
         }
 
-
-        private static void Connect(TileInfo pTile, Side side, FollowerLocation nLoc) {
-            var pattern = ApplyPattern(nLoc.Type, side);
-            foreach (var pLoc in pTile.GetLocations()) {
-                if (pLoc.Type == nLoc.Type) {
-                    if (pLoc.Type == Area.Monastery) continue;
-                    //Debug.Log("result1 " + nLoc.Contains(pattern));
-                    //Debug.Log("result2 " + pLoc.ContainsAnyOf(Opposite(nLoc)));
-
-                    var commonNodes = FindCommonNodes(pLoc, nLoc, side);
-                    if (commonNodes.Length == 0) {
-                        //if (nLoc.Indexed) continue;
-                        //Add(nLoc, pTile.IntVector());
-                        //nLoc.Indexed = true;
-                        //Debug.logger.Log(LogType.Warning, "Not indexed: " + ArrayToString(pLoc.GetNodes()));
-                    } else {
-                        Link(pLoc, nLoc);
+        private static void MonasteriesChecker(TileInfo pivotTile) {
+            //Debug.Log("pivot " + pivotTile.IntVector().XY());
+            var corner = pivotTile.IntVector().Corner();
+            for (var iX = 0; iX < 3; iX++) {
+                for (var iY = 0; iY < 3; iY++) {
+                    //var d = new Cell(corner, iX, iY);
+                    //Debug.logger.Log("X" + d.X + ";Y" + d.Y);
+                    if (!Tile.Exist(new Cell(corner, iX, iY))) continue;
+                    foreach (var loc in Tile.LastCheckedTile.GetLocations()) {
+                        if (loc.Type != Area.Monastery) continue;
+                        GetMonastery(loc).CalcSurroundings();
                     }
-
-                    /*var limitedPattern = LimitOppositePattern(pLoc, pattern);
-
-                    Debug.Log(pLoc.Type + ": Checking pLoc " + ArrayToString(pLoc.GetNodes()) + ", nLoc " + ArrayToString(nLoc.GetNodes()) + ", with pattern " + ArrayToString(pattern) + ":");
-                    Debug.Log("COMMON NODES: " + ArrayToString(FindCommonNodes(pLoc, nLoc, side)));
-                    Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(pLoc.GetNodes()) + "] ContainsAnyOf; Opposite Neighbor [" + ArrayToString(Opposite(nLoc)) + "]");
-                    Debug.logger.Log(LogType.Warning, "Neighbor [" + ArrayToString(nLoc.GetNodes()) + "] ContainsAnyOf; Pattern[" + ArrayToString(pattern) + "]");
-                    Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(pLoc.GetNodes()) + "] Contains; limitedPattern [" + ArrayToString(limitedPattern) + "]");
-
-                    if (pLoc.Filled) {
-                        _temp.Add(nLoc);
-                        continue;
-                    }
-
-                    if (pLoc.ContainsAnyOf(Opposite(nLoc))) {
-                        Debug.Log("pLoc.ContainsAnyOf(Opposite(nLoc)) = " + pLoc.ContainsAnyOf(Opposite(nLoc)));
-                        if (nLoc.ContainsAnyOf(pattern)) { // Соприкасаются ли стороны?
-                            Debug.Log("nLoc.ContainsAnyOf(pattern) = " + nLoc.ContainsAnyOf(pattern));
-                            if (pLoc.Contains(limitedPattern)) { // Содержат ли противоположные стороны элементы, которые можно соединить?
-                                Link(pLoc, nLoc);
-                                Debug.Log("[" + pLoc.Type + "] Puted: " + ArrayToString(pLoc.GetNodes()) + "; Neighbor: " +
-                                          ArrayToString(nLoc.GetNodes()) + " pattern = " +
-                                          ArrayToString(pattern) + " side = " + side);
-
-                                Debug.logger.Log(LogType.Error, "СОВЕРШЕНО ОДНО СЛИЯНИЕ");
-                            }
-                        }
-                    }*/
                 }
             }
         }
 
-        private static void MergeTemp(FollowerLocation initiator) {
-            if (_temp.Count == 0) return;
-            foreach (var c in _temp) {
-                GetField(c).Add(initiator);
+
+        private static void Connect(TileInfo pTile, Side side, FollowerLocation nLoc) {
+            //if (nLoc.Type == Area.Monastery) GetMonastery(nLoc).CalcSurroundings();
+            foreach (var pLoc in pTile.GetLocations()) {
+
+                if (pLoc.Type == Area.Monastery) {
+                    Add(pLoc, pTile.IntVector());
+                    continue;
+                }
+
+                if (pLoc.Type != nLoc.Type) continue;
+                var commonNodes = FindCommonNodes(pLoc, nLoc, side);
+                if (commonNodes.Length == 0) continue;
+                Link(pLoc, nLoc);
             }
-            _temp.Clear();
         }
 
         private static void Create(TileInfo tile, List<byte> freeSides) {
             foreach (var loc in tile.GetLocations()) {
                 var pattern = ApplyPattern(loc.Type, freeSides);
                 if (loc.Type == Area.Monastery) continue;
-
-                Debug.Log(loc.Type + ": FreeLocs " + ArrayToString(loc.GetNodes()) + ", with pattern " + ArrayToString(pattern) + ":");
-                Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(loc.GetNodes()) + "] Conform; Pattern[" + ArrayToString(pattern) + "] = " + loc.Conform(pattern));
-
                 if (loc.Conform(pattern)) {
                     Add(loc, tile.IntVector());
                 }
