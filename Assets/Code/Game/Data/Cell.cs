@@ -13,7 +13,7 @@
         }
 
         public TileInfo Get() {
-            return Tile.Get(X, Y).gameObject.GetComponent<TileInfo>();
+            return Tile.Get(this).gameObject.GetComponent<TileInfo>();
         }
 
         public Cell Top() { return new Cell(X, Y + 1);}

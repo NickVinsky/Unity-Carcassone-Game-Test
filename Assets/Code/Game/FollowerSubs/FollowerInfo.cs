@@ -8,7 +8,7 @@ namespace Code.Game.FollowerSubs {
         private TileInfo _parent;
         private List<FollowerLocation> _possibleLocation = new List<FollowerLocation>();
 
-        private Follower _follower = Follower.None;
+        //private Follower _follower = Follower.None;
 
         private GameObject _3DMeeple;
 

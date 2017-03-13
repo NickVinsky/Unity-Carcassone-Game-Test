@@ -6,7 +6,7 @@ namespace Code.Game.TileSubs {
         private int _lastX, _lastY;
         private TileInfo _lastTile;
 
-        private Side GetOppositeSide(Side side) {
+        public Side GetOppositeSide(Side side) {
             return (Side)Tile.Rotate.Set((int) side + 2);
         }
 
@@ -28,9 +28,9 @@ namespace Code.Game.TileSubs {
 
         public TileInfo GetLast() { return _lastTile; }
 
-        public bool Exist(Cell v, byte side) {
+        public bool Exist(Cell v, Side side) {
             var cell = new Cell(v);
-            switch ((Side) side) {
+            switch (side) {
                 case Side.Top:
                     cell.OffsetTop();
                     break;

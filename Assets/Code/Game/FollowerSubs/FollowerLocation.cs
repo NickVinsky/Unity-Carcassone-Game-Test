@@ -31,7 +31,7 @@ namespace Code.Game.FollowerSubs {
         public bool Filled { get; }
         private bool _coatOfArms;
 
-        private bool _checked;
+        public bool Indexed { get; set; }
 
         public bool PosFree { get; set; }
 
@@ -86,6 +86,14 @@ namespace Code.Game.FollowerSubs {
         }
 
         public bool ContainsOnly(byte[] pattern) {
+            foreach (var n in _nodes) {
+                bool founded = pattern.Any(p => n == p);
+                if (!founded) return false;
+            }
+            return true;
+        }
+
+        public bool Conform(byte[] pattern) {
             foreach (var n in _nodes) {
                 bool founded = pattern.Any(p => n == p);
                 if (!founded) return false;

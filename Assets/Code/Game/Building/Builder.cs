@@ -52,6 +52,7 @@ namespace Code.Game.Building {
         private static List<FollowerLocation> _temp = new List<FollowerLocation>();
 
         public static string ArrayToString(byte[] array) {
+            if (array.Length == 0) return "Array is empty!";
             return array.Aggregate(string.Empty, (current, a) => current + a);
         }
 
@@ -153,6 +154,35 @@ namespace Code.Game.Building {
             return output;
         }
 
+        private static byte[] Opposite(byte[] loc, Area type) {
+            var nodes = loc;
+            var l = nodes.Length;
+            var output = new byte[l];
+            for (var i = 0; i < l; i++) {
+                var n = nodes[i];
+                switch (type) {
+                    case Area.Field:
+                        if (n == 0) output[i] = 5;
+                        else if (n == 1) output[i] = 4;
+                        else if (n == 2) output[i] = 7;
+                        else if (n == 3) output[i] = 6;
+                        else if (n == 4) output[i] = 1;
+                        else if (n == 5) output[i] = 0;
+                        else if (n == 6) output[i] = 3;
+                        else if (n == 7) output[i] = 2;
+                        break;
+                    case Area.Road:
+                    case Area.City:
+                        if (n == 0) output[i] = 2;
+                        else if (n == 1) output[i] = 3;
+                        else if (n == 2) output[i] = 0;
+                        else if (n == 3) output[i] = 1;
+                        break;
+                }
+            }
+            return output;
+        }
+
         public static City GetCity(FollowerLocation loc) {
             var city = Cities.FirstOrDefault(p => p.ID == loc.Link);
             if (city != null) return city;
@@ -191,15 +221,19 @@ namespace Code.Game.Building {
             }
         }
 
+        private static void LogConstructions() {
+            foreach (var c in Cities) c.Debugger(Area.City);
+            foreach (var c in Roads) c.Debugger(Area.Road);
+            foreach (var c in Fields) c.Debugger(Area.Field);
+        }
+
         public static void Init() {
             var startingTile = Tile.GetStarting();
             var v = startingTile.IntVector();
             foreach (var loc in startingTile.GetLocations()) {
                 Add(loc, v);
             }
-            foreach (var c in Cities) c.Debugger(Area.City);
-            foreach (var c in Roads) c.Debugger(Area.Road);
-            foreach (var c in Fields) c.Debugger(Area.Field);
+            LogConstructions();
         }
 
         private static void Add(FollowerLocation loc, Cell v) {
@@ -223,6 +257,29 @@ namespace Code.Game.Building {
             }
         }
 
+        private static byte[] LimitOppositePattern(FollowerLocation loc, byte[] pattern) {
+            var oppPattern = Opposite(pattern, loc.Type);
+            var output = new List<byte>();
+            foreach (var node in loc.GetNodes()) {
+                bool founded = oppPattern.Any(p => node == p);
+                if (founded) output.Add(node);
+            }
+            return output.ToArray();
+        }
+
+        private static byte[] FindCommonNodes(FollowerLocation pLoc, FollowerLocation nLoc, Side nSide) {
+            var pattern = ApplyPattern(pLoc.Type, Tile.Nearby.GetOppositeSide(nSide));
+            var reversedNLoc = Opposite(nLoc);
+            var output = new List<byte>();
+            foreach (var pNode in pLoc.GetNodes()) {
+                bool founded = reversedNLoc.Any(nNode => pNode == nNode);
+                if (!founded) continue;
+                if (pattern.Any(p => pNode == p))
+                    output.Add(pNode);
+            }
+            return output.ToArray();
+        }
+
         public static void Check(GameObject putedTileGameObject) { // putedTile - координаты только что поставленного тайла
             var v = Tile.GetCoordinates(putedTileGameObject);
             var putedTile = Tile.Get(putedTileGameObject);
@@ -230,22 +287,21 @@ namespace Code.Game.Building {
             // Проверка каждой из четырех сторон, начиная сверху
             for (byte i = 0; i < 4; i++) {
                 var side = (Side) i;
-                if (Tile.Nearby.Exist(v, i)) {
+                if (Tile.Nearby.Exist(v, side)) {
                     var neighborTile = Tile.Nearby.GetLast();
                     foreach (var loc in neighborTile.GetLocations()) {
                         Connect(putedTile, side, loc);
                     }
-                    MergeTemp(putedTile.GetFilledLoc());
+                    //MergeTemp(putedTile.GetFilledLoc());
                 } else {
                     freeSides.Add(i);
                 }
             }
             Create(putedTile, freeSides);
-            Debug.Log("/////////////////////////////////////////////////////////");
-            foreach (var c in Cities) c.Debugger(Area.City);
-            foreach (var c in Roads) c.Debugger(Area.Road);
-            foreach (var c in Fields) c.Debugger(Area.Field);
+            Debug.Log("[=======================] NEXT TURN [=======================]");
+            LogConstructions();
         }
+
 
         private static void Connect(TileInfo pTile, Side side, FollowerLocation nLoc) {
             var pattern = ApplyPattern(nLoc.Type, side);
@@ -255,22 +311,43 @@ namespace Code.Game.Building {
                     //Debug.Log("result1 " + nLoc.Contains(pattern));
                     //Debug.Log("result2 " + pLoc.ContainsAnyOf(Opposite(nLoc)));
 
-                    //Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(pLoc.GetNodes()) + "] ContainsAnyOf Neighbor[" + ArrayToString(nLoc.GetNodes()) + "]");
-                    //Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(nLoc.GetNodes()) + "] ContainsAllOf Pattern[" + ArrayToString(pattern) + "]");
+                    var commonNodes = FindCommonNodes(pLoc, nLoc, side);
+                    if (commonNodes.Length == 0) {
+                        //if (nLoc.Indexed) continue;
+                        //Add(nLoc, pTile.IntVector());
+                        //nLoc.Indexed = true;
+                        //Debug.logger.Log(LogType.Warning, "Not indexed: " + ArrayToString(pLoc.GetNodes()));
+                    } else {
+                        Link(pLoc, nLoc);
+                    }
+
+                    /*var limitedPattern = LimitOppositePattern(pLoc, pattern);
+
+                    Debug.Log(pLoc.Type + ": Checking pLoc " + ArrayToString(pLoc.GetNodes()) + ", nLoc " + ArrayToString(nLoc.GetNodes()) + ", with pattern " + ArrayToString(pattern) + ":");
+                    Debug.Log("COMMON NODES: " + ArrayToString(FindCommonNodes(pLoc, nLoc, side)));
+                    Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(pLoc.GetNodes()) + "] ContainsAnyOf; Opposite Neighbor [" + ArrayToString(Opposite(nLoc)) + "]");
+                    Debug.logger.Log(LogType.Warning, "Neighbor [" + ArrayToString(nLoc.GetNodes()) + "] ContainsAnyOf; Pattern[" + ArrayToString(pattern) + "]");
+                    Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(pLoc.GetNodes()) + "] Contains; limitedPattern [" + ArrayToString(limitedPattern) + "]");
+
                     if (pLoc.Filled) {
                         _temp.Add(nLoc);
                         continue;
                     }
-                    if (pLoc.ContainsAnyOf(nLoc.GetNodes()) && nLoc.ContainsAnyOf(pattern)) {
-                        Link(pLoc, nLoc);
-                        // [1] Содержат ли противоположные стороны элементы, которые можно соединить?
-                        // [2] Соприкасаются ли стороны?
-                        /*Debug.Log("[" + pLoc.Type + "] Puted: " + ArrayToString(pLoc.GetNodes()) + "; Neighbor: " +
-                                  ArrayToString(nLoc.GetNodes()) + " pattern = " +
-                                  ArrayToString(pattern) + " side = " + side);*/
 
-                        //Debug.Log("==============================================================================");
-                    }
+                    if (pLoc.ContainsAnyOf(Opposite(nLoc))) {
+                        Debug.Log("pLoc.ContainsAnyOf(Opposite(nLoc)) = " + pLoc.ContainsAnyOf(Opposite(nLoc)));
+                        if (nLoc.ContainsAnyOf(pattern)) { // Соприкасаются ли стороны?
+                            Debug.Log("nLoc.ContainsAnyOf(pattern) = " + nLoc.ContainsAnyOf(pattern));
+                            if (pLoc.Contains(limitedPattern)) { // Содержат ли противоположные стороны элементы, которые можно соединить?
+                                Link(pLoc, nLoc);
+                                Debug.Log("[" + pLoc.Type + "] Puted: " + ArrayToString(pLoc.GetNodes()) + "; Neighbor: " +
+                                          ArrayToString(nLoc.GetNodes()) + " pattern = " +
+                                          ArrayToString(pattern) + " side = " + side);
+
+                                Debug.logger.Log(LogType.Error, "СОВЕРШЕНО ОДНО СЛИЯНИЕ");
+                            }
+                        }
+                    }*/
                 }
             }
         }
@@ -287,7 +364,11 @@ namespace Code.Game.Building {
             foreach (var loc in tile.GetLocations()) {
                 var pattern = ApplyPattern(loc.Type, freeSides);
                 if (loc.Type == Area.Monastery) continue;
-                if (loc.ContainsOnly(pattern)) {
+
+                Debug.Log(loc.Type + ": FreeLocs " + ArrayToString(loc.GetNodes()) + ", with pattern " + ArrayToString(pattern) + ":");
+                Debug.logger.Log(LogType.Warning, "Puted [" + ArrayToString(loc.GetNodes()) + "] Conform; Pattern[" + ArrayToString(pattern) + "] = " + loc.Conform(pattern));
+
+                if (loc.Conform(pattern)) {
                     Add(loc, tile.IntVector());
                 }
             }

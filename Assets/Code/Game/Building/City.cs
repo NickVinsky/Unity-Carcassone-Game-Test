@@ -7,7 +7,10 @@ namespace Code.Game.Building {
 
         protected override bool Equals(Area type) { return type == Area.City;}
 
-        protected override void Merge(FollowerLocation construct) { base.Merge(Builder.GetCity(construct)); }
+        protected override void Merge(FollowerLocation construct) {
+            base.Merge(construct);
+            base.Merge(Builder.GetCity(construct), construct);
+        }
 
         protected override void Delete(Construction construct) {
             Builder.Cities.Remove((City)construct);

@@ -35,7 +35,7 @@ namespace Code.Game
         }
 
         public void Expand(Cell pivot) {
-            Debug.Log("Top" + pivot.Top().XY() + "/Right" + pivot.Right().XY() + "/Bot" + pivot.Bot().XY() + "/left" + pivot.Left().XY());
+            //Debug.Log("Top" + pivot.Top().XY() + "/Right" + pivot.Right().XY() + "/Bot" + pivot.Bot().XY() + "/left" + pivot.Left().XY());
             Add(pivot.Top());
             Add(pivot.Left());
             Add(pivot.Right());

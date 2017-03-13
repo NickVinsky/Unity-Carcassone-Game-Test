@@ -22,7 +22,7 @@ namespace Code.Game {
 
         public static TileInfo Get(string name) { return GameObject.Find(name).GetComponent<TileInfo>(); }
 
-        public static TileInfo Get(int x, int y) { return GameObject.Find("cell#" + x + ":" + y).GetComponent<TileInfo>(); }
+        public static TileInfo Get(Cell cell) { return GameObject.Find("cell#" + cell.X + ":" + cell.Y).GetComponent<TileInfo>(); }
 
         public static Cell GetCoordinates(GameObject o) {
             var x = o.GetComponent<TileInfo>().X;

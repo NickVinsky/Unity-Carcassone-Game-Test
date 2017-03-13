@@ -30,7 +30,7 @@ namespace Code.Game.Building {
         }
 
         public void Add(FollowerLocation construct) {
-            Debug.Log("CELL " + construct.Parent.IntVector().XY());
+            //Debug.Log("CELL " + construct.Parent.IntVector().XY());
             var LinkedConstruct = construct.Link;
             if (LinkedConstruct == ID) return;
             if (LinkedConstruct == -1) {
@@ -38,6 +38,7 @@ namespace Code.Game.Building {
                 LinkedTile(construct.Parent.IntVector());
             } else {
                 Merge(construct);
+                Debug.logger.Log(LinkedConstruct + " = > " + ID);
             }
             if (HasOwner()) construct.PosFree = false;
         }
@@ -49,17 +50,24 @@ namespace Code.Game.Building {
         protected virtual bool Equals(Area type) { return false; }
 
         protected virtual void Delete(Construction construct) {}
-        protected virtual void Merge(FollowerLocation construct) {}
-        protected void Merge(Construction child) {
-            foreach (var tile in GameObject.FindGameObjectsWithTag(GameRegulars.TileTag)) {
-                foreach (var loc in Tile.Get(tile).GetLocations()) {
+
+        protected virtual void Merge(FollowerLocation construct) {
+            //base.Merge(construct);
+            //base.Merge(Builder.Get<ConstructCollection>(construct), construct);
+        }
+
+        protected void Merge(Construction former, FollowerLocation formerLoc) {
+            foreach (var tile in former.LinkedTiles) {
+                foreach (var loc in tile.Get().GetLocations()) {
                     if (!Equals(loc.Type)) continue;
-                    if (loc.Link != child.ID) continue;
+                    if (loc.Link != former.ID) continue;
+                    Debug.logger.Log("MERGED " + loc.Link + " = > " + ID);
                     loc.Link = ID;
+                    LinkedTile(loc.Parent.IntVector());
                     if (loc.GetOwner() != PlayerColor.NotPicked) Owners.Add(loc.GetOwner());
                 }
             }
-            Delete(child);
+            Delete(former);
         }
 
         public void Debugger(Area type) {

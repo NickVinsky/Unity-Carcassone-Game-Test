@@ -7,7 +7,10 @@ namespace Code.Game.Building {
 
         protected override bool Equals(Area type) { return type == Area.Road;}
 
-        protected override void Merge(FollowerLocation construct) { base.Merge(Builder.GetRoad(construct)); }
+        protected override void Merge(FollowerLocation construct) {
+            base.Merge(construct);
+            base.Merge(Builder.GetRoad(construct), construct);
+        }
 
         protected override void Delete(Construction construct) {
             Builder.Roads.Remove((Road)construct);
