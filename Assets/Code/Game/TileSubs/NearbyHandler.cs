@@ -28,24 +28,25 @@ namespace Code.Game.TileSubs {
 
         public TileInfo GetLast() { return _lastTile; }
 
-        public bool Exist(int x, int y, byte side) {
-            switch (side) {
-                case 0:
-                    y++;
+        public bool Exist(Cell v, byte side) {
+            var cell = new Cell(v);
+            switch ((Side) side) {
+                case Side.Top:
+                    cell.OffsetTop();
                     break;
-                case 1:
-                    x++;
+                case Side.Right:
+                    cell.OffsetRight();
                     break;
-                case 2:
-                    y--;
+                case Side.Bot:
+                    cell.OffsetBot();
                     break;
-                case 3:
-                    x--;
+                case Side.Left:
+                    cell.OffsetLeft();
                     break;
             }
-            _lastX = x;
-            _lastY = y;
-            _lastTile = GameObject.Find("cell#" + x + ":" + y).GetComponent<TileInfo>();
+            var tile = GameObject.Find("cell#" + cell.X + ":" + cell.Y);
+            if (tile == null) return false;
+            _lastTile = tile.GetComponent<TileInfo>();
             return _lastTile.Type != 0;
         }
 
@@ -56,7 +57,7 @@ namespace Code.Game.TileSubs {
             if (side == Side.Bot) y = -1;
             if (side == Side.Left) x = -1;
             var cellPos = MainGame.Grid.GetCellCoordinates(parentCell);
-            return GameObject.Find("cell#" + (cellPos.x + x) + ":" + (cellPos.y + y));
+            return GameObject.Find("cell#" + (cellPos.X + x) + ":" + (cellPos.Y + y));
         }
 
         private bool CompareBySides(GameObject mainTile, Side sideOfMainTile) {

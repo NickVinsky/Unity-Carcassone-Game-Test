@@ -34,8 +34,9 @@ namespace Code.Game {
             return cell.GetComponent<TileInfo>().Type != 0;
         }
 
-        public static bool Exist(int x, int y) {
-            var cell = GameObject.Find("cell#" + x + ":" + y);
+        public static bool Exist(Cell v) {
+            var cell = GameObject.Find("cell#" + v.X + ":" + v.Y);
+            if (cell == null) return false;
             return cell.GetComponent<TileInfo>().Type != 0;
         }
 
@@ -58,9 +59,10 @@ namespace Code.Game {
             StartingTile = startTileType;
             var gridCell = GameObject.Find("cell#0:0");
             gridCell.tag = GameRegulars.TileTag;
-            gridCell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + startTileType);
+            gridCell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + StartingTile);
             gridCell.GetComponent<TileInfo>().Rotates = 0;
             gridCell.GetComponent<TileInfo>().InitTile(StartingTile);
+            MainGame.Grid.Expand(new Cell(0, 0));
         }
 
         public static void AttachToMouse() {

@@ -16,8 +16,8 @@ namespace Code.Game
             _sizeY = y;
         }
         public Grid() {
-            _sizeX = 5;
-            _sizeY = 5;
+            _sizeX = 0;
+            _sizeY = 0;
         }
 
         private int _minX, _maxY, _minY, _maxX;
@@ -29,31 +29,39 @@ namespace Code.Game
             _maxY = _sizeY / 2;
             for (var iX = _minX; iX <= _maxX; iX++) {
                 for (var iY = _minY; iY <= _maxY; iY++) {
-                    AddCell(iX, iY);
+                    AddCell(new Cell(iX, iY));
                 }
             }
         }
 
-        public Vector2 GetCellCoordinates(GameObject cell) {
+        public void Expand(Cell pivot) {
+            Debug.Log("Top" + pivot.Top().XY() + "/Right" + pivot.Right().XY() + "/Bot" + pivot.Bot().XY() + "/left" + pivot.Left().XY());
+            Add(pivot.Top());
+            Add(pivot.Left());
+            Add(pivot.Right());
+            Add(pivot.Bot());
+        }
+
+        public Cell GetCellCoordinates(GameObject cell) {
             //char[] separatingChars = { '#', ':' };
             //var coordinates = cell.name.Split(separatingChars);
             //var x = Convert.ToInt32(coordinates[1]);
             //var y = Convert.ToInt32(coordinates[2]);
             var x = cell.GetComponent<TileInfo>().X;
             var y = cell.GetComponent<TileInfo>().Y;
-            return new Vector2(x, y);
+            return new Cell(x, y);
         }
 
         public void CheckBounds(GameObject tileToCheck) {
             var tilePos = GetCellCoordinates(tileToCheck);
-            if ((int)tilePos.x == _minX) AddCellsLeft();
-            if ((int)tilePos.x == _maxX) AddCellsRight();
-            if ((int)tilePos.y == _minY) AddCellsBot();
-            if ((int)tilePos.y == _maxY) AddCellsTop();
+            if (tilePos.X == _minX) AddCellsLeft();
+            if (tilePos.X == _maxX) AddCellsRight();
+            if (tilePos.Y == _minY) AddCellsBot();
+            if (tilePos.Y == _maxY) AddCellsTop();
         }
 
-        private void AddCell(int x, int y) {
-            var tile = new GameObject("cell#" + x + ":" + y);
+        private void AddCell(Cell v) {
+            var tile = new GameObject("cell#" + v.X + ":" + v.Y);
             tile.transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             tile.AddComponent<SpriteRenderer>();
             tile.AddComponent<BoxCollider2D>();
@@ -61,40 +69,49 @@ namespace Code.Game
             tile.AddComponent<MouseOnGrid>();
             tile.AddComponent<TileInfo>();
             tile.GetComponent<TileInfo>().InitTile(0);
-            tile.GetComponent<TileInfo>().X = x;
-            tile.GetComponent<TileInfo>().Y = y;
-            var position = new Vector3(_gridX * x, _gridY * y, 0.0f);
+            tile.GetComponent<TileInfo>().X = v.X;
+            tile.GetComponent<TileInfo>().Y = v.Y;
+            var position = new Vector3(_gridX * v.X, _gridY * v.Y, 0.0f);
             tile.transform.position = position;
             tile.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("grid");
             tile.GetComponent<SpriteRenderer>().sortingOrder = 1 ;
             tile.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
         }
 
+        private bool Free(Cell v) {
+            var cell = GameObject.Find("cell#" + v.X + ":" + v.Y);
+            return cell == null;
+        }
+
+        private void Add(Cell v) {
+            if (Free(v)) AddCell(new Cell(v.X, v.Y));
+        }
+
         public void AddCellsTop() {
             _maxY++;
             for (var iX = _minX; iX <= _maxX; iX++){
-                AddCell(iX, _maxY);
+                AddCell(new Cell(iX, _maxY));
             }
         }
 
         public void AddCellsBot(){
             _minY--;
             for (var iX = _minX; iX <= _maxX; iX++){
-                AddCell(iX, _minY);
+                AddCell(new Cell(iX, _minY));
             }            
         }
 
         public void AddCellsLeft(){
             _minX--;
             for (var iY = _minY; iY <= _maxY; iY++){
-                AddCell(_minX, iY);
+                AddCell(new Cell(_minX, iY));
             }            
         }
 
         public void AddCellsRight(){
             _maxX++;
             for (var iY = _minY; iY <= _maxY; iY++){
-                AddCell(_maxX, iY);
+                AddCell(new Cell(_maxX, iY));
             }
         }
     }

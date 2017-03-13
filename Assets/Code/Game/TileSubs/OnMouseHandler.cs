@@ -45,26 +45,19 @@ namespace Code.Game.TileSubs {
             Object.Destroy(_tileOnMouse);
         }
 
+        // Вызывается из локальной игры
         public void Put(GameObject gridCell) {
-            gridCell.tag = GameRegulars.TileTag;
-            var cSprite = gridCell.GetComponent<SpriteRenderer>();
-            cSprite.sprite = GetSprite().sprite;
-            cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));
-            var cTileInfo = gridCell.GetComponent<TileInfo>();
-            cTileInfo.Rotates = GetTile().Rotates;
-            cTileInfo.InitTile(GetTile().Type);
-            cTileInfo.ApplyRotation();
-            Destroy();
-            Cursor.visible = true;
-            MainGame.Grid.CheckBounds(gridCell);
-            ScoreCalc.Count(gridCell);
+            ApplyPuting(gridCell);
             MainGame.UpdateLocalPlayer();
-            Tile.LastPlacedTile = gridCell;
         }
 
-        // for online game
-        public void Put(Vector2 v) {
-            var gridCell  = GameObject.Find("cell#" + v.x + ":" + v.y);
+        // Вызывается из сетевой игры
+        public void Put(Cell v) {
+            var gridCell  = GameObject.Find("cell#" + v.X + ":" + v.Y);
+            ApplyPuting(gridCell);
+        }
+
+        private void ApplyPuting(GameObject gridCell) {
             gridCell.tag = GameRegulars.TileTag;
             var cSprite = gridCell.GetComponent<SpriteRenderer>();
             cSprite.sprite = GetSprite().sprite;
@@ -76,10 +69,10 @@ namespace Code.Game.TileSubs {
             cTileInfo.ApplyRotation();
             Destroy();
             Cursor.visible = true;
-            MainGame.Grid.CheckBounds(gridCell);
+            //MainGame.Grid.CheckBounds(gridCell);
             ScoreCalc.Count(gridCell);
-
             Tile.LastPlacedTile = gridCell;
+            MainGame.Grid.Expand(Tile.GetCoordinates(gridCell));
         }
     }
 }

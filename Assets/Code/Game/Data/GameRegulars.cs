@@ -73,9 +73,9 @@ namespace Code.Game.Data {
         public static readonly Color FreeColor = new Color(1f, 1f, 1f, 0.5f);
         public static readonly Color BlankColor = new Color(1f, 1f, 1f, 0f);
 
-        public static readonly Color NormalColor = new Color(1.0F, 1.0F, 1.0F, 0.9F);
-        public static readonly Color CanAttachColor = new Color(0.6F, 1.0F, 0.2F, 0.8F);
-        public static readonly Color CantAttachlColor = new Color(1.0F, 0.2F, 0.2F, 0.4F);
+        public static readonly Color NormalColor = new Color(1.0F, 1.0F, 1.0F, 1.0F);
+        public static readonly Color CanAttachColor = new Color(0.6F, 1.0F, 0.2F, 0.9F);
+        public static readonly Color CantAttachlColor = new Color(1.0F, 0.18F, 0.18F, 0.8F);
         public const string ServerInfoColor = "146880";
         public const string ServerCountdownColor = "b5463b";
         public const string ServerGameLaunchingColor = "1c8205";

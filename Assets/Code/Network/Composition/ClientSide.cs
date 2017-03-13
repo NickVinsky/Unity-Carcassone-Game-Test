@@ -66,8 +66,12 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Text = text, Value = value});
         }
 
-        public void Action(Command command, Vector3 vect3) {
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vect3 = vect3});
+        public void Action(Command command, Vector3 vector) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vect3 = vector});
+        }
+
+        public void Action(Command command, Cell vector) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector});
         }
 
         public void UpdateScore() {

@@ -134,7 +134,7 @@ namespace Code.Network.Commands {
                     Tile.Highlight(m.Text, m.Value);
                     break;
                 case Command.PutTile:
-                    Tile.OnMouse.Put(m.Vect3);
+                    Tile.OnMouse.Put(m.Vector);
                     if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vect3);
                     break;
                 case Command.Follower:

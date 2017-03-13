@@ -67,6 +67,7 @@ namespace Code.Network.Commands {
         public byte Byte;
         public PlayerColor Color;
         public Vector3 Vect3;
+        public Cell Vector;
         //public Vector2 mousePosition;
     }
 }

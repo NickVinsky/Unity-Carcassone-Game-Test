@@ -230,7 +230,7 @@ namespace Code.Game.Building {
             // Проверка каждой из четырех сторон, начиная сверху
             for (byte i = 0; i < 4; i++) {
                 var side = (Side) i;
-                if (Tile.Nearby.Exist(v.X, v.Y, i)) {
+                if (Tile.Nearby.Exist(v, i)) {
                     var neighborTile = Tile.Nearby.GetLast();
                     foreach (var loc in neighborTile.GetLocations()) {
                         Connect(putedTile, side, loc);
