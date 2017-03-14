@@ -79,18 +79,16 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Byte = value});
         }
 
+        public void Action(Command command, Cell vector, int value) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Value = value});
+        }
+
         public void UpdateScore() {
             Send(NetCmd.RefreshScore, MyInfo());
         }
 
         public void SubtractFollower(PlayerColor playerColor) {
             Net.Client.Send(NetCmd.SubtractFollower, new NetPackPlayerColor{ Color = playerColor});
-        }
-
-        public void RemovePlacement(PlayerColor sender, FollowerLocation loc) {
-            var v = loc.Parent.IntVector();
-            var locId = loc.GetID();
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.RemovePlacement, Vector = v, Byte = (byte) locId, Color = sender});
         }
 
         public void RefreshInGamePlayersList(string m) {

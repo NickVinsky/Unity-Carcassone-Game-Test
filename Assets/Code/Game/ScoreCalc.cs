@@ -4,6 +4,7 @@ using Code.Game.Building;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
 using Code.Network;
+using Code.Network.Commands;
 using UnityEngine;
 using static Code.Network.PlayerSync;
 
@@ -67,17 +68,15 @@ namespace Code.Game {
         }
 
         public static void Monastery(Monastery monastery) {
-            if (monastery.Owner == PlayerInfo.Color) {
-                PlayerInfo.Score += 9;
-                PlayerInfo.FollowersNumber++;
-                MainGame.UpdateLocalPlayer();
-                Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);
-            }
+            var owner = monastery.Owner;
+            RemovePlacement(monastery);
+
+            var score = monastery.SurroundingsCount;
+
+            if (Net.Game.IsOnline() && Net.IsServer) AddScoreServer(owner, 1, 1, score);
+            if (owner == PlayerInfo.Color) AddScoreLocal(1, 1, score);
+
             monastery.Finished = true;
-        }
-
-        public static void RoadForce(Road road) {
-
         }
 
         public static void Road(Road road) {
@@ -113,10 +112,28 @@ namespace Code.Game {
                 foreach (var loc in tile.Get().GetLocations()) {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
                         construct.AddExtraPoints(loc);
-                        loc.RemovePlacement();
+                        if (Net.Game.IsOnline()) {
+                            Net.Client.Action(Command.RemovePlacement, tile, loc.GetID());
+                        } else {
+                            loc.RemovePlacement();
+                        }
                     }
                 }
             }
+        }
+
+        private static void RemovePlacement(Monastery monastery) {
+            if (Net.Game.IsOnline()) {
+                Net.Client.Action(Command.RemovePlacementMonk, monastery.Cell, monastery.ID);
+            } else {
+                Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);
+            }
+
+            /*(var locs = Tile.Get(monastery.Cell).GetLocations();
+            foreach (var loc in locs) {
+                if (loc.Type != Area.Monastery) continue;
+                loc.RemovePlacement();
+            }*/
         }
     }
 }

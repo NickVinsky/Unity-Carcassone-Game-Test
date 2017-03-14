@@ -26,6 +26,8 @@ namespace Code.Network.Commands {
         FinishTurn,
         AssignFollower,
         RemovePlacement,
+        RemovePlacementMonk,
+        BuilderCheck,
         NextPlayer
 }
 
@@ -67,7 +69,7 @@ namespace Code.Network.Commands {
 
     public class NetPackGame : MessageBase {
         public Command Command;
-        public bool CommandDone = false;
+        public bool Trigger = false;
         public string Text;
         public int Value;
         public byte Byte;

@@ -1,5 +1,7 @@
 ﻿using Code.Game.Data;
 using Code.Game.TileSubs;
+using Code.Network;
+using Code.Network.Commands;
 using UnityEngine;
 
 namespace Code.Game {
@@ -25,6 +27,8 @@ namespace Code.Game {
         public static TileInfo Get(string name) { return GameObject.Find(name).GetComponent<TileInfo>(); }
 
         public static TileInfo Get(Cell cell) { return GameObject.Find("cell#" + cell.X + ":" + cell.Y).GetComponent<TileInfo>(); }
+
+        public static GameObject GetGameObject(Cell cell) { return GameObject.Find("cell#" + cell.X + ":" + cell.Y); }
 
         public static Cell GetCoordinates(GameObject o) {
             var x = o.GetComponent<TileInfo>().X;
@@ -72,6 +76,7 @@ namespace Code.Game {
             var tp = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
             tp = new Vector3(tp.x, tp.y, 0f);
             OnMouse.SetPosition(tp);
+            if (Net.Game.IsOnline()) Net.Client.Action(Command.MouseCoordinates, tp);
         }
 
         public static void AttachToCoordinates(Vector3 t) {
@@ -97,12 +102,16 @@ namespace Code.Game {
             OnMouse.Get().transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             OnMouse.Get().AddComponent<SpriteRenderer>();
             OnMouse.Get().AddComponent<TileInfo>();
-            Cursor.visible = false;
             OnMouse.GetTile().InitTile(tileType);
             OnMouse.GetTile().Rotates = (sbyte) rotates;
             OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + tileType); // 80-All, 24-Vanilla
             OnMouse.GetSprite().sortingOrder = 3;
             Rotate.Sprite(rotates, OnMouse.Get());
+            if (Net.Game.IsOnline() && !Net.Game.MyTurn()) {
+                Cursor.visible = true;
+            } else {
+                Cursor.visible = false;
+            }
         }
 
         public static void Return() {

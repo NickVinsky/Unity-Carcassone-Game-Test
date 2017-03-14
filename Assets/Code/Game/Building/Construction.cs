@@ -14,7 +14,6 @@ namespace Code.Game.Building {
         public List<Cell> LinkedTiles { get; }
         public bool Finished { get; set; }
         public int ExtraPoints { get; protected set; }
-        //public bool WaitingForFollower { get; set; }
 
         protected Construction(int id, Cell v) {
             ID = id;

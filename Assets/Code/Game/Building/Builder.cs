@@ -4,6 +4,7 @@ using System.Linq;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
 using Code.Network;
+using Code.Network.Commands;
 using UnityEngine;
 
 namespace Code.Game.Building {
@@ -169,7 +170,7 @@ namespace Code.Game.Building {
             return monastery;
         }
         public static void SetOwner(FollowerLocation construct) {
-            Net.Client.ChatMessage("" + construct.GetOwner());
+            //Net.Client.ChatMessage("" + construct.GetOwner());
             switch (construct.Type) {
                 case Area.Field:
                     GetField(construct).SetOwner(construct);

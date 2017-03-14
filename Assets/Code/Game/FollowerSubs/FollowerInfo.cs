@@ -49,18 +49,6 @@ namespace Code.Game.FollowerSubs {
             }
         }
 
-        public void RefusePlacement() {
-            foreach (var loc in _possibleLocation) {
-                if (loc.Type != Area.Monastery) {
-                    var construct = Builder.GetConstruction(loc);
-                    //if (construct.WaitingForFollower) {
-                    //    construct.WaitingForFollower = false;
-                    //    construct.CalcNodesToFinish();
-                    //}
-                }
-            }
-        }
-
         public void Show(GameObject o, sbyte rotates) {
             foreach (var loc in _possibleLocation) {
                 loc.Show(o, rotates);

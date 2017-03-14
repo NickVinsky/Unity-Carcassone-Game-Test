@@ -249,11 +249,6 @@ namespace Code.Game {
 
         public void HideAll() {
             _follower.HideAll();
-            //RefusePlacement();
-        }
-
-        public void RefusePlacement() {
-            _follower.RefusePlacement();
         }
 
         public void RemovePlacement(int constructID) {

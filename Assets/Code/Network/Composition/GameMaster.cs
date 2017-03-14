@@ -76,7 +76,7 @@ namespace Code.Network.Composition {
                     }
                     break;
                 case GameStage.Finish:
-                    Net.Client.UpdateScore();
+                    //Net.Client.UpdateScore();
                     Net.Client.Action(Command.FinishTurn);
                     Stage = GameStage.Wait;
                     break;
@@ -154,6 +154,7 @@ namespace Code.Network.Composition {
             var i = Deck.GenerateIndex();
             Net.Client.Action(Command.TilePicked, i);
             AttachTileToMouse();
+            Tile.AttachToMouse();
             Stage = GameStage.PlacingTile;
         }
 

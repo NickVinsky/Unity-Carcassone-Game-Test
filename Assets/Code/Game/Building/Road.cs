@@ -28,7 +28,7 @@ namespace Code.Game.Building {
 
         private void FinalNodesCalcToFinish() {
             if (NodesToFinish == 0) {
-                if (Owners.Count == 0) return;
+                if (!HasOwner()) return;
                 CalcScore();
             }
         }

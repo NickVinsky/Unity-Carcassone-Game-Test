@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Linq;
-using Code.Game.Building;
 using Code.Game.Data;
 using Code.Network;
 using UnityEngine;
@@ -42,6 +40,8 @@ namespace Code.Game.FollowerSubs {
         public FollowerInfo Info { get; }
 
         public bool CoatOfArms { get; }
+
+        public string GetMeeplePos() { return "[" + _meeplePos.x + ";" + _meeplePos.y + "]"; }
 
         public FollowerLocation(TileInfo parent, FollowerInfo info, byte id, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
             Parent = parent;
@@ -110,7 +110,7 @@ namespace Code.Game.FollowerSubs {
         public byte[] GetNodes() { return _nodes; }
         public bool CompareID(byte id){ return id == _id;}
         public bool IsLinkedTo(int id) { return Link == id; }
-        public int GetID() { return _id; }
+        public byte GetID() { return _id; }
 
         public bool IsBarrier() {
             return _type == Area.Road;
@@ -153,7 +153,7 @@ namespace Code.Game.FollowerSubs {
         public PlayerColor GetOwner() { return _owner; }
 
         public void SetOwner(GameObject o, PlayerColor owner) {
-            if (owner == _owner) return;
+            //if (owner == _owner) return;
             PosFree = false;
             _owner = owner;
             ScoreCalc.ApplyOpponentFollower(this);
@@ -197,8 +197,16 @@ namespace Code.Game.FollowerSubs {
         }
 
         public void RemovePlacement() {
-            //if (Net.Game.IsOnline()) Net.Client.RemovePlacement(PlayerInfo.Color, this);
+            //{Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
+            //{Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
+            //Object.Destroy(_sprite.GetComponent<SpriteRenderer>());
+            //_sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+            //Object.DestroyImmediate(_sprite);
             Object.Destroy(_sprite);
+        }
+
+        public void RemoveSprite() {
+            Object.Destroy(_sprite, 2f);
         }
     }
 }

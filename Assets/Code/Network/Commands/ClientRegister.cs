@@ -1,9 +1,7 @@
-﻿using System;
-using Code.Game;
+﻿using Code.Game;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Attributes;
-using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using static Code.Network.PlayerSync;
@@ -138,10 +136,13 @@ namespace Code.Network.Commands {
                     if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vector);
                     break;
                 case Command.Follower:
-                    Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value);
+                    if (PlayerInfo.Color != m.Color) Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value);
                     break;
                 case Command.RemovePlacement:
-                    if (m.Color != PlayerInfo.Color) Tile.Get(m.Vector).GetLocation(m.Byte);
+                    Tile.Get(m.Vector).GetLocation(m.Byte).RemovePlacement();
+                    break;
+                case Command.RemovePlacementMonk:
+                    Tile.Get(m.Vector).RemovePlacement(m.Value);
                     break;
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;
