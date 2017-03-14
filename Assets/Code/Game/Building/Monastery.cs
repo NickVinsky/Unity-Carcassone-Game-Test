@@ -9,6 +9,7 @@ namespace Code.Game.Building {
         public Cell Cell { get; }
         public byte SurroundingsCount { get; set; }
         public PlayerColor Owner { get; set; }
+        public bool Finished { get; set; }
 
         public Monastery(int id, FollowerLocation loc) {
             ID = id;
@@ -29,11 +30,11 @@ namespace Code.Game.Building {
             var corner = Cell.Corner();
             for (var iX = 0; iX < 3; iX++) {
                 for (var iY = 0; iY < 3; iY++) {
-                    if (iX == 1 && iY == 1) continue;
+                    //if (iX == 1 && iY == 1) continue;
                     if (Tile.Exist(new Cell(corner, iX, iY))) SurroundingsCount++;
                 }
             }
-            if (SurroundingsCount != 8) return;
+            if (SurroundingsCount != 9) return;
             if (Owner == PlayerColor.NotPicked) return;
             CalcScore();
         }
@@ -46,10 +47,10 @@ namespace Code.Game.Building {
             Builder.Monasteries.Remove(this);
         }
 
-        public void Debugger(Area type) {
+        public void Debugger() {
             var s = Owner;
             var vs = "(" + Cell.X + ";" + Cell.Y + ")";
-            Debug.Log("[" + type + "#" + ID + "][" + SurroundingsCount + "] " + s + "/" + vs);
+            Debug.Log("[" + Type + "#" + ID + "][" + SurroundingsCount + "] " + s + "/" + vs);
         }
     }
 }

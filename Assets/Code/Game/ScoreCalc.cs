@@ -31,7 +31,7 @@ namespace Code.Game {
                 Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);
             }
             //Debug.logger.Log(LogType.Error, "Monastery Complited!!!");
-            monastery.Delete();
+            monastery.Finished = true;
         }
 
         public static void Road(Road road) {
@@ -49,7 +49,7 @@ namespace Code.Game {
                     MainGame.UpdateLocalPlayer();
                 }
             }
-            road.Delete();
+            road.Finished = true;
         }
 
         public static void City(City city) {
@@ -67,7 +67,7 @@ namespace Code.Game {
                     MainGame.UpdateLocalPlayer();
                 }
             }
-            city.Delete();
+            city.Finished = true;
         }
 
         private static byte[] OwnersArray(Construction construct) {

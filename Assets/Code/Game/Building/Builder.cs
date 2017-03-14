@@ -185,10 +185,10 @@ namespace Code.Game.Building {
         }
 
         private static void LogConstructions() {
-            foreach (var c in Cities) c.Debugger(Area.City);
-            foreach (var c in Roads) c.Debugger(Area.Road);
-            foreach (var c in Fields) c.Debugger(Area.Field);
-            foreach (var c in Monasteries) c.Debugger(Area.Monastery);
+            foreach (var c in Cities) c.Debugger();
+            foreach (var c in Roads) c.Debugger();
+            foreach (var c in Fields) c.Debugger();
+            foreach (var c in Monasteries) c.Debugger();
         }
 
         public static void Init() {

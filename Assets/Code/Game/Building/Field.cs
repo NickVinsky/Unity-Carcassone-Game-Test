@@ -7,8 +7,6 @@ namespace Code.Game.Building {
             Type = Area.Field;
         }
 
-        protected override bool Equals(Area type) { return type == Area.Field;}
-
         protected override void Merge(FollowerLocation construct) {
             base.Merge(construct);
             base.Merge(Builder.GetField(construct), construct);

@@ -3,10 +3,10 @@ using Code.Game.FollowerSubs;
 
 namespace Code.Game.Building {
     public class Road : Construction {
-        protected byte Plugs;
+        protected int NodesToFinish;
 
         public Road(int id, Cell v, FollowerLocation loc) : base(id, v) {
-            Plugs = (byte) loc.GetNodes().Length;
+            NodesToFinish = loc.GetNodes().Length;
             Type = Area.Road;
         }
 
@@ -15,7 +15,8 @@ namespace Code.Game.Building {
         }
 
         protected override void AddNodesToFinish(int value) {
-            if (value == 1) Plugs--;
+            NodesToFinish -= 2;
+            NodesToFinish += value;
         }
 
         protected override void CalcNodesToFinish() { FinalNodesCalcToFinish(); }
@@ -26,13 +27,11 @@ namespace Code.Game.Building {
         }
 
         private void FinalNodesCalcToFinish() {
-            if (Plugs == 0) {
+            if (NodesToFinish == 0) {
                 if (Owners.Count == 0) return;
                 CalcScore();
             }
         }
-
-        protected override bool Equals(Area type) { return type == Area.Road;}
 
         protected override void Merge(FollowerLocation construct) {
             base.Merge(construct);

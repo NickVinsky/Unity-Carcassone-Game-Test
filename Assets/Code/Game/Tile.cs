@@ -1,4 +1,5 @@
-﻿using Code.Game.Data;
+﻿using System.CodeDom.Compiler;
+using Code.Game.Data;
 using Code.Game.TileSubs;
 using UnityEngine;
 
@@ -79,36 +80,28 @@ namespace Code.Game {
         }
 
         public static void Pick() {
-            if (Deck.DeckIsEmpty()) return;
-            OnMouse.Create();
-            OnMouse.Get().transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
-            OnMouse.Get().AddComponent<SpriteRenderer>();
-            OnMouse.Get().AddComponent<TileInfo>();
-            Cursor.visible = false;
-
             var pickedTile = Deck.GetRandomTile();
-            pickedTile = Deck.Get(22);
+            //pickedTile = Deck.Get(22);
             var rotates = Rotate.Random();
-            OnMouse.GetTile().InitTile(pickedTile);
-            OnMouse.GetTile().Rotates = (sbyte) rotates;
-            OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + pickedTile); // 80-All, 24-Vanilla
-            OnMouse.GetSprite().sortingOrder = 3;
-            Rotate.Sprite(rotates, OnMouse.Get());
+            ApplyPicking(pickedTile, rotates);
         }
 
         public static void Pick(int index, byte rotates) {
+            var pickedTile = Deck.GetTile(index);
+            ApplyPicking(pickedTile, rotates);
+            OnMouse.Get().transform.position = new Vector3(Screen.width * 2, 0f, 0f);
+        }
+
+        private static void ApplyPicking(int tileType, byte rotates) {
             if (Deck.DeckIsEmpty()) return;
             OnMouse.Create();
             OnMouse.Get().transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             OnMouse.Get().AddComponent<SpriteRenderer>();
             OnMouse.Get().AddComponent<TileInfo>();
-            OnMouse.Get().transform.position = new Vector3(Screen.width * 2, 0f, 0f);
             Cursor.visible = false;
-
-            var pickedTile = Deck.GetTile(index);
-            OnMouse.GetTile().InitTile(pickedTile);
+            OnMouse.GetTile().InitTile(tileType);
             OnMouse.GetTile().Rotates = (sbyte) rotates;
-            OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + pickedTile); // 80-All, 24-Vanilla
+            OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + tileType); // 80-All, 24-Vanilla
             OnMouse.GetSprite().sortingOrder = 3;
             Rotate.Sprite(rotates, OnMouse.Get());
         }

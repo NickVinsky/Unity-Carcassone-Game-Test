@@ -10,8 +10,8 @@ namespace Code.Game.Building {
         public int ID { get; }
         protected int TilesMerged;
         public List<PlayerColor> Owners { get; }
-        protected bool Finished { get; }
         public List<Cell> LinkedTiles { get; }
+        public bool Finished { get; set; }
         public int ExtraPoints { get; protected set; }
 
         protected Construction(int id, Cell v) {
@@ -33,7 +33,10 @@ namespace Code.Game.Building {
         public void Add(FollowerLocation construct) {
             //Debug.Log("CELL " + construct.Parent.IntVector().XY());
             var LinkedConstruct = construct.Link;
-            if (LinkedConstruct == ID) return;
+            if (LinkedConstruct == ID) {
+                AddNodesToFinish(0);
+                return;
+            }
             if (LinkedConstruct == -1) {
                 construct.Link = ID;
                 //AddExtraPoints(construct);
@@ -60,7 +63,7 @@ namespace Code.Game.Building {
 
         protected virtual void MergeExtraPoints(int value){}
 
-        protected virtual bool Equals(Area type) { return false; }
+        protected bool Equals(Area type) { return type == Type;}
 
         protected virtual void Delete(Construction construct) {}
 
@@ -87,10 +90,10 @@ namespace Code.Game.Building {
             Delete(former);
         }
 
-        public void Debugger(Area type) {
+        public void Debugger() {
             var s = Owners.Aggregate("", (current, t) => current + ", " + t);
             var vs = LinkedTiles.Aggregate(string.Empty, (current, v) => current + "(" + v.X + ";" + v.Y + ")");
-            Debug.Log("[" + type + "#" + ID + "][" + LinkedTiles.Count + "] " + s + "/" + vs);
+            Debug.Log("[" + Type + "#" + ID + "][" + LinkedTiles.Count + "] " + s + "/" + vs);
         }
     }
 }

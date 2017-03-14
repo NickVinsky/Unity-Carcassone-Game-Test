@@ -18,7 +18,7 @@ namespace Code.Game.Building {
         protected override void AddNodesToFinish(int value) {
             NodesToFinish -= 2;
             NodesToFinish += value;
-            Debug.Log("City#" + ID + " AddNodesToFinish => NodesToFinish = " + NodesToFinish);
+            //Debug.Log("City#" + ID + " AddNodesToFinish => NodesToFinish = " + NodesToFinish);
         }
 
         protected override void CalcNodesToFinish() { FinalNodesCalcToFinish(); }
@@ -33,7 +33,7 @@ namespace Code.Game.Building {
                 if (Owners.Count == 0) return;
                 CalcScore();
             }
-            Debug.Log("City#" + ID + " CalcNodesToFinish => NodesToFinish = " + NodesToFinish);
+            //Debug.Log("City#" + ID + " CalcNodesToFinish => NodesToFinish = " + NodesToFinish);
         }
 
         public override void AddExtraPoints(FollowerLocation loc) {
@@ -41,8 +41,6 @@ namespace Code.Game.Building {
         }
 
         protected override void MergeExtraPoints(int value) { ExtraPoints += value; }
-
-        protected override bool Equals(Area type) { return type == Area.City;}
 
         protected override void Merge(FollowerLocation construct) {
             base.Merge(construct);
