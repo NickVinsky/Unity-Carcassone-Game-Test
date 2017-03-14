@@ -222,7 +222,7 @@ namespace Code.Game.Building {
             }
         }
 
-        private static byte[] FindCommonNodes(FollowerLocation pLoc, FollowerLocation nLoc, Side nSide) {
+        /*private static byte[] FindCommonNodes(FollowerLocation pLoc, FollowerLocation nLoc, Side nSide) {
             var pattern = ApplyPattern(pLoc.Type, Tile.Nearby.GetOppositeSide(nSide));
             var reversedNLoc = Opposite(nLoc);
             var output = new List<byte>();
@@ -233,6 +233,16 @@ namespace Code.Game.Building {
                     output.Add(pNode);
             }
             return output.ToArray();
+        }*/
+
+        private static byte[] FindCommonNodes(FollowerLocation pLoc, FollowerLocation nLoc, Side nSide) {
+            var pattern = ApplyPattern(pLoc.Type, Tile.Nearby.GetOppositeSide(nSide));
+            var reversedNLoc = Opposite(nLoc);
+            return (from pNode in pLoc.GetNodes()
+                    let founded = reversedNLoc.Any(nNode => pNode == nNode)
+                    where founded
+                    where pattern.Any(p => pNode == p)
+                    select pNode).ToArray();
         }
 
         public static void Check(GameObject putedTileGameObject) { // putedTile - координаты только что поставленного тайла

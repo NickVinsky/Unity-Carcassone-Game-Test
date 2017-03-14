@@ -76,13 +76,12 @@ namespace Code.Game.FollowerSubs {
         }
 
         public bool Contains(byte[] pattern) {
-            //Debug.Log("## _nodes[" + Builder.ArrayToString(_nodes) + "]/ ##pattern[" + Builder.ArrayToString(pattern) + "]");
-            foreach (var p in pattern) {
+            /*foreach (var p in pattern) {
                 bool founded = _nodes.Any(n => n == p);
                 if (!founded) return false;
-            }
-            //Debug.Log("^true^");
-            return true;
+            }*/
+            //return pattern.All(p => _nodes.Contains(p));
+            return pattern.Select(p => _nodes.Any(n => n == p)).All(founded => founded);
         }
 
         public bool ContainsAnyOf(byte[] pattern) {
@@ -90,19 +89,21 @@ namespace Code.Game.FollowerSubs {
         }
 
         public bool ContainsOnly(byte[] pattern) {
-            foreach (var n in _nodes) {
+            /*foreach (var n in _nodes) {
                 bool founded = pattern.Any(p => n == p);
                 if (!founded) return false;
-            }
-            return true;
+            }*/
+            return _nodes.Select(n => pattern.Any(p => n == p)).All(founded => founded);
         }
 
         public bool Conform(byte[] pattern) {
-            foreach (var n in _nodes) {
+            /*foreach (var n in _nodes) {
                 bool founded = pattern.Any(p => n == p);
                 if (!founded) return false;
             }
-            return true;
+            return true;*/
+            //return _nodes.All(pattern.Contains);
+            return _nodes.Select(n => pattern.Any(p => n == p)).All(founded => founded);
         }
 
         public byte[] GetNodes() { return _nodes; }

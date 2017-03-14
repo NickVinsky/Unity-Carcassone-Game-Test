@@ -13,24 +13,61 @@ namespace Code.Game {
         // After tile putting
         public static void Count(GameObject cell) {
             Builder.Check(cell);
+            UpdateGUI();
         }
 
         //After follower assignment
         public static void ApplyFollower(FollowerLocation loc) {
             PlayerInfo.FollowersNumber--;
             Builder.SetOwner(loc);
+            UpdateGUI();
+        }
+
+        private static void UpdateGUI() {
+            if (Net.Game.IsOnline()) {
+                if (Net.IsServer)
+                    Net.Server.RefreshInGamePlayersList();
+            } else {
+                MainGame.UpdateLocalPlayer();
+            }
+        }
+
+        private static void AddScoreServer(PlayerColor playerColor, byte pFollowersQuantity, byte followersToControl, int score) {
+            var player = Net.Player.First(p => p.Color == playerColor);
+            var index = Net.Player.IndexOf(player);
+            if (pFollowersQuantity == followersToControl) {
+                player.Score += score;
+            }
+            player.FollowersNumber += pFollowersQuantity;
+            Net.Player[index] = player;
+        }
+
+        private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score) {
+            if (myFollowersQuantity == followersToControl) PlayerInfo.Score += score;
+            PlayerInfo.FollowersNumber += myFollowersQuantity;
+        }
+
+        private static void AddScore(byte[] ownerFollowers, byte followersToControl, int score) {
+            for (var i = 0; i < ownerFollowers.Length; i++) {
+                if (ownerFollowers[i] == 0) continue;
+                var curPlayer = (PlayerColor) i;
+                if (Net.Game.IsOnline()) {
+                    if (!Net.IsServer) continue;
+                    AddScoreServer(curPlayer, ownerFollowers[i], followersToControl, score);
+                    continue;
+                }
+                if (curPlayer != PlayerInfo.Color) continue;
+                AddScoreLocal(ownerFollowers[i], followersToControl, score);
+            }
         }
 
         public static void Monastery(Monastery monastery) {
-            //Debug.Log("SCORE COUNTER:");
-            //Debug.Log("Owner = " + Owner + "; XY " + Cell.XY() + "; ID#" + ID);
             if (monastery.Owner == PlayerInfo.Color) {
                 PlayerInfo.Score += 9;
                 PlayerInfo.FollowersNumber++;
                 MainGame.UpdateLocalPlayer();
                 Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);
             }
-            //Debug.logger.Log(LogType.Error, "Monastery Complited!!!");
             monastery.Finished = true;
         }
 
@@ -38,17 +75,9 @@ namespace Code.Game {
             var oArray = OwnersArray(road);
             RemovePlacementsAndCalcExtraPoints(road);
 
-            var max = oArray.Max();
             var score = road.LinkedTiles.Count;
+            AddScore(oArray, oArray.Max(), score);
 
-            for (var i = 0; i < oArray.Length; i++) {
-                if (oArray[i] == 0) continue;
-                if ((PlayerColor) i == PlayerInfo.Color) {
-                    PlayerInfo.Score += score;
-                    PlayerInfo.FollowersNumber += max;
-                    MainGame.UpdateLocalPlayer();
-                }
-            }
             road.Finished = true;
         }
 
@@ -56,17 +85,9 @@ namespace Code.Game {
             var oArray = OwnersArray(city);
             RemovePlacementsAndCalcExtraPoints(city);
 
-            var max = oArray.Max();
             var score = city.ExtraPoints + city.LinkedTiles.Count * 2;
+            AddScore(oArray, oArray.Max(), score);
 
-            for (var i = 0; i < oArray.Length; i++) {
-                if (oArray[i] == 0) continue;
-                if ((PlayerColor) i == PlayerInfo.Color) {
-                    PlayerInfo.Score += score;
-                    PlayerInfo.FollowersNumber += max;
-                    MainGame.UpdateLocalPlayer();
-                }
-            }
             city.Finished = true;
         }
 
