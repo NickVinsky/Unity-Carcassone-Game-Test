@@ -1,6 +1,5 @@
 ﻿using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using UnityEngine;
 
 namespace Code.Game.Building {
     public class City : Construction {
@@ -21,7 +20,7 @@ namespace Code.Game.Building {
             //Debug.Log("City#" + ID + " AddNodesToFinish => NodesToFinish = " + NodesToFinish);
         }
 
-        protected override void CalcNodesToFinish() { FinalNodesCalcToFinish(); }
+        public override void CalcNodesToFinish() { FinalNodesCalcToFinish(); }
 
         protected override void CalcNodesToFinish(int value) {
             AddNodesToFinish(value);

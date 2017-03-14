@@ -2,6 +2,7 @@
 using System.Linq;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
+using Code.Network;
 using UnityEngine;
 
 namespace Code.Game.Building {
@@ -13,6 +14,7 @@ namespace Code.Game.Building {
         public List<Cell> LinkedTiles { get; }
         public bool Finished { get; set; }
         public int ExtraPoints { get; protected set; }
+        //public bool WaitingForFollower { get; set; }
 
         protected Construction(int id, Cell v) {
             ID = id;
@@ -57,7 +59,7 @@ namespace Code.Game.Building {
 
         protected virtual void AddNodesToFinish(int value){}
 
-        protected virtual void CalcNodesToFinish(){}
+        public virtual void CalcNodesToFinish(){}
 
         protected virtual void CalcNodesToFinish(int value){}
 
@@ -93,7 +95,9 @@ namespace Code.Game.Building {
         public void Debugger() {
             var s = Owners.Aggregate("", (current, t) => current + ", " + t);
             var vs = LinkedTiles.Aggregate(string.Empty, (current, v) => current + "(" + v.X + ";" + v.Y + ")");
-            Debug.Log("[" + Type + "#" + ID + "][" + LinkedTiles.Count + "] " + s + "/" + vs);
+            var log = "[" + Type + "#" + ID + "][" + LinkedTiles.Count + "] " + s + "/" + vs;
+            Debug.Log(log);
+            if (Net.Game.IsOnline()) Net.Client.ChatMessage(log);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
+using Code.Network;
 using UnityEngine;
 
 namespace Code.Game.Building {
@@ -168,6 +169,7 @@ namespace Code.Game.Building {
             return monastery;
         }
         public static void SetOwner(FollowerLocation construct) {
+            Net.Client.ChatMessage("" + construct.GetOwner());
             switch (construct.Type) {
                 case Area.Field:
                     GetField(construct).SetOwner(construct);
@@ -183,8 +185,20 @@ namespace Code.Game.Building {
                     break;
             }
         }
+        public static Construction GetConstruction(FollowerLocation construct) {
+            switch (construct.Type) {
+                case Area.Field:
+                    return GetField(construct);
+                case Area.Road:
+                    return GetRoad(construct);
+                case Area.City:
+                    return GetCity(construct);
+            }
+            return null;
+        }
 
         private static void LogConstructions() {
+            if (true) return;
             foreach (var c in Cities) c.Debugger();
             foreach (var c in Roads) c.Debugger();
             foreach (var c in Fields) c.Debugger();
@@ -264,7 +278,7 @@ namespace Code.Game.Building {
             Create(putedTile, freeSides);
             MonasteriesChecker(putedTile);
             //Debug.Log("[=======================] NEXT TURN [=======================]");
-            //LogConstructions();
+            LogConstructions();
         }
 
         private static void MonasteriesChecker(TileInfo pivotTile) {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using Code.Game.Building;
 using Code.Game.Data;
@@ -152,9 +153,10 @@ namespace Code.Game.FollowerSubs {
         public PlayerColor GetOwner() { return _owner; }
 
         public void SetOwner(GameObject o, PlayerColor owner) {
+            if (owner == _owner) return;
             PosFree = false;
             _owner = owner;
-            Builder.SetOwner(this);
+            ScoreCalc.ApplyOpponentFollower(this);
             SpriteInit(o);
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
         }
@@ -195,6 +197,7 @@ namespace Code.Game.FollowerSubs {
         }
 
         public void RemovePlacement() {
+            //if (Net.Game.IsOnline()) Net.Client.RemovePlacement(PlayerInfo.Color, this);
             Object.Destroy(_sprite);
         }
     }

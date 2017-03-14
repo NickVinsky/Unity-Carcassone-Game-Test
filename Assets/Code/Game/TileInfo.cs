@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
+using Code.Network;
+using Code.Network.Commands;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Code.Game {
     public class TileInfo : MonoBehaviour {
@@ -20,6 +23,8 @@ namespace Code.Game {
         public Area GetSide(int side) { return _side[side]; }
 
         public List<FollowerLocation> GetLocations() { return _follower.GetLocations(); }
+
+        public FollowerLocation GetLocation(byte id) { return _follower.GetLocation(id); }
 
         public Cell IntVector() {
             return new Cell(X, Y);
@@ -244,6 +249,11 @@ namespace Code.Game {
 
         public void HideAll() {
             _follower.HideAll();
+            //RefusePlacement();
+        }
+
+        public void RefusePlacement() {
+            _follower.RefusePlacement();
         }
 
         public void RemovePlacement(int constructID) {

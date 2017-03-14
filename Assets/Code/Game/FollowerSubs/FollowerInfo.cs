@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Code.Game.Building;
 using Code.Game.Data;
 using UnityEngine;
 
@@ -32,6 +33,10 @@ namespace Code.Game.FollowerSubs {
             _parent = parent;
         }
 
+        public FollowerLocation GetLocation(byte id) {
+            return _possibleLocation.First(l => l.CompareID(id));
+        }
+
         public bool SideFree(byte side) {
             return _possibleLocation.Where(loc => loc.IsBarrier()).Any(loc => loc.GetNodes().Any(node => node == side));
         }
@@ -41,6 +46,18 @@ namespace Code.Game.FollowerSubs {
                 if (!loc.CompareID(id)) continue;
                 loc.SetOwner(o, owner);
                 return;
+            }
+        }
+
+        public void RefusePlacement() {
+            foreach (var loc in _possibleLocation) {
+                if (loc.Type != Area.Monastery) {
+                    var construct = Builder.GetConstruction(loc);
+                    //if (construct.WaitingForFollower) {
+                    //    construct.WaitingForFollower = false;
+                    //    construct.CalcNodesToFinish();
+                    //}
+                }
             }
         }
 
@@ -68,7 +85,6 @@ namespace Code.Game.FollowerSubs {
 
         public void RemovePlacement(int constructID) {
             foreach (var loc in _possibleLocation) {
-                Debug.Log(loc.Type + " " + loc.GetID());
                 if (!loc.IsLinkedTo(constructID)) continue;
                 loc.RemovePlacement();
                 return;

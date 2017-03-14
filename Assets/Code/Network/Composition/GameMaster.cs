@@ -137,10 +137,10 @@ namespace Code.Network.Composition {
             PutTileFromMouse(c);
         }
 
-        public void PostTilePut(Vector3 v) {
+        public void PostTilePut(Cell v) {
             if (PlayerSync.PlayerInfo.FollowersNumber > 0) {
                 Stage = GameStage.PlacingFollower;
-                var c  = GameObject.Find("cell#" + v.x + ":" + v.y);
+                var c  = GameObject.Find("cell#" + v.X + ":" + v.Y);
                 Tile.ShowPossibleFollowersLocations(c);
             } else {
                 Stage = GameStage.Finish;
@@ -182,7 +182,7 @@ namespace Code.Network.Composition {
         }
 
         private void ReturnTileToDeck() {
-            Stage = GameStage.Start;
+            //Stage = GameStage.Start;
         }
 
     }

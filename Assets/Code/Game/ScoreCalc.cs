@@ -18,7 +18,14 @@ namespace Code.Game {
 
         //After follower assignment
         public static void ApplyFollower(FollowerLocation loc) {
+            if (Net.Game.IsOnline())
+                Net.Client.SubtractFollower(loc.GetOwner());
             PlayerInfo.FollowersNumber--;
+            Builder.SetOwner(loc);
+            UpdateGUI();
+        }
+
+        public static void ApplyOpponentFollower(FollowerLocation loc) {
             Builder.SetOwner(loc);
             UpdateGUI();
         }
@@ -52,9 +59,7 @@ namespace Code.Game {
                 if (ownerFollowers[i] == 0) continue;
                 var curPlayer = (PlayerColor) i;
                 if (Net.Game.IsOnline()) {
-                    if (!Net.IsServer) continue;
-                    AddScoreServer(curPlayer, ownerFollowers[i], followersToControl, score);
-                    continue;
+                    if (Net.IsServer) AddScoreServer(curPlayer, ownerFollowers[i], followersToControl, score);
                 }
                 if (curPlayer != PlayerInfo.Color) continue;
                 AddScoreLocal(ownerFollowers[i], followersToControl, score);
@@ -69,6 +74,10 @@ namespace Code.Game {
                 Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);
             }
             monastery.Finished = true;
+        }
+
+        public static void RoadForce(Road road) {
+
         }
 
         public static void Road(Road road) {

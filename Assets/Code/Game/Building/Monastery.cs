@@ -1,5 +1,6 @@
 ﻿using Code.Game.Data;
 using Code.Game.FollowerSubs;
+using Code.Network;
 using UnityEngine;
 
 namespace Code.Game.Building {
@@ -50,7 +51,9 @@ namespace Code.Game.Building {
         public void Debugger() {
             var s = Owner;
             var vs = "(" + Cell.X + ";" + Cell.Y + ")";
-            Debug.Log("[" + Type + "#" + ID + "][" + SurroundingsCount + "] " + s + "/" + vs);
+            var log = "[" + Type + "#" + ID + "][" + SurroundingsCount + "] " + s + "/" + vs;
+            Debug.Log(log);
+            if (Net.Game.IsOnline()) Net.Client.ChatMessage(log);
         }
     }
 }

@@ -24,10 +24,16 @@ namespace Code.Network.Commands {
         MouseCoordinates,
         Follower,
         FinishTurn,
+        AssignFollower,
+        RemovePlacement,
         NextPlayer
 }
 
     public class NetPackBlank : MessageBase {}
+
+    public class NetPackPlayerColor : MessageBase {
+        public PlayerColor Color;
+    }
 
     public class NetPackPlayerInfo : MessageBase {
         public bool IsRegistred = false;

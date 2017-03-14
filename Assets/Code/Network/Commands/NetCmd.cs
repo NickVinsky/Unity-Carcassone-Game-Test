@@ -28,6 +28,7 @@
 
         public const short GameStartInfo = 71;
         public const short RefreshScore = 72;
-        // next 73
+        public const short SubtractFollower = 73;
+        // next 74
     }
 }

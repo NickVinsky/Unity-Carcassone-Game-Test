@@ -135,10 +135,13 @@ namespace Code.Network.Commands {
                     break;
                 case Command.PutTile:
                     Tile.OnMouse.Put(m.Vector);
-                    if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vect3);
+                    if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vector);
                     break;
                 case Command.Follower:
                     Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value);
+                    break;
+                case Command.RemovePlacement:
+                    if (m.Color != PlayerInfo.Color) Tile.Get(m.Vector).GetLocation(m.Byte);
                     break;
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;

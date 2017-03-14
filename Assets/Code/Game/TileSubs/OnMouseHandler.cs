@@ -28,7 +28,7 @@ namespace Code.Game.TileSubs {
         }
 
         public void SetPosition(Vector3 pos) {
-            //if (!Exist()) return;
+            if (!Exist()) return;
             _tileOnMouse.transform.position = pos;
         }
 

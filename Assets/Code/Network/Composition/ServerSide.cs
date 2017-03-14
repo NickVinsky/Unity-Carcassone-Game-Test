@@ -86,6 +86,14 @@ namespace Code.Network.Composition {
             }
         }
 
+        public void SubtractFollower(PlayerColor playerColor) {
+            var player = Net.Player.First(p => p.Color == playerColor);
+            var index = Net.Player.IndexOf(player);
+            player.FollowersNumber--;
+            Net.Player[index] = player;
+            RefreshInGamePlayersList();
+        }
+
         public void RefreshInGamePlayersList() {
             var colorsToDelete = new List<PlayerColor>();
             var l = string.Empty;

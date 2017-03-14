@@ -2,7 +2,6 @@
 using System.Linq;
 using Code.Game.Data;
 using Code.Network.Attributes;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Code.Network.Commands {
@@ -152,6 +151,11 @@ namespace Code.Network.Commands {
             Net.Server.RefreshInGamePlayersList();
         }
 
+        [ServerCommand(NetCmd.SubtractFollower)]
+        public static void SubtractFollower(NetworkMessage message) {
+            var pColor = message.ReadMessage<NetPackPlayerColor>().Color;
+            Net.Server.SubtractFollower(pColor);
+        }
 
         [ServerCommand(NetCmd.Game)]
         public static void GameHandler(NetworkMessage message) {
