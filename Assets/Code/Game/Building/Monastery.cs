@@ -1,10 +1,10 @@
 ﻿using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using Code.Network;
 using UnityEngine;
 
 namespace Code.Game.Building {
     public class Monastery {
+        public const Area Type = Area.Monastery;
         public int ID { get; }
         public Cell Cell { get; }
         public byte SurroundingsCount { get; set; }
@@ -39,19 +39,10 @@ namespace Code.Game.Building {
         }
 
         private void CalcScore() {
-            //Debug.Log("SCORE COUNTER:");
-            //Debug.Log("Owner = " + Owner + "; XY " + Cell.XY() + "; ID#" + ID);
-            if (Owner == PlayerSync.PlayerInfo.Color) {
-                PlayerSync.PlayerInfo.Score += 9;
-                PlayerSync.PlayerInfo.FollowersNumber++;
-                MainGame.UpdateLocalPlayer();
-                Tile.Get(Cell).RemovePlacement(ID);
-            }
-            //Debug.logger.Log(LogType.Error, "Monastery Complited!!!");
-            Delete();
+            ScoreCalc.Monastery(this);
         }
 
-        private void Delete() {
+        public void Delete() {
             Builder.Monasteries.Remove(this);
         }
 

@@ -1,44 +1,18 @@
-﻿using System;
-using System.Linq;
-using Code.Game.Data;
+﻿using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using Code.Network;
 using UnityEngine;
 
 namespace Code.Game.Building {
     public class City : Construction {
         protected int NodesToFinish;
 
-        public City(int id, Cell v, FollowerLocation loc) : base(id, v) { NodesToFinish = loc.GetNodes().Length; }
+        public City(int id, Cell v, FollowerLocation loc) : base(id, v) {
+            NodesToFinish = loc.GetNodes().Length;
+            Type = Area.City;
+        }
 
         private void CalcScore() {
-            var oArray = new byte[Enum.GetNames(typeof(PlayerColor)).Length - 1];
-            foreach (var owner in Owners) {
-                oArray[(int) owner]++;
-            }
-            //Debug.Log("Extra Points Before = " + ExtraPoints);
-            foreach (var tile in LinkedTiles) {
-                foreach (var loc in tile.Get().GetLocations()) {
-                    if (loc.Type == Area.City && loc.IsLinkedTo(ID)) {
-                        AddExtraPoints(loc);
-                        loc.RemovePlacement();
-                    }
-                }
-            }
-            var max = oArray.Max();
-            var score = ExtraPoints + LinkedTiles.Count * 2;
-            //Debug.Log("Score debug: Final = " + score + ", Extra = " + ExtraPoints + ", TilesCount = " + LinkedTiles.Count);
-
-            for (var i = 0; i < oArray.Length; i++) {
-                if (oArray[i] == 0) continue;
-                if ((PlayerColor) i == PlayerSync.PlayerInfo.Color) {
-                    PlayerSync.PlayerInfo.Score += score;
-                    PlayerSync.PlayerInfo.FollowersNumber += max;
-                    MainGame.UpdateLocalPlayer();
-                }
-            }
-            //Debug.logger.Log(LogType.Error, "City Complited!!!");
-            Delete(this);
+            ScoreCalc.City(this);
         }
 
         protected override void AddNodesToFinish(int value) {
@@ -62,7 +36,7 @@ namespace Code.Game.Building {
             Debug.Log("City#" + ID + " CalcNodesToFinish => NodesToFinish = " + NodesToFinish);
         }
 
-        protected override void AddExtraPoints(FollowerLocation loc) {
+        public override void AddExtraPoints(FollowerLocation loc) {
             if (loc.CoatOfArms) ExtraPoints += 2;
         }
 
@@ -77,6 +51,10 @@ namespace Code.Game.Building {
 
         protected override void Delete(Construction construct) {
             Builder.Cities.Remove((City)construct);
+        }
+
+        public void Delete() {
+            Builder.Cities.Remove(this);
         }
     }
 }

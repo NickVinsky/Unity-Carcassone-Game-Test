@@ -87,7 +87,7 @@ namespace Code.Game {
             Cursor.visible = false;
 
             var pickedTile = Deck.GetRandomTile();
-            //pickedTile = Deck.Get(2);
+            pickedTile = Deck.Get(22);
             var rotates = Rotate.Random();
             OnMouse.GetTile().InitTile(pickedTile);
             OnMouse.GetTile().Rotates = (sbyte) rotates;

@@ -6,12 +6,13 @@ using UnityEngine;
 
 namespace Code.Game.Building {
     public class Construction {
+        public Area Type { get; protected set; }
         public int ID { get; }
         protected int TilesMerged;
-        protected List<PlayerColor> Owners;
+        public List<PlayerColor> Owners { get; }
         protected bool Finished { get; }
-        protected List<Cell> LinkedTiles;
-        protected int ExtraPoints;
+        public List<Cell> LinkedTiles { get; }
+        public int ExtraPoints { get; protected set; }
 
         protected Construction(int id, Cell v) {
             ID = id;
@@ -49,7 +50,7 @@ namespace Code.Game.Building {
             CalcNodesToFinish();
         }
 
-        protected virtual void AddExtraPoints(FollowerLocation loc){}
+        public virtual void AddExtraPoints(FollowerLocation loc){}
 
         protected virtual void AddNodesToFinish(int value){}
 

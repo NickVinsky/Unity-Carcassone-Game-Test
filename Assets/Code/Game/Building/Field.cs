@@ -3,7 +3,9 @@ using Code.Game.FollowerSubs;
 
 namespace Code.Game.Building {
     public class Field : Construction {
-        public Field(int id, Cell v) : base(id, v) {}
+        public Field(int id, Cell v) : base(id, v) {
+            Type = Area.Field;
+        }
 
         protected override bool Equals(Area type) { return type == Area.Field;}
 

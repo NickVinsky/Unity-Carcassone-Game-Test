@@ -161,13 +161,10 @@ namespace Code.Game.FollowerSubs {
         public void SetOwner() {
             PosFree = false;
             _owner = PlayerInfo.Color;
-            Builder.SetOwner(this);
             if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
             if (_sprite.GetComponent<BoxCollider2D>() != null) {Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
-            //_sprite.GetComponent<BoxCollider2D>().enabled = false;
-            //_sprite.GetComponent<FollowerHook>().enabled = false;
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
-            ScoreCalc.ApplyFollower();
+            ScoreCalc.ApplyFollower(this);
             MainGame.ChangeGameStage(GameStage.Finish);
             if (Net.Game.IsOnline()) {
                 var name = _sprite.transform.parent.gameObject.name;
