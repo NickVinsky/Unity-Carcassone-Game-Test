@@ -1,6 +1,5 @@
 ﻿using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using Code.Network;
 
 namespace Code.Game.Building {
     public class City : Construction {

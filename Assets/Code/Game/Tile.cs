@@ -97,7 +97,7 @@ namespace Code.Game {
         }
 
         private static void ApplyPicking(int tileType, byte rotates) {
-            if (Deck.DeckIsEmpty()) return;
+            if (Deck.IsEmpty()) return;
             OnMouse.Create();
             OnMouse.Get().transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             OnMouse.Get().AddComponent<SpriteRenderer>();

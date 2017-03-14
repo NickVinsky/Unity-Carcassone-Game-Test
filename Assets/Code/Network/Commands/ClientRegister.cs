@@ -147,7 +147,12 @@ namespace Code.Network.Commands {
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;
                     Net.Game.CurrentPlayer = m.Color;
-                    Net.Game.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;
+                    if (Deck.LastTile()) {
+                        Net.Game.Stage = GameStage.End;
+                        if (Net.IsServer) ScoreCalc.Final();
+                    } else {
+                        Net.Game.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;
+                    }
                     if (Net.IsServer) Net.Server.RefreshInGamePlayersList();
                     break;
             }

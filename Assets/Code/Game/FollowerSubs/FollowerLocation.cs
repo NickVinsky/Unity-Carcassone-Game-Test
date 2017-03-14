@@ -205,8 +205,11 @@ namespace Code.Game.FollowerSubs {
             Object.Destroy(_sprite);
         }
 
-        public void RemoveSprite() {
-            Object.Destroy(_sprite, 2f);
+        public void MakeTransparent() {
+            if (_owner == PlayerColor.NotPicked) return;
+            var c = _sprite.GetComponent<SpriteRenderer>().color;
+            var transColor = new Color(c.r, c.g, c.b, 0.6f);
+            _sprite.GetComponent<SpriteRenderer>().color = Color.black;
         }
     }
 }

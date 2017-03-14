@@ -61,7 +61,7 @@ namespace Code.GUI {
                 return;
             }
             if (MainGame.Stage != GameStage.Start) return;
-            if (DeckIsEmpty()) return;
+            if (IsEmpty()) return;
             Tile.Pick();
             Tile.AttachToMouse();
             MainGame.Stage = GameStage.PlacingTile;

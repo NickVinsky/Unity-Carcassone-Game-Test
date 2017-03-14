@@ -4,7 +4,8 @@
         Start,
         PlacingTile,
         PlacingFollower,
-        Finish
+        Finish,
+        End
     }
 
     public enum Area {Empty, Field, Road, City, Monastery}

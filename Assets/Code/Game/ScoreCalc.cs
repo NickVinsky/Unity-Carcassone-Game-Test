@@ -11,6 +11,22 @@ using static Code.Network.PlayerSync;
 namespace Code.Game {
     public static class ScoreCalc {
 
+        public static void Final() {
+            foreach (var c in Builder.Monasteries) {
+                Monastery(c, true);
+            }
+            foreach (var c in Builder.Cities) {
+                City(c, true);
+            }
+            foreach (var c in Builder.Roads) {
+                Road(c, true);
+            }
+            foreach (var c in Builder.Fields) {
+                //Field(c, true);
+            }
+            //UpdateGUI();
+        }
+
         // After tile putting
         public static void Count(GameObject cell) {
             Builder.Check(cell);
@@ -19,8 +35,7 @@ namespace Code.Game {
 
         //After follower assignment
         public static void ApplyFollower(FollowerLocation loc) {
-            if (Net.Game.IsOnline())
-                Net.Client.SubtractFollower(loc.GetOwner());
+            if (Net.Game.IsOnline()) Net.Client.SubtractFollower(loc.GetOwner());
             PlayerInfo.FollowersNumber--;
             Builder.SetOwner(loc);
             UpdateGUI();
@@ -33,8 +48,7 @@ namespace Code.Game {
 
         private static void UpdateGUI() {
             if (Net.Game.IsOnline()) {
-                if (Net.IsServer)
-                    Net.Server.RefreshInGamePlayersList();
+                if (Net.IsServer) Net.Server.RefreshInGamePlayersList();
             } else {
                 MainGame.UpdateLocalPlayer();
             }
@@ -67,36 +81,47 @@ namespace Code.Game {
             }
         }
 
-        public static void Monastery(Monastery monastery) {
+        public static void Monastery(Monastery monastery, bool final = false) {
+            if (final && monastery.Finished) return;
             var owner = monastery.Owner;
-            RemovePlacement(monastery);
+            if (!final) RemovePlacement(monastery);
 
             var score = monastery.SurroundingsCount;
+            Net.Client.ChatMessage("Monastery score: " + score);
 
             if (Net.Game.IsOnline() && Net.IsServer) AddScoreServer(owner, 1, 1, score);
             if (owner == PlayerInfo.Color) AddScoreLocal(1, 1, score);
 
-            monastery.Finished = true;
+            if (!final) monastery.Finished = true;
         }
 
-        public static void Road(Road road) {
+        public static void Road(Road road, bool final = false) {
+            if (final && road.Finished) return;
             var oArray = OwnersArray(road);
-            RemovePlacementsAndCalcExtraPoints(road);
+            CalcExtraPoints(road);
 
             var score = road.LinkedTiles.Count;
+            Net.Client.ChatMessage("Road score: " + score);
             AddScore(oArray, oArray.Max(), score);
 
+            if (final) return;
             road.Finished = true;
+            RemovePlacements(road);
         }
 
-        public static void City(City city) {
+        public static void City(City city, bool final = false) {
+            if (final && city.Finished) return;
             var oArray = OwnersArray(city);
-            RemovePlacementsAndCalcExtraPoints(city);
+            CalcExtraPoints(city);
 
             var score = city.ExtraPoints + city.LinkedTiles.Count * 2;
+            if (final) score /= 2;
+            Net.Client.ChatMessage("City score: " + score);
             AddScore(oArray, oArray.Max(), score);
 
+            if (final) return;
             city.Finished = true;
+            RemovePlacements(city);
         }
 
         private static byte[] OwnersArray(Construction construct) {
@@ -107,16 +132,26 @@ namespace Code.Game {
             return oArray;
         }
 
-        private static void RemovePlacementsAndCalcExtraPoints(Construction construct) {
+        private static void RemovePlacements(Construction construct) {
             foreach (var tile in construct.LinkedTiles) {
                 foreach (var loc in tile.Get().GetLocations()) {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
-                        construct.AddExtraPoints(loc);
                         if (Net.Game.IsOnline()) {
                             Net.Client.Action(Command.RemovePlacement, tile, loc.GetID());
                         } else {
                             loc.RemovePlacement();
+                            //loc.MakeTransparent();
                         }
+                    }
+                }
+            }
+        }
+
+        private static void CalcExtraPoints(Construction construct) {
+            foreach (var tile in construct.LinkedTiles) {
+                foreach (var loc in tile.Get().GetLocations()) {
+                    if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
+                        construct.AddExtraPoints(loc);
                     }
                 }
             }

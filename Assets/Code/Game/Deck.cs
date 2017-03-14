@@ -42,8 +42,11 @@ namespace Code.Game {
         public static int DeckSize() {
             return _tilesPack.Count;
         }
-        public static bool DeckIsEmpty() {
+        public static bool IsEmpty() {
             return _tilesPack.Count == 0;
+        }
+        public static bool LastTile() {
+            return _tilesPack.Count == 65;
         }
         public static void InitVanillaDeck() {
             _tilesPack.OnAddOrRemove += EventOnAddOrRemove;

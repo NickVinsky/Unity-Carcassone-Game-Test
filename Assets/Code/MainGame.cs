@@ -126,7 +126,7 @@ namespace Code {
                     break;
                 case GameStage.Start:
                     if (Input.GetKeyDown(_k.PickTileFromDeck)) {
-                        if (!Deck.DeckIsEmpty()) {
+                        if (!Deck.IsEmpty()) {
                             Tile.Pick();
                             Tile.AttachToMouse();
                             Stage = GameStage.PlacingTile;

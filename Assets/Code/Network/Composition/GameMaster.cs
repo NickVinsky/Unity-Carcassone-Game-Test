@@ -52,8 +52,9 @@ namespace Code.Network.Composition {
                     if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
                     break;
                 case GameStage.Start:
+                    //if (Input.GetKeyDown(KeyCode.F)) ScoreCalc.Final();
                     if (Input.GetKeyDown(k.PickTileFromDeck)) {
-                        if (!Deck.DeckIsEmpty()) {
+                        if (!Deck.IsEmpty()) {
                             var i = Deck.GenerateIndex();
                             Net.Client.Action(Command.TilePicked, i, Tile.Rotate.Random());
                             AttachTileToMouse();
@@ -80,6 +81,9 @@ namespace Code.Network.Composition {
                     Net.Client.Action(Command.FinishTurn);
                     Stage = GameStage.Wait;
                     break;
+                case GameStage.End:
+                    //ScoreCalc.Final();
+                    break;
                 default:
                     //throw new ArgumentOutOfRangeException();
                     Debug.Log("ArgumentOutOfRangeException");
@@ -87,6 +91,7 @@ namespace Code.Network.Composition {
             }
 
             #region OldLogic
+
             /*if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
 
             if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return;  // Проверка - мой ли сейчас ход
@@ -108,6 +113,7 @@ namespace Code.Network.Composition {
                     ReturnTileToDeck();
                 }
             }*/
+
             #endregion
         }
 
@@ -150,7 +156,7 @@ namespace Code.Network.Composition {
         public void DeckClick(Vector2 t, Vector2 m) {
             if (!MyTurn()) return;
             if (Stage != GameStage.Start) return;
-            if (Deck.DeckIsEmpty()) return;
+            if (Deck.IsEmpty()) return;
             var i = Deck.GenerateIndex();
             Net.Client.Action(Command.TilePicked, i);
             AttachTileToMouse();
