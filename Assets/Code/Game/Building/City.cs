@@ -10,6 +10,8 @@ namespace Code.Game.Building {
             Type = Area.City;
         }
 
+        public bool Finished() { return NodesToFinish == 0; }
+
         private void CalcScore() {
             ScoreCalc.City(this);
         }

@@ -100,6 +100,8 @@ namespace Code {
 
             //_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
+            if (Input.GetKey(KeyCode.Escape)) Application.Quit();
+
             if (!LobbyInspector.ChatField.GetComponent<InputField>().isFocused) {
                 if (Input.GetKey(_k.MoveCameraUp)) MoveCamera(false, true, 1);
                 if (Input.GetKey(_k.MoveCameraDown)) MoveCamera(false, true, -1);

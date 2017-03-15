@@ -46,7 +46,7 @@ namespace Code.Game {
             return _tilesPack.Count == 0;
         }
         public static bool LastTile() {
-            return _tilesPack.Count == 65;
+            return _tilesPack.Count == 1;
         }
         public static void InitVanillaDeck() {
             _tilesPack.OnAddOrRemove += EventOnAddOrRemove;

@@ -12,12 +12,12 @@ namespace Code.Game.Building {
         protected int TilesMerged;
         public List<PlayerColor> Owners { get; }
         public List<Cell> LinkedTiles { get; }
-        public bool Finished { get; set; }
+        public bool FinishedByPlayer { get; set; }
         public int ExtraPoints { get; protected set; }
 
         protected Construction(int id, Cell v) {
             ID = id;
-            Finished = false;
+            FinishedByPlayer = false;
             Owners = new List<PlayerColor>();
             LinkedTiles = new List<Cell> {v};
             TilesMerged = 1;

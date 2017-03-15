@@ -104,18 +104,28 @@ namespace Code.Network.Composition {
                 var pFollowersNumber = Convert.ToByte(char.GetNumericValue(p[2]));
                 var pScore = Convert.ToInt32(p.Substring(3, 4));
                 var pName = p.Substring(7);
+                if (o.transform.FindChild("Name").GetComponent<Text>().text == PlayerInfo.PlayerName) PlayerInfo.MySlotNumberInGame = i;
                 o.transform.FindChild("Name").GetComponent<Text>().text = pName;
                 o.transform.FindChild("Score").GetComponent<Text>().text = GameRegulars.ScoreText + pScore;
                 o.transform.FindChild("Meeple").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
+
+                if (PlayerInfo.MySlotNumberInGame == i) {
+                    o.transform.FindChild("Meeple").GetComponent<Image>().sprite = Resources.Load<Sprite>("MyMeeple");
+                } else {
+                    o.transform.FindChild("Meeple").GetComponent<Image>().sprite = Resources.Load<Sprite>("Meeple");
+                }
+
+
                 o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
                 o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
 
-                if (o.transform.FindChild("Name").GetComponent<Text>().text == PlayerInfo.PlayerName) PlayerInfo.MySlotNumberInGame = i;
+
 
                 if (pMoves) {
                     o.GetComponent<Image>().color = GameRegulars.CurMovingPlayerColor;
                 } else {
-                    o.GetComponent<Image>().color = PlayerInfo.MySlotNumberInGame == i ? GameRegulars.YourColor : GameRegulars.BlankColor;
+                    o.GetComponent<Image>().color = GameRegulars.BlankColor;
+                    //o.GetComponent<Image>().color = PlayerInfo.MySlotNumberInGame == i ? GameRegulars.YourColor : GameRegulars.BlankColor;
                 }
 
 

@@ -68,8 +68,8 @@ namespace Code.Game.Data {
         public static readonly Color PlayerBlack = Color.black;
 
         public static readonly Color BlackColor = Color.black;
-        public static readonly Color CurMovingPlayerColor = new Color(0.89f, 0.89f, 0.09f, 0.58f);
-        public static readonly Color YourColor = new Color(0.2f, 0.4f, 0.24f, 0.2f);
+        public static readonly Color CurMovingPlayerColor = new Color(0.89f, 0.89f, 0.09f, 0.68f);
+        public static readonly Color YourColor = new Color(0.2f, 0.45f, 0.24f, 0.24f);
         public static readonly Color FreeColor = new Color(1f, 1f, 1f, 0.5f);
         public static readonly Color BlankColor = new Color(1f, 1f, 1f, 0f);
 

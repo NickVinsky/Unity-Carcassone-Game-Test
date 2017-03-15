@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using Code.Network;
-using Code.Network.Commands;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace Code.Game {
     public class TileInfo : MonoBehaviour {
@@ -30,6 +27,11 @@ namespace Code.Game {
             return new Cell(X, Y);
         }
 
+        private byte[] A(byte a) { return new[] {a}; }
+        private byte[] A(byte a, byte b) { return new[] {a, b}; }
+        private byte[] A(byte a, byte b, byte c) { return new[] {a, b, c}; }
+        private byte[] A(byte a, byte b, byte c, byte d) { return new[] {a, b, c, d}; }
+
         public void InitTile(int type) {
             Type = type;
             switch (Type) {
@@ -48,79 +50,79 @@ namespace Code.Game {
                     AddCities("0123", true, 0f, 0f);
                     break;
                 case 4:
-                    AddCities("013", 0f, 0.2f);
-                    AddFields("45", 0.052f, -0.302f);
+                    AddCities("013", 0f, 0.2f); // id# 0
+                    AddFields("45", 0.052f, -0.302f, A(0)); // linket to city#0 ^^
                     break;
                 case 5:
                     AddCities("013", true, 0f, 0.2f);
-                    AddFields("45", 0.052f, -0.302f);
+                    AddFields("45", 0.052f, -0.302f, A(0));
                     break;
                 case 6:
                     AddCities("013", 0f, 0.2f);
                     AddRoads("2", 0.024f, -0.349f);
-                    AddFields("4", 0.25f, -0.444f);
-                    AddFields("5", -0.206f, -0.433f);
+                    AddFields("4", 0.25f, -0.444f, A(0));
+                    AddFields("5", -0.206f, -0.433f, A(0));
                     break;
                 case 7:
                     AddCities("013", true, 0f, 0.2f);
                     AddRoads("2", 0.024f, -0.349f);
-                    AddFields("4", 0.25f, -0.444f);
-                    AddFields("5", -0.206f, -0.433f);
+                    AddFields("4", 0.25f, -0.444f, A(0));
+                    AddFields("5", -0.206f, -0.433f, A(0));
                     break;
                 case 8:
                     AddCities("03", -0.144f, 0.395f);
-                    AddFields("2345", 0.128f, -0.051f);
+                    AddFields("2345", 0.128f, -0.051f, A(0));
                     break;
                 case 9:
                     AddCities("03", true, -0.144f, 0.395f);
-                    AddFields("2345", 0.128f, -0.051f);
+                    AddFields("2345", 0.128f, -0.051f, A(0));
                     break;
                 case 10:
                     AddCities("03", -0.144f, 0.395f);
                     AddRoads("12", 0.075f, -0.244f);
-                    AddFields("25", 0.195f, 0.122f);
+                    AddFields("25", 0.195f, 0.122f, A(0));
                     AddFields("34", 0.316f, -0.244f);
                     break;
                 case 11:
                     AddCities("03", true, -0.144f, 0.395f);
                     AddRoads("12", 0.075f, -0.244f);
-                    AddFields("25", 0.195f, 0.122f);
+                    AddFields("25", 0.195f, 0.122f, A(0));
                     AddFields("34", 0.316f, -0.244f);
                     break;
                 case 12:
                     AddCities("13", -0.064f, 0.083f);
-                    AddFields("01", 0.078f, 0.464f);
-                    AddFields("45", 0.042f, -0.31f);
+                    AddFields("01", 0.078f, 0.464f, A(0));
+                    AddFields("45", 0.042f, -0.31f, A(0));
                     break;
                 case 13:
                     AddCities("13", true, -0.064f, 0.083f);
-                    AddFields("01", 0.078f, 0.464f);
-                    AddFields("45", 0.042f, -0.31f);
+                    AddFields("01", 0.078f, 0.464f, A(0));
+                    AddFields("45", 0.042f, -0.31f, A(0));
                     break;
                 case 14:
                     AddCities("0", -0.021f, 0.423f);
                     AddCities("3", -0.477f, 0.05f);
-                    AddFields("2345", 0.095f, -0.089f);
+                    AddFields("2345", 0.095f, -0.089f, A(0, 1));
                     break;
                 case 15:
                     AddCities("0", -0.021f, 0.423f);
                     AddCities("2", 0f, -0.336f);
-                    AddFields("2367", 0f, 0f);
+                    AddFields("2367", 0f, 0f, A(0, 1));
                     break;
                 case 16:
                     AddCities("0", -0.021f, 0.423f);
-                    AddFields("234567", 0f, -0.073f);
+                    AddFields("234567", 0f, -0.073f, A(0));
                     break;
                 case 17:
                     AddCities("0", -0.102f, 0.436f);
                     AddRoads("23", -0.089f, -0.113f);
-                    AddFields("2347", 0.221f, 0.005f);
+                    AddFields("2347", 0.221f, 0.005f, A(0));
                     AddFields("56", -0.293f, -0.279f);
                     break;
                 case 18:
                     AddCities("0", 0.005f, 0.449f);
                     AddRoads("12", 0.066f, -0.1f);
-                    AddFields("2567", -0.216f, -0.012f);
+                    AddFields("2567", -0.216f, -0.012f, A(0));
                     AddFields("34", 0.286f, -0.268f);
                     break;
                 case 19:
@@ -128,14 +130,14 @@ namespace Code.Game {
                     AddRoads("1", 0.278f, -0.012f);
                     AddRoads("2", -0.02f, -0.274f);
                     AddRoads("3", -0.236f, 0.043f);
-                    AddFields("27", 0.019f, 0.131f);
+                    AddFields("27", 0.019f, 0.131f, A(0));
                     AddFields("34", 0.279f, -0.284f);
                     AddFields("56", -0.302f, -0.268f);
                     break;
                 case 20:
                     AddCities("0", 0.023f, 0.434f);
                     AddRoads("13", 0.06f, 0.094f);
-                    AddFields("27", 0.357f, 0.196f);
+                    AddFields("27", 0.357f, 0.196f, A(0));
                     AddFields("3456", -0.138f, -0.241f);
                     break;
                 case 21:
@@ -206,7 +208,7 @@ namespace Code.Game {
             _follower.AddLocation(this, Area.Road, nodes, meeplePos);
         }
 
-        private void AddFields(string s, float x, float y) {
+        private void AddFields(string s, float x, float y, byte[] linkToCity = null) {
             var meeplePos = new Vector2(x, y);
             var nodes = new List<byte>();
             var lastChar = 'E';
@@ -235,7 +237,7 @@ namespace Code.Game {
                 }
                 lastChar = c;
             }
-            _follower.AddLocation(this, Area.Field, nodes, meeplePos);
+            _follower.AddLocation(this, Area.Field, nodes, linkToCity, meeplePos);
         }
 
         public void AssignFollower(byte id) {

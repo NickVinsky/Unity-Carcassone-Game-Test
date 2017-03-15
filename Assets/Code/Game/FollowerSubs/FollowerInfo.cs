@@ -16,13 +16,19 @@ namespace Code.Game.FollowerSubs {
 
         public void AddLocation(TileInfo parent, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, coatOfArms, meeplePos));
+            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, coatOfArms, null, meeplePos));
+            _parent = parent;
+        }
+
+        public void AddLocation(TileInfo parent, Area type, List<byte> nodes, byte[] linkToCity, Vector2 meeplePos) {
+            var nextId = (byte)_possibleLocation.Count;
+            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, false, linkToCity, meeplePos));
             _parent = parent;
         }
 
         public void AddLocation(TileInfo parent, Area type, List<byte> nodes, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, false, meeplePos));
+            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, false, null, meeplePos));
             _parent = parent;
         }
 

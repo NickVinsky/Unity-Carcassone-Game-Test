@@ -12,6 +12,7 @@ namespace Code.Game.FollowerSubs {
         private Area _type;
         public Area Type {get { return _type; }}
         public int Link { get; set; }
+        public byte[] LinkedToCity { get; set; }
 
         private PlayerColor _owner = PlayerColor.NotPicked;
 
@@ -43,7 +44,7 @@ namespace Code.Game.FollowerSubs {
 
         public string GetMeeplePos() { return "[" + _meeplePos.x + ";" + _meeplePos.y + "]"; }
 
-        public FollowerLocation(TileInfo parent, FollowerInfo info, byte id, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
+        public FollowerLocation(TileInfo parent, FollowerInfo info, byte id, Area type, List<byte> nodes, bool coatOfArms, byte[] linkToCity, Vector2 meeplePos) {
             Parent = parent;
             Info = info;
             _id = id;
@@ -56,6 +57,7 @@ namespace Code.Game.FollowerSubs {
                 _nodes[i] = nodes[i];
             }
             Link = -1;
+            LinkedToCity = linkToCity;
             PosFree = true;
             if (_type == Area.Field && Contains(new byte[] {0, 1, 2, 3, 4, 5, 6, 7})) {
                 Filled = true;
@@ -72,6 +74,7 @@ namespace Code.Game.FollowerSubs {
             CoatOfArms = false;
             _meeplePos = meeplePos;
             Link = -1;
+            LinkedToCity = null;
             PosFree = true;
             Filled = false;
         }

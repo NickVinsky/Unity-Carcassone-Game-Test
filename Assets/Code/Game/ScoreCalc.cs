@@ -22,7 +22,7 @@ namespace Code.Game {
                 Road(c, true);
             }
             foreach (var c in Builder.Fields) {
-                //Field(c, true);
+                Field(c);
             }
             //UpdateGUI();
         }
@@ -84,10 +84,10 @@ namespace Code.Game {
         public static void Monastery(Monastery monastery, bool final = false) {
             if (final && monastery.Finished) return;
             var owner = monastery.Owner;
+            if (owner == PlayerColor.NotPicked) return;
             if (!final) RemovePlacement(monastery);
 
             var score = monastery.SurroundingsCount;
-            Net.Client.ChatMessage("Monastery score: " + score);
 
             if (Net.Game.IsOnline() && Net.IsServer) AddScoreServer(owner, 1, 1, score);
             if (owner == PlayerInfo.Color) AddScoreLocal(1, 1, score);
@@ -96,32 +96,57 @@ namespace Code.Game {
         }
 
         public static void Road(Road road, bool final = false) {
-            if (final && road.Finished) return;
+            if (final && road.FinishedByPlayer) return;
             var oArray = OwnersArray(road);
             CalcExtraPoints(road);
 
             var score = road.LinkedTiles.Count;
-            Net.Client.ChatMessage("Road score: " + score);
             AddScore(oArray, oArray.Max(), score);
 
             if (final) return;
-            road.Finished = true;
+            road.FinishedByPlayer = true;
             RemovePlacements(road);
         }
 
         public static void City(City city, bool final = false) {
-            if (final && city.Finished) return;
+            if (final && city.FinishedByPlayer) return;
             var oArray = OwnersArray(city);
             CalcExtraPoints(city);
 
             var score = city.ExtraPoints + city.LinkedTiles.Count * 2;
             if (final) score /= 2;
-            Net.Client.ChatMessage("City score: " + score);
             AddScore(oArray, oArray.Max(), score);
 
             if (final) return;
-            city.Finished = true;
+            city.FinishedByPlayer = true;
             RemovePlacements(city);
+        }
+
+        public static void Field(Field field) {
+            foreach (var linkedCell in field.LinkedTiles) {
+                var linkedTile = linkedCell.Get();
+                foreach (var loc in linkedTile.GetLocations()) {
+                    if (loc.Type != Area.Field) continue;
+                    if (loc.Link != field.ID) continue;
+
+                    if (loc.LinkedToCity == null) continue;
+                    foreach (var linkToCity in loc.LinkedToCity) {
+                        Net.Client.ChatMessage("linkToCity => " + linkToCity);
+                        var city = Builder.GetCity(linkedTile.GetLocation(linkToCity));
+                        if (!city.Finished()) continue;
+                        Net.Client.ChatMessage("finished");
+                        if (Enumerable.Contains(field.LinkedCities, (byte) city.ID)) continue;
+                        field.LinkedCities.Add(city.ID);
+                    }
+                }
+            }
+
+            Net.Client.ChatMessage("field.LinkedCities.Count: " + field.LinkedCities.Count);
+
+            var oArray = OwnersArray(field);
+
+            var score = field.LinkedCities.Count * 3;
+            AddScore(oArray, oArray.Max(), score);
         }
 
         private static byte[] OwnersArray(Construction construct) {

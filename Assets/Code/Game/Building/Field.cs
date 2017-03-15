@@ -1,8 +1,11 @@
-﻿using Code.Game.Data;
+﻿using System.Collections.Generic;
+using Code.Game.Data;
 using Code.Game.FollowerSubs;
 
 namespace Code.Game.Building {
     public class Field : Construction {
+        public List<int> LinkedCities = new List<int>();
+
         public Field(int id, Cell v) : base(id, v) {
             Type = Area.Field;
         }
