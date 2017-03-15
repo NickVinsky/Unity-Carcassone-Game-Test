@@ -131,17 +131,17 @@ namespace Code.Game {
 
                     if (loc.LinkedToCity == null) continue;
                     foreach (var linkToCity in loc.LinkedToCity) {
-                        Net.Client.ChatMessage("linkToCity => " + linkToCity);
+                        //Net.Client.ChatMessage("linkToCity => " + linkToCity);
                         var city = Builder.GetCity(linkedTile.GetLocation(linkToCity));
                         if (!city.Finished()) continue;
-                        Net.Client.ChatMessage("finished");
+                        //Net.Client.ChatMessage("finished");
                         if (Enumerable.Contains(field.LinkedCities, (byte) city.ID)) continue;
                         field.LinkedCities.Add(city.ID);
                     }
                 }
             }
 
-            Net.Client.ChatMessage("field.LinkedCities.Count: " + field.LinkedCities.Count);
+            //Net.Client.ChatMessage("field.LinkedCities.Count: " + field.LinkedCities.Count);
 
             var oArray = OwnersArray(field);
 

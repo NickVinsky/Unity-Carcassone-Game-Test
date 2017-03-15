@@ -65,6 +65,7 @@ namespace Code.Game {
         public static void SetStarting(int startTileType) {
             StartingTile = startTileType;
             var gridCell = GameObject.Find("cell#0:0");
+            Deck.Delete(StartingTile);
             gridCell.tag = GameRegulars.TileTag;
             gridCell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + StartingTile);
             gridCell.GetComponent<TileInfo>().Rotates = 0;
@@ -84,15 +85,15 @@ namespace Code.Game {
         }
 
         public static void Pick() {
-            var pickedTile = Deck.GetRandomTile();
+            var tileID = Deck.GetRandomTile();
             //pickedTile = Deck.Get(22);
             var rotates = Rotate.Random();
-            ApplyPicking(pickedTile, rotates);
+            ApplyPicking(tileID, rotates);
         }
 
         public static void Pick(int index, byte rotates) {
-            var pickedTile = Deck.GetTile(index);
-            ApplyPicking(pickedTile, rotates);
+            var tileID = Deck.GetTile(index);
+            ApplyPicking(tileID, rotates);
             OnMouse.Get().transform.position = new Vector3(Screen.width * 2, 0f, 0f);
         }
 
@@ -112,6 +113,7 @@ namespace Code.Game {
             } else {
                 Cursor.visible = false;
             }
+            Deck.DeleteLastPicked();
         }
 
         public static void Return() {

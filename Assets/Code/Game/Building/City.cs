@@ -1,5 +1,7 @@
 ﻿using Code.Game.Data;
 using Code.Game.FollowerSubs;
+using Code.Network;
+using UnityEngine;
 
 namespace Code.Game.Building {
     public class City : Construction {
@@ -30,6 +32,8 @@ namespace Code.Game.Building {
         }
 
         private void FinalNodesCalcToFinish() {
+            //Debug.Log("City#" + ID + " CalcNodesToFinish = " + NodesToFinish);
+            //Net.Client.ChatMessage("City#" + ID + "; N: " + NodesToFinish);
             if (NodesToFinish == 0) {
                 if (!HasOwner()) return;
                 CalcScore();

@@ -8,13 +8,14 @@ using Random = UnityEngine.Random;
 namespace Code.Game {
     public static class Deck {
         private static TilesPack<int> _tilesPack = new TilesPack<int>();
+        private static int _lastPickedIndex;
 
         public static void Add(int type) {
             _tilesPack.Add(type);
         }
 
         public static int GenerateIndex() {
-            var maxIndex = _tilesPack.Count - 1;
+            var maxIndex = _tilesPack.Count;
             var rnd = Random.Range(0, maxIndex);
             return rnd;
         }
@@ -22,21 +23,37 @@ namespace Code.Game {
         public static int GetRandomTile() {
             var rnd = GenerateIndex();
             int result = _tilesPack[rnd];
-            _tilesPack.RemoveAt(rnd);
+            _lastPickedIndex = rnd;
+            //_tilesPack.RemoveAt(rnd);
             return result;
         }
 
-        public static int Get(int tile) {
+        public static int Get(int tileId) {
             for (int i = 0; i < _tilesPack.Count; i++) {
-                if (_tilesPack[i] == tile) return _tilesPack[i];
+                if (_tilesPack[i] == tileId) return _tilesPack[i];
             }
             return 0;
         }
 
         public static int GetTile(int index) {
             int result = _tilesPack[index];
-            _tilesPack.RemoveAt(index);
+            _lastPickedIndex = index;
+            //_tilesPack.RemoveAt(index);
             return result;
+        }
+
+        public static void Delete(int tileId) {
+            for (var i = 0; i < _tilesPack.Count; i++) {
+                if (_tilesPack[i] != tileId) continue;
+                _tilesPack.RemoveAt(i);
+                return;
+            }
+        }
+
+        public static void DeleteLastPicked() { _tilesPack.RemoveAt(_lastPickedIndex); }
+
+        public static void DeleteFirst() {
+            _tilesPack.RemoveAt(0);
         }
 
         public static int DeckSize() {
@@ -70,7 +87,7 @@ namespace Code.Game {
             AddTilesToDeck(17, 3);
             AddTilesToDeck(18, 3);
             AddTilesToDeck(19, 3);
-            AddTilesToDeck(20, 3); // Starting Tile
+            AddTilesToDeck(20, 4); // Starting Tile
             AddTilesToDeck(21, 8);
             AddTilesToDeck(22, 9);
             AddTilesToDeck(23, 4);

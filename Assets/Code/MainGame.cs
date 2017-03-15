@@ -101,6 +101,7 @@ namespace Code {
             //_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             if (Input.GetKey(KeyCode.Escape)) Application.Quit();
+            if (Input.GetKey(KeyCode.O)) Deck.DeleteFirst();
 
             if (!LobbyInspector.ChatField.GetComponent<InputField>().isFocused) {
                 if (Input.GetKey(_k.MoveCameraUp)) MoveCamera(false, true, 1);
@@ -155,7 +156,13 @@ namespace Code {
                     break;
                 case GameStage.Finish:
                     UpdateLocalPlayer();
+                    if (Deck.IsEmpty()) {
+                        Stage = GameStage.End;
+                        ScoreCalc.Final();
+                    }
                     Stage = GameStage.Start;
+                    break;
+                case GameStage.End:
                     break;
                 default:
                     //throw new ArgumentOutOfRangeException();

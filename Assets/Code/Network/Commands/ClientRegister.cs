@@ -147,7 +147,7 @@ namespace Code.Network.Commands {
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;
                     Net.Game.CurrentPlayer = m.Color;
-                    if (Deck.LastTile()) {
+                    if (Deck.IsEmpty()) {
                         Net.Game.Stage = GameStage.End;
                         if (Net.IsServer) ScoreCalc.Final();
                     } else {

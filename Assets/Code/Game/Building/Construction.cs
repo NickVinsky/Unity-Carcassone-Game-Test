@@ -27,7 +27,7 @@ namespace Code.Game.Building {
 
         protected bool HasCell(Cell cell) { return Enumerable.Contains(LinkedTiles, cell); }
 
-        protected void LinkedTile(Cell cell) {
+        protected void LinkTile(Cell cell) {
             if (!HasCell(cell)) LinkedTiles.Add(cell);
         }
 
@@ -36,12 +36,11 @@ namespace Code.Game.Building {
             var LinkedConstruct = construct.Link;
             if (LinkedConstruct == ID) {
                 AddNodesToFinish(0);
-                return;
-            }
-            if (LinkedConstruct == -1) {
+                //return;
+            } else if (LinkedConstruct == -1) {
                 construct.Link = ID;
                 //AddExtraPoints(construct);
-                LinkedTile(construct.Parent.IntVector());
+                LinkTile(construct.Parent.IntVector());
                 CalcNodesToFinish(construct.GetNodes().Length);
             } else {
                 Merge(construct);
@@ -75,17 +74,18 @@ namespace Code.Game.Building {
 
         protected void Merge(Construction former, FollowerLocation formerLoc) {
             foreach (var tile in former.LinkedTiles) {
-                foreach (var loc in tile.Get().GetLocations()) {
-                    if (!Equals(loc.Type)) continue;
-                    if (loc.Link != former.ID) continue;
+                foreach (var fLoc in tile.Get().GetLocations()) {
+                    if (!Equals(fLoc.Type)) continue;
+                    if (fLoc.Link != former.ID) continue;
                     //Debug.logger.Log("MERGED " + loc.Link + " = > " + ID);
-                    loc.Link = ID;
+                    fLoc.Link = ID;
                     //AddExtraPoints(loc);
-                    LinkedTile(loc.Parent.IntVector());
-                    if (loc.GetOwner() != PlayerColor.NotPicked) Owners.Add(loc.GetOwner());
-                    AddNodesToFinish(loc.GetNodes().Length);
+                    LinkTile(fLoc.Parent.IntVector());
+                    if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwner());
+                    AddNodesToFinish(fLoc.GetNodes().Length);
                 }
             }
+            Debug.Log("ExtraPoints " + former.ExtraPoints);
             MergeExtraPoints(former.ExtraPoints);
             CalcNodesToFinish();
             Delete(former);
