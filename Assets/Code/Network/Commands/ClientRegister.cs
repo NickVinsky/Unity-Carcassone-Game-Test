@@ -2,6 +2,7 @@
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Attributes;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using static Code.Network.PlayerSync;
@@ -109,6 +110,14 @@ namespace Code.Network.Commands {
                     Net.Game.CurrentPlayer = m.Color;
                     PlayerInfo.FollowersNumber = GameRegulars.MaxFollowerNumbers;
                     PlayerInfo.Score = 0;
+                    SceneManager.LoadScene(GameRegulars.SceneGame);
+                    Net.Client.UpdateScore();
+                    Net.Game.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;
+                    Net.Game.GameStarted();
+                    Net.Client.Send(NetCmd.GameStartInfo, new NetPackChatMessage {RequesterID = PlayerInfo.ID});
+                    break;
+                case Command.PlayerReturn:
+                    Debug.Log("asdsad");
                     SceneManager.LoadScene(GameRegulars.SceneGame);
                     Net.Client.UpdateScore();
                     Net.Game.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;

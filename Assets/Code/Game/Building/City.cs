@@ -32,10 +32,6 @@ namespace Code.Game.Building {
         }
 
         private void FinalNodesCalcToFinish() {
-            if (Type == Area.City && Type == Area.Road)
-                Net.Client.ChatMessage(Type + "#" + ID + "[" + LinkedTiles.Count + "] e: " + Edges + " n: " + Nodes);
-            //Debug.Log(Type + "#" + ID + "[" + LinkedTiles.Count + "] e: " + Edges + " n: " + Nodes);
-
             if (2 * Edges != Nodes) return;
             if (!HasOwner()) return;
             CalcScore();

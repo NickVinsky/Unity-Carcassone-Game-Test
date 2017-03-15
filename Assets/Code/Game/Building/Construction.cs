@@ -45,7 +45,6 @@ namespace Code.Game.Building {
                 Merge(construct);
             }
             CalcNodesToFinish();
-            if (Type == Area.City) Debug.Log(Type + " Nodes = " + Nodes + ", Edges = " + Edges);
             if (HasOwner()) construct.PosFree = false;
         }
 
@@ -78,22 +77,16 @@ namespace Code.Game.Building {
                 foreach (var fLoc in tile.Get().GetLocations()) {
                     if (!Equals(fLoc.Type)) continue;
                     if (fLoc.Link != former.ID) continue;
-                    Debug.logger.Log("MERGED " + fLoc.Link + " = > " + ID + "; " + fLoc.GetNodes());
                     Edges++;
                     Nodes += fLoc.GetNodes().Length;
                     if (fLoc.Link != ID) {
 
                     }
                     fLoc.Link = ID;
-                    //AddExtraPoints(loc);
                     LinkTile(fLoc.Parent.IntVector());
                     if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwner());
-                    //AddNodesToFinish(fLoc.GetNodes().Length);
-                    Debug.Log("Merging");
                 }
             }
-            //Debug.Log("ExtraPoints " + former.ExtraPoints);
-            //MergeExtraPoints(former.ExtraPoints);
             Delete(former);
         }
 

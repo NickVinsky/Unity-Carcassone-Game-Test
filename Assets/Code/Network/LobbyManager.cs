@@ -87,6 +87,8 @@ namespace Code.Network {
 
             Net.Server.SendTo(conn.connectionId, NetCmd.ConnIDReceive, new NetPackPlayerInfo {ID = conn.connectionId});
             Net.Server.SendTo(conn.connectionId, NetCmd.ChatHistory, new NetPackChatMessage {Message = Net.Server.ChatHistory});
+
+            if (Net.Game.IsStarted()) Net.Server.SendTo(conn.connectionId, NetCmd.Game, new NetPackGame{Command = Command.PlayerReturn});
         }
 
         public override void OnServerDisconnect(NetworkConnection conn)
@@ -102,7 +104,7 @@ namespace Code.Network {
             var index = Net.Player.IndexOf(discPlayer);
             if (!Net.Game.IsStarted()) Net.Player.RemoveAt(index);
 
-            //Net.Server.ReformPlayersList();
+            Net.Server.ReformPlayersList();
         }
     }
 }

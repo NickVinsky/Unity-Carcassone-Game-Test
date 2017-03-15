@@ -13,6 +13,7 @@ namespace Code.Network.Commands {
     }
     public enum Command {
         Start,
+        PlayerReturn,
         NextTurnIs,
         RotateTile,
         PickTileFromDeck,

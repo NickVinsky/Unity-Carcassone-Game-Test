@@ -2,6 +2,7 @@
 using System.Linq;
 using Code.Game.Data;
 using Code.Network.Attributes;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Code.Network.Commands {
@@ -170,6 +171,9 @@ namespace Code.Network.Commands {
                 case Command.FinishTurn:
                     //Net.Server.SendToAll(NetCmd.Game, m);
                     Net.Server.NextPlayerTurn();
+                    break;
+                case Command.MouseCoordinates:
+                    Net.Server.SendToAll(NetCmd.Game, m, 1);
                     break;
                 default:
                     Net.Server.SendToAll(NetCmd.Game, m);

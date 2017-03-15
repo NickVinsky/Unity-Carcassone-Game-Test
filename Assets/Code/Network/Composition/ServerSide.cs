@@ -49,6 +49,10 @@ namespace Code.Network.Composition {
             NetworkServer.SendToAll(msgType, message);
         }
 
+        public void SendToAll(short msgType, MessageBase message, int channelId) {
+            NetworkServer.SendByChannelToAll(msgType, message, channelId);
+        }
+
         public void SendTo(int connId, short msgType, MessageBase message) {
             NetworkServer.SendToClient(connId, msgType, message);
         }
