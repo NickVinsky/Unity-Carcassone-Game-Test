@@ -1,7 +1,5 @@
 ﻿using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using Code.Network;
-using UnityEngine;
 
 namespace Code.Game.Building {
     public class City : Construction {
@@ -9,6 +7,7 @@ namespace Code.Game.Building {
 
         public City(int id, Cell v, FollowerLocation loc) : base(id, v) {
             NodesToFinish = loc.GetNodes().Length;
+            Nodes += loc.GetNodes().Length;
             Type = Area.City;
         }
 
@@ -21,7 +20,6 @@ namespace Code.Game.Building {
         protected override void AddNodesToFinish(int value) {
             NodesToFinish -= 2;
             NodesToFinish += value;
-            //Debug.Log("City#" + ID + " AddNodesToFinish => NodesToFinish = " + NodesToFinish);
         }
 
         public override void CalcNodesToFinish() { FinalNodesCalcToFinish(); }
@@ -32,13 +30,14 @@ namespace Code.Game.Building {
         }
 
         private void FinalNodesCalcToFinish() {
-            //Debug.Log("City#" + ID + " CalcNodesToFinish = " + NodesToFinish);
-            //Net.Client.ChatMessage("City#" + ID + "; N: " + NodesToFinish);
-            if (NodesToFinish == 0) {
-                if (!HasOwner()) return;
-                CalcScore();
-            }
-            //Debug.Log("City#" + ID + " CalcNodesToFinish => NodesToFinish = " + NodesToFinish);
+            if (2 * Edges != Nodes) return;
+            if (!HasOwner()) return;
+            CalcScore();
+
+            //if (NodesToFinish == 0) {
+            //    if (!HasOwner()) return;
+            //    CalcScore();
+            //}
         }
 
         public override void AddExtraPoints(FollowerLocation loc) {

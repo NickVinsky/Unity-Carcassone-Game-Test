@@ -9,18 +9,19 @@ namespace Code.Game.Building {
     public class Construction {
         public Area Type { get; protected set; }
         public int ID { get; }
-        protected int TilesMerged;
         public List<PlayerColor> Owners { get; }
         public List<Cell> LinkedTiles { get; }
         public bool FinishedByPlayer { get; set; }
         public int ExtraPoints { get; protected set; }
+
+        protected int Edges { get; set; }
+        protected int Nodes { get; set; }
 
         protected Construction(int id, Cell v) {
             ID = id;
             FinishedByPlayer = false;
             Owners = new List<PlayerColor>();
             LinkedTiles = new List<Cell> {v};
-            TilesMerged = 1;
         }
 
         protected bool HasOwner() { return Owners.Count > 0; }
@@ -32,19 +33,23 @@ namespace Code.Game.Building {
         }
 
         public void Add(FollowerLocation construct) {
-            //Debug.Log("CELL " + construct.Parent.IntVector().XY());
-            var LinkedConstruct = construct.Link;
-            if (LinkedConstruct == ID) {
-                AddNodesToFinish(0);
-                //return;
-            } else if (LinkedConstruct == -1) {
+            var linkedConstruct = construct.Link;
+            if (linkedConstruct == ID) {
+                Edges++;
+                Nodes += construct.GetNodes().Length;
+                //AddNodesToFinish(0);
+            } else if (linkedConstruct == -1) {
+                Edges++;
+                Nodes += construct.GetNodes().Length;
                 construct.Link = ID;
                 //AddExtraPoints(construct);
                 LinkTile(construct.Parent.IntVector());
-                CalcNodesToFinish(construct.GetNodes().Length);
+                //CalcNodesToFinish(construct.GetNodes().Length);
+                CalcNodesToFinish();
             } else {
                 Merge(construct);
             }
+            //Debug.Log(Type + " Nodes = " + Nodes + ", Edges = " + Edges);
             if (HasOwner()) construct.PosFree = false;
         }
 
@@ -83,10 +88,13 @@ namespace Code.Game.Building {
                     LinkTile(fLoc.Parent.IntVector());
                     if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwner());
                     AddNodesToFinish(fLoc.GetNodes().Length);
+                    Debug.Log("Merging");
+                    Edges++;
+                    Nodes += fLoc.GetNodes().Length;
                 }
             }
             Debug.Log("ExtraPoints " + former.ExtraPoints);
-            MergeExtraPoints(former.ExtraPoints);
+            //MergeExtraPoints(former.ExtraPoints);
             CalcNodesToFinish();
             Delete(former);
         }
