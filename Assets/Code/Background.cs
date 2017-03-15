@@ -10,17 +10,17 @@ namespace Code {
 
         // Use this for initialization
         void Start () {
-            float sW = Screen.width;
-            float sH = Screen.height;
+            float sW = 1920f; //Screen.width;
+            float sH = 1080f; //Screen.height;
             float bgW = GetComponent<RectTransform>().sizeDelta.x;
             float bgH = GetComponent<RectTransform>().sizeDelta.y;
             int maxX;
             int maxY;
 
-            maxX = (int) (sW / bgW);
-            if (Math.Abs(sW % bgW) > 0) maxX++;
-            maxY = (int) (sH / bgH);
-            if (Math.Abs(sH % bgH) > 0) maxY++;
+            maxX = (int) Math.Ceiling(sW / bgW);
+            //if (Math.Abs(sW % bgW) > 0) maxX++;
+            maxY = (int) Math.Ceiling(sH / bgH);
+            //if (Math.Abs(sH % bgH) > 0) maxY++;
 
             for (int i = 0; i < maxX; i++) {
                 for (int j = 0; j < maxY; j++) {
