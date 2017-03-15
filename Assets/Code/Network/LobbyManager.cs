@@ -100,9 +100,9 @@ namespace Code.Network {
 
             var discPlayer = Net.Player.First(p => p.ID == conn.connectionId);
             var index = Net.Player.IndexOf(discPlayer);
-            Net.Player.RemoveAt(index);
+            if (!Net.Game.IsStarted()) Net.Player.RemoveAt(index);
 
-            Net.Server.ReformPlayersList();
+            //Net.Server.ReformPlayersList();
         }
     }
 }

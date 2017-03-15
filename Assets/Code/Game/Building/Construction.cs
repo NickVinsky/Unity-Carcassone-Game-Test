@@ -36,20 +36,16 @@ namespace Code.Game.Building {
             var linkedConstruct = construct.Link;
             if (linkedConstruct == ID) {
                 Edges++;
-                Nodes += construct.GetNodes().Length;
-                //AddNodesToFinish(0);
             } else if (linkedConstruct == -1) {
                 Edges++;
                 Nodes += construct.GetNodes().Length;
                 construct.Link = ID;
-                //AddExtraPoints(construct);
                 LinkTile(construct.Parent.IntVector());
-                //CalcNodesToFinish(construct.GetNodes().Length);
-                CalcNodesToFinish();
             } else {
                 Merge(construct);
             }
-            //Debug.Log(Type + " Nodes = " + Nodes + ", Edges = " + Edges);
+            CalcNodesToFinish();
+            if (Type == Area.City) Debug.Log(Type + " Nodes = " + Nodes + ", Edges = " + Edges);
             if (HasOwner()) construct.PosFree = false;
         }
 
@@ -82,20 +78,22 @@ namespace Code.Game.Building {
                 foreach (var fLoc in tile.Get().GetLocations()) {
                     if (!Equals(fLoc.Type)) continue;
                     if (fLoc.Link != former.ID) continue;
-                    //Debug.logger.Log("MERGED " + loc.Link + " = > " + ID);
+                    Debug.logger.Log("MERGED " + fLoc.Link + " = > " + ID + "; " + fLoc.GetNodes());
+                    Edges++;
+                    Nodes += fLoc.GetNodes().Length;
+                    if (fLoc.Link != ID) {
+
+                    }
                     fLoc.Link = ID;
                     //AddExtraPoints(loc);
                     LinkTile(fLoc.Parent.IntVector());
                     if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwner());
-                    AddNodesToFinish(fLoc.GetNodes().Length);
+                    //AddNodesToFinish(fLoc.GetNodes().Length);
                     Debug.Log("Merging");
-                    Edges++;
-                    Nodes += fLoc.GetNodes().Length;
                 }
             }
-            Debug.Log("ExtraPoints " + former.ExtraPoints);
+            //Debug.Log("ExtraPoints " + former.ExtraPoints);
             //MergeExtraPoints(former.ExtraPoints);
-            CalcNodesToFinish();
             Delete(former);
         }
 

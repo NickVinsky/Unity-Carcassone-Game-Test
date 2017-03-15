@@ -84,6 +84,12 @@ namespace Code.Network.Commands {
         public static void FormPlayersList(NetworkMessage message) {
             var m = message.ReadMessage<NetPackPlayerInfo>();
             if (PlayerExist(m.PlayerName)) {
+                if (Net.Game.IsOnline()) {
+                    var curPlayer = Net.Player.First(p => p.PlayerName == m.PlayerName);
+                    curPlayer.ID = m.ID;
+                    FormAndSendPlayersList();
+                    return;
+                }
                 Net.Server.SendTo(m.ID, NetCmd.Err, new NetPackErr{Err = ErrType.PlayerNameOccupied});
                 return;
             }
@@ -186,6 +192,15 @@ namespace Code.Network.Commands {
 
         private static bool PlayerExist(string playerName) {
             return Net.Player.Any(p => p.PlayerName == playerName);
+        }
+
+        private static int PlayerIndex(string playerName) {
+            for (var i = 0; i < Net.Player.Count; i++) {
+                if (Net.Player[i].PlayerName == playerName) {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         private static bool AllIsReady() {
