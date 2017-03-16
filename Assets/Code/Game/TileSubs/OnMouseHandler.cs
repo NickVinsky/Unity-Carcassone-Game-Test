@@ -59,6 +59,7 @@ namespace Code.Game.TileSubs {
 
         private void ApplyPuting(GameObject gridCell) {
             gridCell.tag = GameRegulars.TileTag;
+            Object.Destroy(gridCell.GetComponent<BoxCollider2D>());
             var cSprite = gridCell.GetComponent<SpriteRenderer>();
             cSprite.sprite = GetSprite().sprite;
             cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));

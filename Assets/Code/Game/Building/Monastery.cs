@@ -12,7 +12,7 @@ namespace Code.Game.Building {
         public PlayerColor Owner { get; set; }
         public bool Finished { get; set; }
 
-        public Monastery(int id, FollowerLocation loc) {
+        public Monastery(int id, Location loc) {
             ID = id;
             Cell = loc.Parent.IntVector();
             Owner = PlayerColor.NotPicked;
@@ -20,21 +20,20 @@ namespace Code.Game.Building {
             SurroundingsCount = 0;
         }
 
-        public void SetOwner(FollowerLocation construct) {
+        public void SetOwner(Location construct) {
             Owner = construct.GetOwner();
             CalcSurroundings();
         }
 
         public void CalcSurroundings() {
-            //Debug.logger.Log(LogType.Error, "Init CalcSurroundings");
             SurroundingsCount = 0;
             var corner = Cell.Corner();
             for (var iX = 0; iX < 3; iX++) {
                 for (var iY = 0; iY < 3; iY++) {
-                    //if (iX == 1 && iY == 1) continue;
                     if (Tile.Exist(new Cell(corner, iX, iY))) SurroundingsCount++;
                 }
             }
+
             if (SurroundingsCount != 9) return;
             if (Owner == PlayerColor.NotPicked) return;
             CalcScore();

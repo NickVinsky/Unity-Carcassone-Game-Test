@@ -10,7 +10,7 @@ namespace Code.Game.Building {
             Type = Area.Field;
         }
 
-        protected override void Merge(FollowerLocation construct) {
+        protected override void Merge(Location construct) {
             base.Merge(construct);
             base.Merge(Builder.GetField(construct), construct);
         }

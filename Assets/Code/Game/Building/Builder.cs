@@ -114,7 +114,7 @@ namespace Code.Game.Building {
             }
             return output;
         }
-        private static byte[] Opposite(FollowerLocation loc) {
+        private static byte[] Opposite(Location loc) {
             var nodes = loc.GetNodes();
             var l = nodes.Length;
             var output = new byte[l];
@@ -142,123 +142,44 @@ namespace Code.Game.Building {
             }
             return output;
         }
-        public static City GetCity(FollowerLocation loc) {
+        public static City GetCity(Location loc) {
             var city = Cities.FirstOrDefault(p => p.ID == loc.Link);
             if (city != null) return city;
             Cities.Add(new City(Counter.Next(Area.City), loc.Parent.IntVector(), loc));
             loc.Link = Counter.Cities;
             return Cities.Last();
         }
-        public static Road GetRoad(FollowerLocation loc) {
+        public static Road GetRoad(Location loc) {
             var road = Roads.FirstOrDefault(p => p.ID == loc.Link);
             if (road != null) return road;
             Roads.Add(new Road(Counter.Next(Area.Road), loc.Parent.IntVector(), loc));
             loc.Link = Counter.Roads;
             return Roads.Last();
         }
-        public static Field GetField(FollowerLocation loc) {
+        public static Field GetField(Location loc) {
             var field = Fields.FirstOrDefault(p => p.ID == loc.Link);
             if (field != null) return field;
             Fields.Add(new Field(Counter.Next(Area.Field), loc.Parent.IntVector()));
             loc.Link = Counter.Fields;
             return Fields.Last();
         }
-        public static Monastery GetMonastery(FollowerLocation loc) {
+        public static Monastery GetMonastery(Location loc) {
             var monastery = Monasteries.FirstOrDefault(p => p.ID == loc.Link);
             return monastery;
         }
-        public static void SetOwner(FollowerLocation construct) {
-            //Net.Client.ChatMessage("" + construct.GetOwner());
-            switch (construct.Type) {
+        public static Construction GetConstruction(Location loc) {
+            switch (loc.Type) {
                 case Area.Field:
-                    GetField(construct).SetOwner(construct);
-                    break;
+                    return GetField(loc);
                 case Area.Road:
-                    GetRoad(construct).SetOwner(construct);
-                    break;
+                    return GetRoad(loc);
                 case Area.City:
-                    GetCity(construct).SetOwner(construct);
-                    break;
-                case Area.Monastery:
-                    GetMonastery(construct).SetOwner(construct);
-                    break;
-            }
-        }
-        public static Construction GetConstruction(FollowerLocation construct) {
-            switch (construct.Type) {
-                case Area.Field:
-                    return GetField(construct);
-                case Area.Road:
-                    return GetRoad(construct);
-                case Area.City:
-                    return GetCity(construct);
+                    return GetCity(loc);
             }
             return null;
         }
 
-        private static void LogConstructions() {
-            if (true) return;
-            foreach (var c in Cities) c.Debugger();
-            foreach (var c in Roads) c.Debugger();
-            foreach (var c in Fields) c.Debugger();
-            foreach (var c in Monasteries) c.Debugger();
-        }
-
-        public static void Init() {
-            var startingTile = Tile.GetStarting();
-            var v = startingTile.IntVector();
-            foreach (var loc in startingTile.GetLocations()) {
-                Add(loc, v);
-            }
-            LogConstructions();
-        }
-
-        private static void Add(FollowerLocation loc, Cell v) {
-            switch (loc.Type) {
-                case Area.Field:
-                    Fields.Add(new Field(Counter.Next(Area.Field), v));
-                    loc.Link = Counter.Fields;
-                    break;
-                case Area.Road:
-                    Roads.Add(new Road(Counter.Next(Area.Road), v, loc));
-                    loc.Link = Counter.Roads;
-                    break;
-                case Area.City:
-                    Cities.Add(new City(Counter.Next(Area.City), v, loc));
-                    loc.Link = Counter.Cities;
-                    break;
-                case Area.Monastery:
-                    if (loc.Link != -1) return;
-                    Monasteries.Add(new Monastery(Counter.Next(Area.Monastery), loc));
-                    loc.Link = Counter.Monasteries;
-                    break;
-            }
-        }
-
-        /*private static byte[] FindCommonNodes(FollowerLocation pLoc, FollowerLocation nLoc, Side nSide) {
-            var pattern = ApplyPattern(pLoc.Type, Tile.Nearby.GetOppositeSide(nSide));
-            var reversedNLoc = Opposite(nLoc);
-            var output = new List<byte>();
-            foreach (var pNode in pLoc.GetNodes()) {
-                bool founded = reversedNLoc.Any(nNode => pNode == nNode);
-                if (!founded) continue;
-                if (pattern.Any(p => pNode == p))
-                    output.Add(pNode);
-            }
-            return output.ToArray();
-        }*/
-
-        private static byte[] FindCommonNodes(FollowerLocation pLoc, FollowerLocation nLoc, Side nSide) {
-            var pattern = ApplyPattern(pLoc.Type, Tile.Nearby.GetOppositeSide(nSide));
-            var reversedNLoc = Opposite(nLoc);
-            return (from pNode in pLoc.GetNodes()
-                    let founded = reversedNLoc.Any(nNode => pNode == nNode)
-                    where founded
-                    where pattern.Any(p => pNode == p)
-                    select pNode).ToArray();
-        }
-
-        public static void Check(GameObject putedTileGameObject) { // putedTile - координаты только что поставленного тайла
+        public static void Assimilate(GameObject putedTileGameObject) { // putedTile - координаты только что поставленного тайла
             var v = Tile.GetCoordinates(putedTileGameObject);
             var putedTile = Tile.Get(putedTileGameObject);
             var freeSides = new List<byte>();
@@ -280,6 +201,73 @@ namespace Code.Game.Building {
             LogConstructions();
         }
 
+        public static void SetOwner(Location construct) {
+            //Net.Client.ChatMessage("" + construct.GetOwner());
+            switch (construct.Type) {
+                case Area.Field:
+                    GetField(construct).SetOwner(construct);
+                    break;
+                case Area.Road:
+                    GetRoad(construct).SetOwner(construct);
+                    break;
+                case Area.City:
+                    GetCity(construct).SetOwner(construct);
+                    break;
+                case Area.Monastery:
+                    GetMonastery(construct).SetOwner(construct);
+                    break;
+            }
+        }
+
+        private static void LogConstructions() {
+            if (true) return;
+            foreach (var c in Cities) c.Debugger();
+            foreach (var c in Roads) c.Debugger();
+            foreach (var c in Fields) c.Debugger();
+            foreach (var c in Monasteries) c.Debugger();
+        }
+
+        public static void Init() {
+            var startingTile = Tile.GetStarting();
+            var v = startingTile.IntVector();
+            foreach (var loc in startingTile.GetLocations()) {
+                Add(loc, v);
+            }
+            LogConstructions();
+        }
+
+        private static void Add(Location loc, Cell v) {
+            switch (loc.Type) {
+                case Area.Field:
+                    Fields.Add(new Field(Counter.Next(Area.Field), v));
+                    loc.Link = Counter.Fields;
+                    break;
+                case Area.Road:
+                    Roads.Add(new Road(Counter.Next(Area.Road), v, loc));
+                    loc.Link = Counter.Roads;
+                    break;
+                case Area.City:
+                    Cities.Add(new City(Counter.Next(Area.City), v, loc));
+                    loc.Link = Counter.Cities;
+                    break;
+                case Area.Monastery:
+                    if (loc.Link != -1) return;
+                    Monasteries.Add(new Monastery(Counter.Next(Area.Monastery), loc));
+                    loc.Link = Counter.Monasteries;
+                    break;
+            }
+        }
+
+        private static byte[] FindCommonNodes(Location pLoc, Location nLoc, Side nSide) {
+            var pattern = ApplyPattern(pLoc.Type, Tile.Nearby.GetOppositeSide(nSide));
+            var reversedNLoc = Opposite(nLoc);
+            return (from pNode in pLoc.GetNodes()
+                    let founded = reversedNLoc.Any(nNode => pNode == nNode)
+                    where founded
+                    where pattern.Any(p => pNode == p)
+                    select pNode).ToArray();
+        }
+
         private static void MonasteriesChecker(TileInfo pivotTile) {
             //Debug.Log("pivot " + pivotTile.IntVector().XY());
             var corner = pivotTile.IntVector().Corner();
@@ -297,7 +285,7 @@ namespace Code.Game.Building {
         }
 
 
-        private static void Connect(TileInfo pTile, Side side, FollowerLocation nLoc) {
+        private static void Connect(TileInfo pTile, Side side, Location nLoc) {
             //if (nLoc.Type == Area.Monastery) GetMonastery(nLoc).CalcSurroundings();
             foreach (var pLoc in pTile.GetLocations()) {
 
@@ -323,7 +311,7 @@ namespace Code.Game.Building {
             }
         }
 
-        private static void Link(FollowerLocation p, FollowerLocation n) {
+        private static void Link(Location p, Location n) {
             switch (p.Type) {
                 case Area.Field:
                     GetField(n).Add(p);

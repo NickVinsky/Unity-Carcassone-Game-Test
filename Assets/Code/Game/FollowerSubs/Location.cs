@@ -7,14 +7,16 @@ using static Code.Network.PlayerSync;
 using Object = UnityEngine.Object;
 
 namespace Code.Game.FollowerSubs {
-    public class FollowerLocation {
-        private byte _id;
-        private Area _type;
-        public Area Type {get { return _type; }}
-        public int Link { get; set; }
-        public byte[] LinkedToCity { get; set; }
+    public class Location {
+        public TileInfo Parent { get; }
+        public District District { get; }
 
-        private PlayerColor _owner = PlayerColor.NotPicked;
+        private readonly byte _id;
+        public Area Type { get; }
+
+        public int Link { get; set; }
+        public byte[] LinkedToCity { get; set; } // Указывает, с какими городами на текущем тайле соприкасается это поле
+        public bool CoatOfArms { get; }
 
         // Towns || Roads |
         // | 0 | || | 0 | |
@@ -28,27 +30,20 @@ namespace Code.Game.FollowerSubs {
         //    |6    3|
         //    | 5  4 |
         private byte[] _nodes;
-        public bool Filled { get; }
 
-        public bool Indexed { get; set; }
-
+        private PlayerColor _owner = PlayerColor.NotPicked;
         public bool PosFree { get; set; }
 
         private Vector2 _meeplePos;
         private GameObject _sprite;
 
-        public TileInfo Parent { get; }
-        public FollowerInfo Info { get; }
-
-        public bool CoatOfArms { get; }
-
         public string GetMeeplePos() { return "[" + _meeplePos.x + ";" + _meeplePos.y + "]"; }
 
-        public FollowerLocation(TileInfo parent, FollowerInfo info, byte id, Area type, List<byte> nodes, bool coatOfArms, byte[] linkToCity, Vector2 meeplePos) {
+        public Location(TileInfo parent, District district, byte id, Area type, List<byte> nodes, bool coatOfArms, byte[] linkToCity, Vector2 meeplePos) {
             Parent = parent;
-            Info = info;
+            District = district;
             _id = id;
-            _type = type;
+            Type = type;
             CoatOfArms = coatOfArms;
             _meeplePos = meeplePos;
             var nLen = nodes.Count;
@@ -59,25 +54,27 @@ namespace Code.Game.FollowerSubs {
             Link = -1;
             LinkedToCity = linkToCity;
             PosFree = true;
-            if (_type == Area.Field && Contains(new byte[] {0, 1, 2, 3, 4, 5, 6, 7})) {
-                Filled = true;
-            } else {
-                Filled = false;
-            }
         }
 
-        public FollowerLocation(TileInfo parent, FollowerInfo info, byte id, Area type, Vector2 meeplePos) {
+        public Location(TileInfo parent, District district, byte id, Area type, Vector2 meeplePos) {
             Parent = parent;
-            Info = info;
+            District = district;
             _id = id;
-            _type = type;
+            Type = type;
             CoatOfArms = false;
             _meeplePos = meeplePos;
             Link = -1;
             LinkedToCity = null;
             PosFree = true;
-            Filled = false;
         }
+
+        public byte[] GetNodes() { return _nodes; }
+        public bool CompareID(byte id){ return id == _id;}
+        public bool IsLinkedTo(int id) { return Link == id; }
+        public byte GetID() { return _id; }
+        public PlayerColor GetOwner() { return _owner; }
+
+        public bool IsBarrier() { return Type == Area.Road;}
 
         public bool Contains(byte[] pattern) {
             /*foreach (var p in pattern) {
@@ -110,20 +107,11 @@ namespace Code.Game.FollowerSubs {
             return _nodes.Select(n => pattern.Any(p => n == p)).All(founded => founded);
         }
 
-        public byte[] GetNodes() { return _nodes; }
-        public bool CompareID(byte id){ return id == _id;}
-        public bool IsLinkedTo(int id) { return Link == id; }
-        public byte GetID() { return _id; }
-
-        public bool IsBarrier() {
-            return _type == Area.Road;
-        }
-
         private byte Trim(byte node, byte rotate) {
             var rNode = node;
             byte cap, add;
-            if (_type != Area.Field) {
-                if (_type == Area.Road || _type == Area.City) {
+            if (Type != Area.Field) {
+                if (Type == Area.Road || Type == Area.City) {
                     cap = 3;
                     add = 1;
                 } else {
@@ -153,8 +141,6 @@ namespace Code.Game.FollowerSubs {
             _nodes = rNodes;
         }
 
-        public PlayerColor GetOwner() { return _owner; }
-
         public void SetOwner(GameObject o, PlayerColor owner) {
             //if (owner == _owner) return;
             PosFree = false;
@@ -167,15 +153,17 @@ namespace Code.Game.FollowerSubs {
         public void SetOwner() {
             PosFree = false;
             _owner = PlayerInfo.Color;
-            if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
-            if (_sprite.GetComponent<BoxCollider2D>() != null) {Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
+            //if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
+            //if (_sprite.GetComponent<BoxCollider2D>() != null) {Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
+            Object.Destroy(_sprite.GetComponent<Rigidbody2D>());
+            Object.Destroy(_sprite.GetComponent<BoxCollider2D>());
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
             ScoreCalc.ApplyFollower(this);
             MainGame.ChangeGameStage(GameStage.Finish);
-            if (Net.Game.IsOnline()) {
-                var name = _sprite.transform.parent.gameObject.name;
-                Net.Client.SendFollower(_owner, _id, name);
-            }
+
+            if (!Net.Game.IsOnline()) return;
+            var name = _sprite.transform.parent.gameObject.name;
+            Net.Client.SendFollower(_owner, _id, name);
         }
 
         public void Show(GameObject o, sbyte rotates) {
@@ -190,7 +178,7 @@ namespace Code.Game.FollowerSubs {
         }
 
         private void SpriteInit(GameObject o) {
-            _sprite = new GameObject {name = _type + "(" + _meeplePos.x + ";" + _meeplePos.y + ")"};
+            _sprite = new GameObject {name = Type + "(" + _meeplePos.x + ";" + _meeplePos.y + ")"};
             _sprite.transform.SetParent(o.transform);
             _sprite.transform.localScale = new Vector3(0.08f, 0.08f, 0);
             _sprite.transform.localPosition = _meeplePos;

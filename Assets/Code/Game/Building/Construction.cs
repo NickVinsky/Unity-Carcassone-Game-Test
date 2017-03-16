@@ -32,7 +32,7 @@ namespace Code.Game.Building {
             if (!HasCell(cell)) LinkedTiles.Add(cell);
         }
 
-        public void Add(FollowerLocation construct) {
+        public void Add(Location construct) {
             var linkedConstruct = construct.Link;
             if (linkedConstruct == ID) {
                 Edges++;
@@ -48,12 +48,12 @@ namespace Code.Game.Building {
             if (HasOwner()) construct.PosFree = false;
         }
 
-        public void SetOwner(FollowerLocation construct) {
+        public void SetOwner(Location construct) {
             Owners.Add(construct.GetOwner());
             CalcNodesToFinish();
         }
 
-        public virtual void AddExtraPoints(FollowerLocation loc){}
+        public virtual void AddExtraPoints(Location loc){}
 
         protected virtual void AddNodesToFinish(int value){}
 
@@ -67,12 +67,12 @@ namespace Code.Game.Building {
 
         protected virtual void Delete(Construction construct) {}
 
-        protected virtual void Merge(FollowerLocation construct) {
+        protected virtual void Merge(Location construct) {
             //base.Merge(construct);
             //base.Merge(Builder.Get<ConstructCollection>(construct), construct);
         }
 
-        protected void Merge(Construction former, FollowerLocation formerLoc) {
+        protected void Merge(Construction former, Location formerLoc) {
             foreach (var tile in former.LinkedTiles) {
                 foreach (var fLoc in tile.Get().GetLocations()) {
                     if (!Equals(fLoc.Type)) continue;

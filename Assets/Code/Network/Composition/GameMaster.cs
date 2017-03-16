@@ -22,6 +22,7 @@ namespace Code.Network.Composition {
         public void SetOnline() { _offline = false; }
         public void SetOffline() { _offline = true; }
         public bool IsOnline() { return !_offline; }
+        public bool IsOffline() { return _offline; }
 
         public void GameStarted() { _isStarted = true; }
         public void GameEnded() { _isStarted = false; }

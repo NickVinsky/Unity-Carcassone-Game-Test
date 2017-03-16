@@ -9,7 +9,7 @@ namespace Code.Game {
         public int X, Y;
 
         public int Type;
-        private FollowerInfo _follower = new FollowerInfo();
+        private District _follower = new District();
 
         private readonly Area[] _side = {Area.Empty, Area.Empty, Area.Empty, Area.Empty};
 
@@ -19,9 +19,9 @@ namespace Code.Game {
 
         public Area GetSide(int side) { return _side[side]; }
 
-        public List<FollowerLocation> GetLocations() { return _follower.GetLocations(); }
+        public List<Location> GetLocations() { return _follower.GetLocations(); }
 
-        public FollowerLocation GetLocation(byte id) { return _follower.GetLocation(id); }
+        public Location GetLocation(byte id) { return _follower.GetLocation(id); }
 
         public Cell IntVector() {
             return new Cell(X, Y);
@@ -265,7 +265,5 @@ namespace Code.Game {
         public void ApplyRotation() {
             _follower.RotateNodes((byte) Rotates);
         }
-
-        public FollowerLocation GetFilledLoc() { return _follower.GetFilled(); }
     }
 }

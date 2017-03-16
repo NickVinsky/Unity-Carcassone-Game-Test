@@ -12,36 +12,27 @@ namespace Code.Game {
     public static class ScoreCalc {
 
         public static void Final() {
-            foreach (var c in Builder.Monasteries) {
-                Monastery(c, true);
-            }
-            foreach (var c in Builder.Cities) {
-                City(c, true);
-            }
-            foreach (var c in Builder.Roads) {
-                Road(c, true);
-            }
-            foreach (var c in Builder.Fields) {
-                Field(c);
-            }
-            //UpdateGUI();
+            foreach (var c in Builder.Monasteries) Monastery(c, true);
+            foreach (var c in Builder.Cities) City(c, true);
+            foreach (var c in Builder.Roads) Road(c, true);
+            foreach (var c in Builder.Fields) Field(c);
         }
 
         // After tile putting
         public static void Count(GameObject cell) {
-            Builder.Check(cell);
+            Builder.Assimilate(cell);
             UpdateGUI();
         }
 
         //After follower assignment
-        public static void ApplyFollower(FollowerLocation loc) {
+        public static void ApplyFollower(Location loc) {
             if (Net.Game.IsOnline()) Net.Client.SubtractFollower(loc.GetOwner());
             PlayerInfo.FollowersNumber--;
             Builder.SetOwner(loc);
             UpdateGUI();
         }
 
-        public static void ApplyOpponentFollower(FollowerLocation loc) {
+        public static void ApplyOpponentFollower(Location loc) {
             Builder.SetOwner(loc);
             UpdateGUI();
         }

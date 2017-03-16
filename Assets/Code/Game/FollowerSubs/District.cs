@@ -4,41 +4,41 @@ using Code.Game.Data;
 using UnityEngine;
 
 namespace Code.Game.FollowerSubs {
-    public class FollowerInfo {
+    public class District {
         private TileInfo _parent;
-        private List<FollowerLocation> _possibleLocation = new List<FollowerLocation>();
+        private List<Location> _possibleLocation = new List<Location>();
 
         //private Follower _follower = Follower.None;
 
         //private GameObject _3DMeeple;
 
-        public List<FollowerLocation> GetLocations() { return _possibleLocation; }
+        public List<Location> GetLocations() { return _possibleLocation; }
 
         public void AddLocation(TileInfo parent, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, coatOfArms, null, meeplePos));
+            _possibleLocation.Add(new Location(parent, this, nextId, type, nodes, coatOfArms, null, meeplePos));
             _parent = parent;
         }
 
         public void AddLocation(TileInfo parent, Area type, List<byte> nodes, byte[] linkToCity, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, false, linkToCity, meeplePos));
+            _possibleLocation.Add(new Location(parent, this, nextId, type, nodes, false, linkToCity, meeplePos));
             _parent = parent;
         }
 
         public void AddLocation(TileInfo parent, Area type, List<byte> nodes, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, nodes, false, null, meeplePos));
+            _possibleLocation.Add(new Location(parent, this, nextId, type, nodes, false, null, meeplePos));
             _parent = parent;
         }
 
         public void AddLocation(TileInfo parent, Area type, Vector2 meeplePos) {
             var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new FollowerLocation(parent, this, nextId, type, meeplePos));
+            _possibleLocation.Add(new Location(parent, this, nextId, type, meeplePos));
             _parent = parent;
         }
 
-        public FollowerLocation GetLocation(byte id) {
+        public Location GetLocation(byte id) {
             return _possibleLocation.First(l => l.CompareID(id));
         }
 
@@ -89,7 +89,5 @@ namespace Code.Game.FollowerSubs {
                 loc.Rotate(rotate);
             }
         }
-
-        public FollowerLocation GetFilled() { return _possibleLocation.FirstOrDefault(loc => loc.Filled); }
     }
 }

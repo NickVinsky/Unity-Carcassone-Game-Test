@@ -27,6 +27,10 @@ namespace Code.Network.Composition {
             NetworkManager.singleton.networkAddress = Net.NetworkAddress;
             NetworkManager.singleton.networkPort = Net.NetworkPort;
             NetworkManager.singleton.StartClient();
+            Net.Register.InitClient();
+
+            Net.IsServer = false;
+            Net.Game.SetOnline();
         }
 
         public void Log(string message) {

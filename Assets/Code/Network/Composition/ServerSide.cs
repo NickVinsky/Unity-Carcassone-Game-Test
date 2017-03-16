@@ -36,6 +36,10 @@ namespace Code.Network.Composition {
         public void StartWithClient() {
             NetworkManager.singleton.networkPort = Net.NetworkPort;
             NetworkManager.singleton.StartHost();
+            Net.Register.Init();
+
+            Net.IsServer = true;
+            Net.Game.SetOnline();
         }
 
         public void Stop() {

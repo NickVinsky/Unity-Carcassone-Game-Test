@@ -5,7 +5,7 @@ namespace Code.Game.Building {
     public class Road : Construction {
         protected int NodesToFinish;
 
-        public Road(int id, Cell v, FollowerLocation loc) : base(id, v) {
+        public Road(int id, Cell v, Location loc) : base(id, v) {
             NodesToFinish = loc.GetNodes().Length;
             Nodes += loc.GetNodes().Length;
             Type = Area.Road;
@@ -31,14 +31,9 @@ namespace Code.Game.Building {
             if (2 * Edges != Nodes) return;
             if (!HasOwner()) return;
             CalcScore();
-
-            //if (NodesToFinish == 0) {
-            //    if (!HasOwner()) return;
-            //    CalcScore();
-            //}
         }
 
-        protected override void Merge(FollowerLocation construct) {
+        protected override void Merge(Location construct) {
             base.Merge(construct);
             base.Merge(Builder.GetRoad(construct), construct);
         }

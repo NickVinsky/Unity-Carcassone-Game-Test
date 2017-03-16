@@ -35,7 +35,7 @@ namespace Code.Game {
             return 0;
         }
 
-        public static int GetTile(int index) {
+        public static int GetTileByIndex(int index) {
             int result = _tilesPack[index];
             _lastPickedIndex = index;
             //_tilesPack.RemoveAt(index);

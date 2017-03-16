@@ -11,3 +11,5 @@ EditorBuildSettings:
     path: Assets/game.unity
   - enabled: 0
     path: Assets/testScene.unity
+  - enabled: 0
+    path: Assets/blank.unity

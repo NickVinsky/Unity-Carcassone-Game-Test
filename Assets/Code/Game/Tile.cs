@@ -65,6 +65,7 @@ namespace Code.Game {
         public static void SetStarting(int startTileType) {
             StartingTile = startTileType;
             var gridCell = GameObject.Find("cell#0:0");
+            Object.Destroy(gridCell.GetComponent<BoxCollider2D>());
             Deck.Delete(StartingTile);
             gridCell.tag = GameRegulars.TileTag;
             gridCell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Tiles/" + StartingTile);
@@ -92,7 +93,7 @@ namespace Code.Game {
         }
 
         public static void Pick(int index, byte rotates) {
-            var tileID = Deck.GetTile(index);
+            var tileID = Deck.GetTileByIndex(index);
             ApplyPicking(tileID, rotates);
             OnMouse.Get().transform.position = new Vector3(Screen.width * 2, 0f, 0f);
         }

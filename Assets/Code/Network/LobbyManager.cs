@@ -18,10 +18,7 @@ namespace Code.Network {
         public void HostGame() {
             Net.NetworkPort = Convert.ToInt32(HostPort.transform.FindChild("Text").GetComponent<Text>().text);
             Net.Server.StartWithClient();
-            Net.Register.Init();
-            Net.IsServer = true;
 
-            Net.Game.SetOnline();
             #region Old Register Initiation for Server
 
             //Net.Register.Add(NetCmd.ChatMessage, ServerRegister.ChatSendMessage, ClientRegister.ChatReceiveMessage);
@@ -39,10 +36,7 @@ namespace Code.Network {
             Net.NetworkAddress = IP.transform.FindChild("Text").GetComponent<Text>().text;
             Net.NetworkPort = Convert.ToInt32(JoinPort.transform.FindChild("Text").GetComponent<Text>().text);
             Net.Client.Start();
-            Net.Register.InitClient();
-            Net.IsServer = false;
 
-            Net.Game.SetOnline();
             #region Old Register Initiation for Client
             //Net.Register.AddToClient(NetCmd.ChatMessage, ClientRegister.ChatReceiveMessage);
             //Net.Register.AddToClient(NetCmd.ChatHistory, ClientRegister.ChatReceiveHistory);

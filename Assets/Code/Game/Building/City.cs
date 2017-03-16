@@ -1,13 +1,11 @@
 ﻿using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using Code.Network;
-using UnityEngine;
 
 namespace Code.Game.Building {
     public class City : Construction {
         protected int NodesToFinish;
 
-        public City(int id, Cell v, FollowerLocation loc) : base(id, v) {
+        public City(int id, Cell v, Location loc) : base(id, v) {
             NodesToFinish = loc.GetNodes().Length;
             Nodes += loc.GetNodes().Length;
             Type = Area.City;
@@ -35,20 +33,15 @@ namespace Code.Game.Building {
             if (2 * Edges != Nodes) return;
             if (!HasOwner()) return;
             CalcScore();
-
-            //if (NodesToFinish == 0) {
-            //    if (!HasOwner()) return;
-            //    CalcScore();
-            //}
         }
 
-        public override void AddExtraPoints(FollowerLocation loc) {
+        public override void AddExtraPoints(Location loc) {
             if (loc.CoatOfArms) ExtraPoints += 2;
         }
 
         protected override void MergeExtraPoints(int value) { ExtraPoints += value; }
 
-        protected override void Merge(FollowerLocation construct) {
+        protected override void Merge(Location construct) {
             base.Merge(construct);
             base.Merge(Builder.GetCity(construct), construct);
         }
