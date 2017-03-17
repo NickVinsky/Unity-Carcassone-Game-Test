@@ -14,5 +14,9 @@ namespace Code.Handlers {
         void Update () {
             _mainGame.Update();
         }
+
+        private void FixedUpdate() {
+            _mainGame.FixedUpdate();
+        }
     }
 }

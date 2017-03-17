@@ -36,5 +36,6 @@
         public const short ReturnIntoGame = 81;
         public const short GameData = 82;
         public const short TileCache = 83;
+        public const short TileCacheFinish = 84;
     }
 }

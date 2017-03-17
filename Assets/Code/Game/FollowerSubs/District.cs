@@ -14,27 +14,10 @@ namespace Code.Game.FollowerSubs {
 
         public List<Location> GetLocations() { return _possibleLocation; }
 
-        public void AddLocation(TileInfo parent, Area type, List<byte> nodes, bool coatOfArms, Vector2 meeplePos) {
-            var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new Location(parent, this, nextId, type, nodes, coatOfArms, null, meeplePos));
-            _parent = parent;
-        }
-
-        public void AddLocation(TileInfo parent, Area type, List<byte> nodes, byte[] linkToCity, Vector2 meeplePos) {
-            var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new Location(parent, this, nextId, type, nodes, false, linkToCity, meeplePos));
-            _parent = parent;
-        }
-
-        public void AddLocation(TileInfo parent, Area type, List<byte> nodes, Vector2 meeplePos) {
-            var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new Location(parent, this, nextId, type, nodes, false, null, meeplePos));
-            _parent = parent;
-        }
-
-        public void AddLocation(TileInfo parent, Area type, Vector2 meeplePos) {
-            var nextId = (byte)_possibleLocation.Count;
-            _possibleLocation.Add(new Location(parent, this, nextId, type, meeplePos));
+        public void AddLocation(TileInfo parent, LocationInfo locInfo) {
+            var nextId = (byte) _possibleLocation.Count;
+            locInfo.LocID = nextId;
+            _possibleLocation.Add(new Location(parent, this, locInfo));
             _parent = parent;
         }
 

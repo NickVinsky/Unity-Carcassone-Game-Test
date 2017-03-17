@@ -89,9 +89,12 @@ namespace Code.Game {
         public static void Road(Road road, bool final = false) {
             if (final && road.FinishedByPlayer) return;
             var oArray = OwnersArray(road);
-            CalcExtraPoints(road);
+            var innCoefficient = Convert.ToInt32(road.HasInn);
+            CalcExtraPoints(road, 0);
 
             var score = road.LinkedTiles.Count;
+            score += innCoefficient * road.LinkedTiles.Count;
+            if (final) if (road.HasInn) score = 0;
             AddScore(oArray, oArray.Max(), score);
 
             if (final) return;
@@ -102,10 +105,15 @@ namespace Code.Game {
         public static void City(City city, bool final = false) {
             if (final && city.FinishedByPlayer) return;
             var oArray = OwnersArray(city);
-            CalcExtraPoints(city);
+            var cathedralCoefficient = Convert.ToInt32(city.HasCathedral);
+            CalcExtraPoints(city, cathedralCoefficient);
 
-            var score = city.ExtraPoints + city.LinkedTiles.Count * 2;
-            if (final) score /= 2;
+
+            var score = city.ExtraPoints + city.LinkedTiles.Count * (2 + cathedralCoefficient);
+            if (final) {
+                if (city.HasCathedral) score = 0;
+                else score /= 2;
+            }
             AddScore(oArray, oArray.Max(), score);
 
             if (final) return;
@@ -163,11 +171,11 @@ namespace Code.Game {
             }
         }
 
-        private static void CalcExtraPoints(Construction construct) {
+        private static void CalcExtraPoints(Construction construct, int extraPoints) {
             foreach (var tile in construct.LinkedTiles) {
                 foreach (var loc in tile.Get().GetLocations()) {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
-                        construct.AddExtraPoints(loc);
+                        construct.AddExtraPoints(loc, extraPoints);
                     }
                 }
             }

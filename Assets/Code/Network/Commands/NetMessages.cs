@@ -24,6 +24,8 @@ namespace Code.Network.Commands {
         HighlightCell,
         PutTile,
         MouseCoordinates,
+        CursorStreaming,
+        CursorStopStreaming,
         Follower,
         FinishTurn,
         AssignFollower,

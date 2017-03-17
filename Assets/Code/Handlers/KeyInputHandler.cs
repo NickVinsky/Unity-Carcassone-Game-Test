@@ -10,6 +10,7 @@ namespace Code.Handlers {
         public KeyCode RotateTileCounterClockwise { get; set; }
         public KeyCode PickTileFromDeck { get; set; }
         public KeyCode ReturnTileToDeck { get; set; }
+        public KeyCode CursorStreaming { get; set; }
 
         public KeyInputHandler() {
             MoveCameraLeft = KeyCode.A;
@@ -20,6 +21,7 @@ namespace Code.Handlers {
             RotateTileCounterClockwise = KeyCode.Q;
             PickTileFromDeck = KeyCode.Space;
             ReturnTileToDeck = KeyCode.R;
+            CursorStreaming = KeyCode.LeftControl;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Code.Game;
+﻿using System;
+using Code.Game;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Attributes;
@@ -117,6 +118,11 @@ namespace Code.Network.Commands {
             Tile.Reconstruct(m.Cell, m.TileID, m.TileIndex, m.Rotation, m.LocactionID, m.LocationOwner);
         }
 
+        [ClientCommand(NetCmd.TileCacheFinish)]
+        public static void ReconstructFinish(NetworkMessage message) {
+            if (Player.Stage == GameStage.PlacingFollower) Tile.ShowPossibleFollowersLocations(Tile.LastPlacedTile);
+        }
+
 
 
 
@@ -168,6 +174,7 @@ namespace Code.Network.Commands {
                     break;
                 case Command.TilePicked:
                     Net.Game.TilePicked = true;
+                    Net.Game.LastPickedTileIndex = m.Value;
                     Tile.Pick(m.Value, m.Byte);
                     break;
                 case Command.TileNotPicked:
@@ -175,6 +182,12 @@ namespace Code.Network.Commands {
                     break;
                 case Command.MouseCoordinates:
                     Net.Game.tPos = m.Vect3;
+                    break;
+                case Command.CursorStreaming:
+                    Net.Game.StreamCursor(m.Color, m.Vect3);
+                    break;
+                case Command.CursorStopStreaming:
+                    Net.Game.StopStreamCursor(m.Color, m.Vect3);
                     break;
                 case Command.RotateTile:
                     Tile.OnMouse.SetRotation(m.Value);
@@ -213,8 +226,12 @@ namespace Code.Network.Commands {
         public static void GetCurrentPlayerTurn(NetworkMessage message) {
             var m = message.ReadMessage<NetPackGame>();
             Net.Game.CurrentPlayer = m.Color;
-            Net.Game.CurrentPlayerIndex = m.Value;
+            Net.Game.CurrentPlayerIndex = m.Byte;
             Net.Game.TilePicked = m.Trigger;
+            Net.Game.LastPickedTileIndex = m.Value;
+            if (Player.Stage == GameStage.PlacingTile) {
+                Tile.Pick(Net.Game.LastPickedTileIndex, 0);
+            }
         }
 
         [ClientCommand(NetCmd.InGamePlayers)]

@@ -15,7 +15,10 @@ namespace Code.Game.FollowerSubs {
 
         public int Link { get; set; }
         public byte[] LinkedToCity { get; set; } // Указывает, с какими городами на текущем тайле соприкасается это поле
+
         public bool CoatOfArms { get; }
+        public bool HasCathedral { get; }
+        public bool HasInn { get; }
 
         // Towns || Roads |
         // | 0 | || | 0 | |
@@ -38,32 +41,26 @@ namespace Code.Game.FollowerSubs {
 
         public string GetMeeplePos() { return "[" + _meeplePos.x + ";" + _meeplePos.y + "]"; }
 
-        public Location(TileInfo parent, District district, byte id, Area type, List<byte> nodes, bool coatOfArms, byte[] linkToCity, Vector2 meeplePos) {
+        public Location(TileInfo parent, District district, LocationInfo locInfo) {
             Parent = parent;
             District = district;
-            _id = id;
-            Type = type;
-            CoatOfArms = coatOfArms;
-            _meeplePos = meeplePos;
-            var nLen = nodes.Count;
-            _nodes = new byte[nLen];
-            for (int i = 0; i < nLen; i++) {
-                _nodes[i] = nodes[i];
-            }
-            Link = -1;
-            LinkedToCity = linkToCity;
-            PosFree = true;
-        }
 
-        public Location(TileInfo parent, District district, byte id, Area type, Vector2 meeplePos) {
-            Parent = parent;
-            District = district;
-            _id = id;
-            Type = type;
-            CoatOfArms = false;
-            _meeplePos = meeplePos;
+            _id = locInfo.LocID;
+            Type = locInfo.Type;
+            _meeplePos = locInfo.MeeplePos;
+
+            if (locInfo.Nodes == null) locInfo.Nodes = new List<byte>();
+            var nLen = locInfo.Nodes.Count;
+            _nodes = new byte[nLen];
+            for (var i = 0; i < nLen; i++) _nodes[i] = locInfo.Nodes[i];
+
+            LinkedToCity = locInfo.LinkedToCity;
+
+            CoatOfArms = locInfo.CoatOfArms;
+            HasCathedral = locInfo.HasCathedral;
+            HasInn = locInfo.HasInn;
+
             Link = -1;
-            LinkedToCity = null;
             PosFree = true;
         }
 

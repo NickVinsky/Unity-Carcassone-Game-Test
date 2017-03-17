@@ -55,6 +55,7 @@ namespace Code {
             Builder.Init();
 
             if (Net.Game.IsOnline()) {
+                Net.Game.Init();
                 return;
             }
 
@@ -74,6 +75,10 @@ namespace Code {
             var l = (int) Player.Color + isMoving + Player.FollowersNumber.ToString("D1") +
                     Player.Score.ToString("D4") + Player.PlayerName;
             Net.Client.RefreshInGamePlayersList(l);
+        }
+
+        void Test() {
+
         }
 
         // Update is called once per frame
@@ -169,6 +174,12 @@ namespace Code {
             }
 
             #endregion
+        }
+
+        public void FixedUpdate() {
+            if (Net.Game.IsOnline()) {
+                Net.Game.FixedUpdate(_k);
+            }
         }
 
         #region Click&Drag

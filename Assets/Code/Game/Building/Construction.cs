@@ -32,20 +32,22 @@ namespace Code.Game.Building {
             if (!HasCell(cell)) LinkedTiles.Add(cell);
         }
 
-        public void Add(Location construct) {
-            var linkedConstruct = construct.Link;
+        public void Add(Location location) {
+            var linkedConstruct = location.Link;
             if (linkedConstruct == ID) {
                 Edges++;
+                CheckForSpecialBuildings(location);
             } else if (linkedConstruct == -1) {
                 Edges++;
-                Nodes += construct.GetNodes().Length;
-                construct.Link = ID;
-                LinkTile(construct.Parent.IntVector());
+                Nodes += location.GetNodes().Length;
+                location.Link = ID;
+                LinkTile(location.Parent.IntVector());
+                CheckForSpecialBuildings(location);
             } else {
-                Merge(construct);
+                Merge(location);
             }
             CalcNodesToFinish();
-            if (HasOwner()) construct.PosFree = false;
+            if (HasOwner()) location.PosFree = false;
         }
 
         public void SetOwner(Location construct) {
@@ -53,7 +55,9 @@ namespace Code.Game.Building {
             CalcNodesToFinish();
         }
 
-        public virtual void AddExtraPoints(Location loc){}
+        protected virtual void CheckForSpecialBuildings(Location location){}
+
+        public virtual void AddExtraPoints(Location loc, int overPoints){}
 
         protected virtual void AddNodesToFinish(int value){}
 
@@ -79,9 +83,7 @@ namespace Code.Game.Building {
                     if (fLoc.Link != former.ID) continue;
                     Edges++;
                     Nodes += fLoc.GetNodes().Length;
-                    if (fLoc.Link != ID) {
-
-                    }
+                    CheckForSpecialBuildings(fLoc);
                     fLoc.Link = ID;
                     LinkTile(fLoc.Parent.IntVector());
                     if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwner());

@@ -4,6 +4,7 @@ using Code.Game.FollowerSubs;
 namespace Code.Game.Building {
     public class City : Construction {
         protected int NodesToFinish;
+        public bool HasCathedral { get; private set; }
 
         public City(int id, Cell v, Location loc) : base(id, v) {
             NodesToFinish = loc.GetNodes().Length;
@@ -11,10 +12,15 @@ namespace Code.Game.Building {
             Type = Area.City;
         }
 
-        public bool Finished() { return NodesToFinish == 0; }
+        //public bool Finished() { return NodesToFinish == 0; }
+        public bool Finished() { return 2 * Edges != Nodes; }
 
         private void CalcScore() {
             ScoreCalc.City(this);
+        }
+
+        protected override void CheckForSpecialBuildings(Location location) {
+            if (location.HasCathedral) HasCathedral = true;
         }
 
         protected override void AddNodesToFinish(int value) {
@@ -30,12 +36,13 @@ namespace Code.Game.Building {
         }
 
         private void FinalNodesCalcToFinish() {
-            if (2 * Edges != Nodes) return;
+            if (Finished()) return;
             if (!HasOwner()) return;
             CalcScore();
         }
 
-        public override void AddExtraPoints(Location loc) {
+        public override void AddExtraPoints(Location loc, int overPoints) {
+            ExtraPoints += overPoints;
             if (loc.CoatOfArms) ExtraPoints += 2;
         }
 

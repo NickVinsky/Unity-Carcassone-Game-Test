@@ -20,7 +20,6 @@ namespace Code.Network {
         }
 
         public void HostGame() {
-            MainGame.Player.UniKey = "servak";
             Net.NetworkPort = Convert.ToInt32(HostPort.transform.FindChild("Text").GetComponent<Text>().text);
             MainGame.Player.PlayerName = GameObject.Find(GameRegulars.PlayerNameInputField).GetComponent<InputField>().text;
             Net.Server.StartWithClient();
@@ -41,6 +40,7 @@ namespace Code.Network {
         public void JoinGame() {
             Net.NetworkAddress = IP.transform.FindChild("Text").GetComponent<Text>().text;
             Net.NetworkPort = Convert.ToInt32(JoinPort.transform.FindChild("Text").GetComponent<Text>().text);
+            if (Net.NetworkAddress == "127.0.0.1")  MainGame.Player.UniKey += "dublicate";
             MainGame.Player.PlayerName = GameObject.Find(GameRegulars.PlayerNameInputField).GetComponent<InputField>().text;
             Net.Client.Start();
 

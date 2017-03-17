@@ -3,8 +3,8 @@ using System.Linq;
 using Code.Game;
 using Code.Game.Data;
 using Code.Network.Attributes;
-using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Networking.NetworkSystem;
 
 namespace Code.Network.Commands {
     public static class ServerRegister {
@@ -39,6 +39,12 @@ namespace Code.Network.Commands {
                 var player = GetPlayer(m.UniKey);
                 var index = GetIndexOfPlayer(m.UniKey);
                 player.ID = m.ID;
+                if (player.Stage == GameStage.PlacingTile) {
+                    player.Stage = GameStage.Start;
+                    // TODO
+                    // Уничтожить Tile.OnMouse у всех остальных участников игры
+                    // Создать новый Tile.OnMouse по последнему Net.Game.LastPickedTileIndex
+                }
                 Net.PlayersList[index] = player;
 
                 Net.Server.SendTo(m.ID, NetCmd.ReturnIntoGame, new NetPackPlayer { Player = player});
@@ -59,6 +65,7 @@ namespace Code.Network.Commands {
                 };
                 Net.Server.SendTo(id, NetCmd.TileCache, cachedTile);
             }
+            Net.Server.SendTo(id, NetCmd.TileCacheFinish, new EmptyMessage());
         }
 
         [ServerCommand(NetCmd.FreeColorRequest)]
@@ -237,8 +244,8 @@ namespace Code.Network.Commands {
             var m = message.ReadMessage<NetPackChatMessage>();
             Net.Server.SendTo(m.RequesterID, NetCmd.ChatHistory, new NetPackChatMessage {Message = Net.Server.ChatHistory});
             SendCachedTiles(m.RequesterID);
-            Net.Server.SendTo(m.RequesterID, NetCmd.GameData, new NetPackGame { Value = Net.Game.CurrentPlayerIndex,
-                Color = Net.Game.CurrentPlayer, Trigger = Net.Game.TilePicked});
+            Net.Server.SendTo(m.RequesterID, NetCmd.GameData, new NetPackGame { Byte = (byte) Net.Game.CurrentPlayerIndex,
+                Color = Net.Game.CurrentPlayer, Trigger = Net.Game.TilePicked, Value = Net.Game.LastPickedTileIndex});
             Net.Server.RefreshInGamePlayersList();
         }
 
@@ -288,6 +295,12 @@ namespace Code.Network.Commands {
                     Tile.Cache.Last().LocactionID = (sbyte) m.Value;
                     Tile.Cache.Last().LocationOwner = m.Color;
                     Net.Server.SendToAll(NetCmd.Game, m);
+                    break;
+                case Command.CursorStreaming:
+                    Net.Server.SendToAll(NetCmd.Game, m, 1);
+                    break;
+                case Command.CursorStopStreaming:
+                    Net.Server.SendToAll(NetCmd.Game, m, 1);
                     break;
                 default:
                     Net.Server.SendToAll(NetCmd.Game, m);

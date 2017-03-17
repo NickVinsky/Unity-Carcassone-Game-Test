@@ -46,6 +46,10 @@ namespace Code.Network.Composition {
             NetworkManager.singleton.client.Send(msgType, msg);
         }
 
+        public void SendUnreliable(short msgType, MessageBase msg) {
+            NetworkManager.singleton.client.SendByChannel(msgType, msg, 1);
+        }
+
         public void SendFollower(PlayerColor owner, byte id, string name) {
             Action(Command.Follower, owner, id, name);
         }

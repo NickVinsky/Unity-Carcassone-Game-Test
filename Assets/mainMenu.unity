@@ -1513,7 +1513,7 @@ MonoBehaviour:
     m_PacketSize: 1500
     m_FragmentSize: 500
     m_ResendTimeout: 1200
-    m_DisconnectTimeout: 3500
+    m_DisconnectTimeout: 2500
     m_ConnectTimeout: 2000
     m_MinUpdateTimeout: 15
     m_PingTimeout: 500
@@ -1536,7 +1536,7 @@ MonoBehaviour:
     m_ReactorMaximumReceivedMessages: 1024
     m_ReactorMaximumSentMessages: 1024
     m_MaxPacketSize: 2000
-  m_Channels: 0500000003000000
+  m_Channels: 0500000000000000
   m_UseWebSockets: 0
   m_UseSimulator: 0
   m_SimulatedLatency: 200

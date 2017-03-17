@@ -100,6 +100,38 @@ namespace Code.Game {
             AddTilesToDeck(22, 9);
             AddTilesToDeck(23, 4);
             AddTilesToDeck(24, 1);
+
+            // Kings
+            AddTilesToDeck(52, 1);
+            AddTilesToDeck(53, 4);
+            AddTilesToDeck(54, 4);
+            AddTilesToDeck(55, 2);
+            AddTilesToDeck(56, 2);
+
+            // Ins And Cathedrals
+            AddTilesToDeck(25, 1);
+            AddTilesToDeck(26, 2);
+            AddTilesToDeck(27, 2);
+            AddTilesToDeck(28, 2);
+            AddTilesToDeck(29, 3);
+            AddTilesToDeck(30, 2);
+            AddTilesToDeck(31, 2);
+            AddTilesToDeck(32, 3);
+            AddTilesToDeck(33, 3);
+            AddTilesToDeck(34, 2);
+            AddTilesToDeck(35, 1);
+            AddTilesToDeck(36, 1);
+            AddTilesToDeck(37, 1);
+            AddTilesToDeck(38, 1);
+            AddTilesToDeck(39, 1);
+            AddTilesToDeck(40, 1);
+            AddTilesToDeck(41, 5);
+
+            //Traders And Builders
+            AddTilesToDeck(57, 1);
+            AddTilesToDeck(58, 4);
+            AddTilesToDeck(59, 3);
+            AddTilesToDeck(60, 4);
         }
 
         private static void AddTilesToDeck(int type, int quantity) {

@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
 using static Code.MainGame;
+using Object = UnityEngine.Object;
 
 namespace Code.Network.Composition {
     public class GameMaster {
@@ -20,6 +21,12 @@ namespace Code.Network.Composition {
         public bool TilePicked;
         public Vector2 tPos;
 
+        private float _streamingCursorOffsetX;
+        private float _streamingCursorOffsetY;
+
+        public int LastPickedTileIndex { get; set; }
+        public bool cursorIsStreaming { get; set; }
+
         public void SetOnline() { _offline = false; }
         public void SetOffline() { _offline = true; }
         public bool IsOnline() { return !_offline; }
@@ -30,6 +37,10 @@ namespace Code.Network.Composition {
         public bool IsStarted() { return _isStarted; }
         public bool InLobby() { return !_isStarted; }
 
+        public GameObject[] Pointer;
+
+
+        // Выполняется только на сервере
         public void Launch() {
             Net.Server.Queue = new PlayerColor[Net.PlayersList.Count];
             for (int i = 0; i < Net.Server.Queue.Length; i++) {
@@ -43,12 +54,71 @@ namespace Code.Network.Composition {
             Net.Server.SendToAll(NetCmd.Game, new NetPackGame{Command = Command.Start, Color = CurrentPlayer});
         }
 
+        public void Init() {
+            Pointer = new GameObject[Net.ColorsCount];
+            var sprite = Resources.Load<Sprite>("Pointer");
+            _streamingCursorOffsetX = sprite.rect.width / 200;
+            _streamingCursorOffsetY = sprite.rect.height / 200;
+            for (int i = 0; i < Net.ColorsCount; i++) {
+                var curColor = (PlayerColor) i;
+                Pointer[i] = new GameObject(i + "//" + curColor);
+                Object.DontDestroyOnLoad(Pointer[i]);
+                Pointer[i].AddComponent<RectTransform>();
+                Pointer[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 1f);
+                Pointer[i].AddComponent<SpriteRenderer>();
+                Pointer[i].GetComponent<SpriteRenderer>().sprite = sprite;
+                Pointer[i].GetComponent<SpriteRenderer>().color = Net.Color(curColor);
+                Pointer[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
+
+                //Pointer[i].transform.localScale = new Vector3(0f,0f,0f);
+                Pointer[i].GetComponent<SpriteRenderer>().enabled = false;
+            }
+        }
+
         public bool MyTurn() { return CurrentPlayer == Player.Color; }
+
+        public void StreamCursor(PlayerColor playerColor, Vector3 vector) {
+            var colorInt = (int) playerColor;
+            vector = new Vector3(vector.x + _streamingCursorOffsetX, vector.y - _streamingCursorOffsetY, 0f);
+            Pointer[colorInt].GetComponent<SpriteRenderer>().enabled = true;
+            Pointer[colorInt].transform.position = vector;
+        }
+
+        public void StopStreamCursor(PlayerColor playerColor, Vector3 vector) {
+            var colorInt = (int) playerColor;
+            Pointer[colorInt].GetComponent<SpriteRenderer>().enabled = false;
+        }
+
+
+
+        public void FixedUpdate(KeyInputHandler k) {
+
+        }
 
         // Update is called once per frame
         // This methods call when game is not offline
         // On client
         public void LocalClientUpadate(KeyInputHandler k) {
+            if (Input.GetKey(k.CursorStreaming)) {
+                Cursor.visible = false;
+                var pos = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
+                pos = new Vector3(pos.x, pos.y, 0f);
+                var packet = new NetPackGame {
+                    Command = Command.CursorStreaming,
+                    Vect3 = pos,
+                    Color = Player.Color
+                };
+                Net.Client.SendUnreliable(NetCmd.Game, packet);
+            } else {
+                if (TilePicked && CurrentPlayer == Player.Color) Cursor.visible = false;
+                else Cursor.visible = true;
+                var packet = new NetPackGame {
+                    Command = Command.CursorStopStreaming,
+                    Color = Player.Color
+                };
+                Net.Client.SendUnreliable(NetCmd.Game, packet);
+            }
+
             if (Player.Stage == GameStage.Wait)
                 if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
 
