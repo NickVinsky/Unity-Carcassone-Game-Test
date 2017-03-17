@@ -5,7 +5,8 @@ using UnityEngine.Networking;
 namespace Code.Network.Commands {
     public enum ErrType {
         PlayerNameOccupied,
-        LobbyIsFull
+        LobbyIsFull,
+        GameAlreadyStarted
     }
     public enum ConnInfo {
         PlayerRegistred,
@@ -38,7 +39,13 @@ namespace Code.Network.Commands {
         public PlayerColor Color;
     }
 
+    public class NetPackPlayer : MessageBase {
+        public PlayerInfo Player;
+    }
+
     public class NetPackPlayerInfo : MessageBase {
+        public string UniKey;
+
         public bool IsRegistred = false;
         public bool IsReady = false;
 
@@ -79,4 +86,20 @@ namespace Code.Network.Commands {
         public Cell Vector;
         //public Vector2 mousePosition;
     }
+
+    public class NetPackTileCache : MessageBase {
+        public Cell Cell;
+        public int TileID;
+        public int TileIndex;
+        public byte Rotation;
+
+        public sbyte LocactionID;
+        public PlayerColor LocationOwner;
+    }
+
+    public class NetPackRespond : MessageBase {
+        public bool Respond;
+    }
+
+
 }

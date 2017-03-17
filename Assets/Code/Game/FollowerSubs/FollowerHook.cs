@@ -15,7 +15,7 @@ namespace Code.Game.FollowerSubs {
         }
 
         void OnMouseOver() {
-            GetComponent<SpriteRenderer>().color = Net.Color(PlayerSync.PlayerInfo.Color);
+            GetComponent<SpriteRenderer>().color = Net.Color(MainGame.Player.Color);
         }
 
         void OnMouseExit() {

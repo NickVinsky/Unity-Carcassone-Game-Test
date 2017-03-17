@@ -67,9 +67,9 @@ namespace Code.Network.Composition {
         }
 
         public string GetPlayerName(int id) {
-            string result = string.Empty;
+            var result = string.Empty;
             try {
-                result = Net.Player.First(p => p.ID == id).PlayerName;
+                result = Net.PlayersList.First(p => p.ID == id).PlayerName;
             } catch (Exception e) {
                 Debug.Log("GetPlayerNameExeption " + e.Message);
                 //Console.WriteLine(e);
@@ -80,25 +80,22 @@ namespace Code.Network.Composition {
         }
 
         public void ClearPlayersList() {
-            Net.Player.Clear();
+            Net.PlayersList.Clear();
         }
 
         public void ReformPlayersList() {
             if (Net.Game.IsStarted()) {
-                //Net.Server.SendToAll(NetCmd.UpdatePlayerInfo, Net.NullMsg());
                 RefreshInGamePlayersList();
             } else {
-                //Net.Server.ClearPlayersList();
-                //Net.Server.SendToAll(NetCmd.RefreshPlayersInfoAndReformPlayersList, new NetPackChatMessage());
-                ServerRegister.FormAndSendPlayersList();
+                ServerRegister.FormAndSendLobbyPlayersList();
             }
         }
 
         public void SubtractFollower(PlayerColor playerColor) {
-            var player = Net.Player.First(p => p.Color == playerColor);
-            var index = Net.Player.IndexOf(player);
+            var player = Net.PlayersList.First(p => p.Color == playerColor);
+            var index = Net.PlayersList.IndexOf(player);
             player.FollowersNumber--;
-            Net.Player[index] = player;
+            Net.PlayersList[index] = player;
             RefreshInGamePlayersList();
         }
 
@@ -106,8 +103,8 @@ namespace Code.Network.Composition {
             var colorsToDelete = new List<PlayerColor>();
             var l = string.Empty;
             foreach (var q in Net.Server.Queue) {
-                if (Net.Player.Any(p => p.Color == q)) {
-                    var curPlayer = Net.Player.First(p => p.Color == q);
+                if (Net.PlayersList.Any(p => p.Color == q)) {
+                    var curPlayer = Net.PlayersList.First(p => p.Color == q);
                     var isMoving = q == Net.Game.CurrentPlayer ? "1" : "0";
                     l += (int) q + isMoving + curPlayer.FollowersNumber.ToString("D1") +
                          curPlayer.Score.ToString("D4") + curPlayer.PlayerName + Environment.NewLine;

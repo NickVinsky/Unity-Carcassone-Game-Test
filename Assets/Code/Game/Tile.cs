@@ -1,4 +1,5 @@
-﻿using Code.Game.Data;
+﻿using System.Collections.Generic;
+using Code.Game.Data;
 using Code.Game.TileSubs;
 using Code.Network;
 using Code.Network.Commands;
@@ -9,6 +10,8 @@ namespace Code.Game {
         public static OnMouseHandler OnMouse = new OnMouseHandler();
         public static RotateHandler Rotate = new RotateHandler();
         public static NearbyHandler Nearby = new NearbyHandler();
+
+        public static List<ReconstructionInfo> Cache = new List<ReconstructionInfo>();
 
         public static int StartingTile { get; set; }
 
@@ -98,6 +101,11 @@ namespace Code.Game {
             OnMouse.Get().transform.position = new Vector3(Screen.width * 2, 0f, 0f);
         }
 
+        public static void PickWithID(int tileId, byte rotates) {
+            ApplyPicking(tileId, rotates);
+            OnMouse.Get().transform.position = new Vector3(Screen.width * 2, 0f, 0f);
+        }
+
         private static void ApplyPicking(int tileType, byte rotates) {
             if (Deck.IsEmpty()) return;
             OnMouse.Create();
@@ -122,6 +130,15 @@ namespace Code.Game {
             Deck.Add(type);
             OnMouse.Destroy();
             Cursor.visible = true;
+        }
+
+        public static void Reconstruct(Cell cell, int id, int tileIndex, byte rotation, sbyte locId, PlayerColor owner) {
+            Cache.Add(new ReconstructionInfo(cell, id, tileIndex, rotation, locId, owner));
+            Deck.SetLastPickedIndex(tileIndex);
+            OnMouse.Destroy();
+            PickWithID(id, rotation);
+            OnMouse.Put(cell);
+            Get(cell).AssignOpponentFollower(owner, (byte) locId);
         }
 
         public static void ShowPossibleFollowersLocations(GameObject o) {

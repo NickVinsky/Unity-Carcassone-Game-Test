@@ -60,11 +60,11 @@ namespace Code.GUI {
                 Net.Game.DeckClick(Camera.main.transform.position, GameObject.Find(DeckButton).GetComponent<RectTransform>().anchoredPosition);
                 return;
             }
-            if (MainGame.Stage != GameStage.Start) return;
+            if (MainGame.Player.Stage != GameStage.Start) return;
             if (IsEmpty()) return;
             Tile.Pick();
             Tile.AttachToMouse();
-            MainGame.Stage = GameStage.PlacingTile;
+            MainGame.Player.Stage = GameStage.PlacingTile;
         }
         private static void DeckCounterClick() {
 

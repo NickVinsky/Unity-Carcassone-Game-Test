@@ -7,12 +7,13 @@ using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
+using static Code.MainGame;
 
 namespace Code.Network.Composition {
     public class GameMaster {
         private bool _offline = true;
         private bool _isStarted;
-        public GameStage Stage;
+        //public GameStage Stage;
         public PlayerColor CurrentPlayer = PlayerColor.NotPicked;
         public int CurrentPlayerIndex = -1;
 
@@ -27,11 +28,12 @@ namespace Code.Network.Composition {
         public void GameStarted() { _isStarted = true; }
         public void GameEnded() { _isStarted = false; }
         public bool IsStarted() { return _isStarted; }
+        public bool InLobby() { return !_isStarted; }
 
         public void Launch() {
-            Net.Server.Queue = new PlayerColor[Net.Player.Count];
+            Net.Server.Queue = new PlayerColor[Net.PlayersList.Count];
             for (int i = 0; i < Net.Server.Queue.Length; i++) {
-                Net.Server.Queue[i] = Net.Player[i].Color;
+                Net.Server.Queue[i] = Net.PlayersList[i].Color;
             }
             var random = new Random(DateTime.Now.Millisecond);
             Net.Server.Queue = Net.Server.Queue.OrderBy(x => random.Next()).ToArray();
@@ -41,25 +43,27 @@ namespace Code.Network.Composition {
             Net.Server.SendToAll(NetCmd.Game, new NetPackGame{Command = Command.Start, Color = CurrentPlayer});
         }
 
-        public bool MyTurn() { return CurrentPlayer == PlayerSync.PlayerInfo.Color; }
+        public bool MyTurn() { return CurrentPlayer == Player.Color; }
 
         // Update is called once per frame
         // This methods call when game is not offline
         // On client
         public void LocalClientUpadate(KeyInputHandler k) {
+            if (Player.Stage == GameStage.Wait)
+                if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
+
             if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
-            switch (Stage) {
+            switch (Player.Stage) {
                 case GameStage.Wait:
-                    if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
+                    //if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
                     break;
                 case GameStage.Start:
-                    //if (Input.GetKeyDown(KeyCode.F)) ScoreCalc.Final();
                     if (Input.GetKeyDown(k.PickTileFromDeck)) {
                         if (!Deck.IsEmpty()) {
                             var i = Deck.GenerateIndex();
                             Net.Client.Action(Command.TilePicked, i, Tile.Rotate.Random());
                             AttachTileToMouse();
-                            Stage = GameStage.PlacingTile;
+                            Player.Stage = GameStage.PlacingTile;
                         }
                     }
                     break;
@@ -74,13 +78,13 @@ namespace Code.Network.Composition {
                 case GameStage.PlacingFollower:
                     if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(k.ReturnTileToDeck)) {
                         Tile.LastPlaced().HideAll();
-                        Stage = GameStage.Finish;
+                        Player.Stage = GameStage.Finish;
                     }
                     break;
                 case GameStage.Finish:
                     //Net.Client.UpdateScore();
                     Net.Client.Action(Command.FinishTurn);
-                    Stage = GameStage.Wait;
+                    Player.Stage = GameStage.Wait;
                     break;
                 case GameStage.End:
                     //ScoreCalc.Final();
@@ -145,24 +149,24 @@ namespace Code.Network.Composition {
         }
 
         public void PostTilePut(Cell v) {
-            if (PlayerSync.PlayerInfo.FollowersNumber > 0) {
-                Stage = GameStage.PlacingFollower;
+            if (Player.FollowersNumber > 0) {
+                Player.Stage = GameStage.PlacingFollower;
                 var c  = GameObject.Find("cell#" + v.X + ":" + v.Y);
                 Tile.ShowPossibleFollowersLocations(c);
             } else {
-                Stage = GameStage.Finish;
+                Player.Stage = GameStage.Finish;
             }
         }
 
         public void DeckClick(Vector2 t, Vector2 m) {
             if (!MyTurn()) return;
-            if (Stage != GameStage.Start) return;
+            if (Player.Stage != GameStage.Start) return;
             if (Deck.IsEmpty()) return;
             var i = Deck.GenerateIndex();
             Net.Client.Action(Command.TilePicked, i);
             AttachTileToMouse();
             Tile.AttachToMouse();
-            Stage = GameStage.PlacingTile;
+            Player.Stage = GameStage.PlacingTile;
         }
 
         private bool TileOnMouseExist() { return TilePicked; }

@@ -15,7 +15,7 @@ namespace Code.Handlers {
                 Net.Game.OnMouseOver(gameObject);
                 return;
             }
-            if (Stage == GameStage.PlacingTile) {
+            if (Player.Stage == GameStage.PlacingTile) {
                 if (Tile.Nearby.CanBeAttachedTo(gameObject)) {
                     GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                     return;
@@ -41,15 +41,15 @@ namespace Code.Handlers {
                 Net.Game.OnMouseUp(gameObject);
                 return;
             }
-            if (Stage != GameStage.PlacingTile) return;
+            if (Player.Stage != GameStage.PlacingTile) return;
             if (!Tile.Nearby.CanBeAttachedTo(gameObject) || MouseState == State.Dragging) return;
             Tile.OnMouse.Put(gameObject);
 
-            if (PlayerSync.PlayerInfo.FollowersNumber > 0) {
-                Stage = GameStage.PlacingFollower;
+            if (Player.FollowersNumber > 0) {
+                Player.Stage = GameStage.PlacingFollower;
                 Tile.ShowPossibleFollowersLocations(gameObject);
             } else {
-                Stage = GameStage.Finish;
+                Player.Stage = GameStage.Finish;
             }
         }
 

@@ -62,10 +62,12 @@ namespace Code.Game.Data {
         public const string ScoreText = "Score: ";
 
         public static readonly Color PlayerBlue = new Color(0f, 0.38f, 0.93f, 1f);
-        public static readonly Color PlayerYellow = new Color(0.97f, 0.95f, 0.24f, 1f);
+        public static readonly Color PlayerCyan = new Color(0.04f, 0.95f, 0.87f, 1f);
         public static readonly Color PlayerGreen = new Color(0.38f, 0.93f, 0f, 1f);
+        public static readonly Color PlayerYellow = new Color(0.97f, 0.95f, 0.24f, 1f);
         public static readonly Color PlayerRed = new Color(0.96f, 0.22f, 0.24f, 1f);
-        public static readonly Color PlayerBlack = Color.black;
+        public static readonly Color PlayerPurple = new Color(0.91f, 0.17f, 0.88f, 1f);
+        public static readonly Color PlayerGrey = new Color(0.52f, 0.52f, 0.52f, 1f);
 
         public static readonly Color BlackColor = Color.black;
         public static readonly Color CurMovingPlayerColor = new Color(0.89f, 0.89f, 0.09f, 0.68f);

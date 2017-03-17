@@ -6,7 +6,7 @@ using Code.Game.FollowerSubs;
 using Code.Network;
 using Code.Network.Commands;
 using UnityEngine;
-using static Code.Network.PlayerSync;
+using static Code.MainGame;
 
 namespace Code.Game {
     public static class ScoreCalc {
@@ -27,7 +27,7 @@ namespace Code.Game {
         //After follower assignment
         public static void ApplyFollower(Location loc) {
             if (Net.Game.IsOnline()) Net.Client.SubtractFollower(loc.GetOwner());
-            PlayerInfo.FollowersNumber--;
+            Player.FollowersNumber--;
             Builder.SetOwner(loc);
             UpdateGUI();
         }
@@ -41,23 +41,23 @@ namespace Code.Game {
             if (Net.Game.IsOnline()) {
                 if (Net.IsServer) Net.Server.RefreshInGamePlayersList();
             } else {
-                MainGame.UpdateLocalPlayer();
+                UpdateLocalPlayer();
             }
         }
 
         private static void AddScoreServer(PlayerColor playerColor, byte pFollowersQuantity, byte followersToControl, int score) {
-            var player = Net.Player.First(p => p.Color == playerColor);
-            var index = Net.Player.IndexOf(player);
+            var player = Net.PlayersList.First(p => p.Color == playerColor);
+            var index = Net.PlayersList.IndexOf(player);
             if (pFollowersQuantity == followersToControl) {
                 player.Score += score;
             }
             player.FollowersNumber += pFollowersQuantity;
-            Net.Player[index] = player;
+            Net.PlayersList[index] = player;
         }
 
         private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score) {
-            if (myFollowersQuantity == followersToControl) PlayerInfo.Score += score;
-            PlayerInfo.FollowersNumber += myFollowersQuantity;
+            if (myFollowersQuantity == followersToControl) Player.Score += score;
+            Player.FollowersNumber += myFollowersQuantity;
         }
 
         private static void AddScore(byte[] ownerFollowers, byte followersToControl, int score) {
@@ -67,7 +67,7 @@ namespace Code.Game {
                 if (Net.Game.IsOnline()) {
                     if (Net.IsServer) AddScoreServer(curPlayer, ownerFollowers[i], followersToControl, score);
                 }
-                if (curPlayer != PlayerInfo.Color) continue;
+                if (curPlayer != Player.Color) continue;
                 AddScoreLocal(ownerFollowers[i], followersToControl, score);
             }
         }
@@ -81,7 +81,7 @@ namespace Code.Game {
             var score = monastery.SurroundingsCount;
 
             if (Net.Game.IsOnline() && Net.IsServer) AddScoreServer(owner, 1, 1, score);
-            if (owner == PlayerInfo.Color) AddScoreLocal(1, 1, score);
+            if (owner == Player.Color) AddScoreLocal(1, 1, score);
 
             if (!final) monastery.Finished = true;
         }

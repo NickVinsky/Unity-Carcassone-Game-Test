@@ -42,7 +42,7 @@ namespace Code.Game.TileSubs {
         }
 
         public void Destroy() {
-            Object.Destroy(_tileOnMouse);
+            Object.DestroyImmediate(_tileOnMouse);
         }
 
         // Вызывается из локальной игры
@@ -69,6 +69,15 @@ namespace Code.Game.TileSubs {
             cTileInfo.InitTile(GetTile().Type);
             cTileInfo.ApplyRotation();
             Destroy();
+
+            var reconstructInfo = new ReconstructionInfo {
+                Cell = cTileInfo.IntVector(),
+                TileID = cTileInfo.Type,
+                TileIndex = Deck.LastPickedIndex(),
+                Rotation = (byte) cTileInfo.Rotates
+            };
+            Tile.Cache.Add(reconstructInfo);
+
             Cursor.visible = true;
             //MainGame.Grid.CheckBounds(gridCell);
             ScoreCalc.Count(gridCell);

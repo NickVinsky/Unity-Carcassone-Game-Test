@@ -1,4 +1,15 @@
 ﻿namespace Code.Game.Data {
+    public enum PlayerColor {
+        NotPicked = 0,
+        Blue = 1,
+        Cyan = 2,
+        Green = 3,
+        Yellow = 4,
+        Red = 5,
+        Purple = 6,
+        Grey = 7
+    }
+
     public enum GameStage {
         Wait,
         Start,

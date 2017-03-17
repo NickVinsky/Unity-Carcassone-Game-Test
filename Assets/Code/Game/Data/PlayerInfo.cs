@@ -1,5 +1,5 @@
 ﻿namespace Code.Game.Data {
-    public struct Player {
+    public struct PlayerInfo {
         public string UniKey;
 
         public int ID;

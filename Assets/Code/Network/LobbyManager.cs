@@ -8,15 +8,21 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace Code.Network {
-    public class LobbyManager : NetworkLobbyManager {
+    public class LobbyManager : NetworkManager {
 
         [Header("Fields For Connection")]
         public GameObject IP;
         public GameObject JoinPort;
         public GameObject HostPort;
 
+        void Start() {
+            MainGame.Player.UniKey = SystemInfo.deviceUniqueIdentifier;
+        }
+
         public void HostGame() {
+            MainGame.Player.UniKey = "servak";
             Net.NetworkPort = Convert.ToInt32(HostPort.transform.FindChild("Text").GetComponent<Text>().text);
+            MainGame.Player.PlayerName = GameObject.Find(GameRegulars.PlayerNameInputField).GetComponent<InputField>().text;
             Net.Server.StartWithClient();
 
             #region Old Register Initiation for Server
@@ -35,6 +41,7 @@ namespace Code.Network {
         public void JoinGame() {
             Net.NetworkAddress = IP.transform.FindChild("Text").GetComponent<Text>().text;
             Net.NetworkPort = Convert.ToInt32(JoinPort.transform.FindChild("Text").GetComponent<Text>().text);
+            MainGame.Player.PlayerName = GameObject.Find(GameRegulars.PlayerNameInputField).GetComponent<InputField>().text;
             Net.Client.Start();
 
             #region Old Register Initiation for Client
@@ -62,31 +69,25 @@ namespace Code.Network {
         }
 
         public void Ready() {
-            PlayerSync.PlayerInfo.IsReady = !PlayerSync.PlayerInfo.IsReady;
-            Net.Client.Send(NetCmd.UpdatePlayerInfoAndReformPList, Net.Client.MyInfo());
+            MainGame.Player.IsReady = !MainGame.Player.IsReady;
+            Net.Client.Send(NetCmd.Ready, Net.Client.MyInfo());
         }
-
-        /*public override void OnServerConnect(NetworkConnection conn) {
-            base.OnServerConnect(conn);
-        }*/
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId) {
             // Free slot check
-            if (Net.Player.Count == Net.MaxPlayers) {
+            if (Net.PlayersList.Count == Net.MaxPlayers) {
                 Net.Server.SendTo(conn.connectionId, NetCmd.Err, new NetPackErr{Err = ErrType.LobbyIsFull});
                 return;
             }
 
             base.OnServerAddPlayer(conn, playerControllerId);
 
-            Net.Server.SendTo(conn.connectionId, NetCmd.ConnIDReceive, new NetPackPlayerInfo {ID = conn.connectionId});
-            Net.Server.SendTo(conn.connectionId, NetCmd.ChatHistory, new NetPackChatMessage {Message = Net.Server.ChatHistory});
 
-            if (Net.Game.IsStarted()) Net.Server.SendTo(conn.connectionId, NetCmd.Game, new NetPackGame{Command = Command.PlayerReturn});
+            Net.Server.SendTo(conn.connectionId, NetCmd.InitRegistration, new NetPackPlayerInfo {ID = conn.connectionId});
+            //Net.Server.SendTo(conn.connectionId, NetCmd.Game, new NetPackGame{Command = Command.PlayerReturn});
         }
 
-        public override void OnServerDisconnect(NetworkConnection conn)
-        {
+        public override void OnServerDisconnect(NetworkConnection conn) {
             Net.Server.DestroyPlayer(conn);
             if (conn.lastError != NetworkError.Ok){
                 if (LogFilter.logError) {
@@ -94,9 +95,10 @@ namespace Code.Network {
                 }
             }
 
-            var discPlayer = Net.Player.First(p => p.ID == conn.connectionId);
-            var index = Net.Player.IndexOf(discPlayer);
-            if (!Net.Game.IsStarted()) Net.Player.RemoveAt(index);
+            var discPlayer = Net.PlayersList.First(p => p.ID == conn.connectionId);
+            var index = Net.PlayersList.IndexOf(discPlayer);
+
+            if (Net.Game.InLobby()) Net.PlayersList.RemoveAt(index);
 
             Net.Server.ReformPlayersList();
         }

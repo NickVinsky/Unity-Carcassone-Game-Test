@@ -246,7 +246,7 @@ namespace Code.Game {
 
         public void AssignOpponentFollower(PlayerColor owner, byte id) {
             GameObject o = gameObject;
-            _follower.Opponent(o, owner, id);
+            _follower.Opponent(owner, id);
         }
 
         public void HideAll() {

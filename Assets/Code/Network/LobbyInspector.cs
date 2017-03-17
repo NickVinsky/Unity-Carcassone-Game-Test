@@ -4,6 +4,7 @@ using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using static Code.MainGame;
 
 namespace Code.Network {
     public static class LobbyInspector {
@@ -80,14 +81,15 @@ namespace Code.Network {
                 o.transform.FindChild("Name").GetComponent<Text>().text = pName;
                 o.transform.FindChild("Meeple").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
 
-                if (o.transform.FindChild("Name").GetComponent<Text>().text == PlayerSync.PlayerInfo.PlayerName)
-                    PlayerSync.PlayerInfo.MySlotNumber = i;
 
-                if (i == PlayerSync.PlayerInfo.MySlotNumber) {
+                if (o.transform.FindChild("Name").GetComponent<Text>().text == Player.PlayerName)
+                    Player.MySlotNumber = i;
+
+                if (i == Player.MySlotNumber) {
                     o.GetComponent<Image>().color = GameRegulars.YourColor;
                     //o.transform.FindChild("Toggle").GetComponent<Toggle>().interactable = true;
-                    o.transform.FindChild("Toggle").GetComponent<Toggle>().isOn = PlayerSync.PlayerInfo.IsReady;
-                    GameObject.Find("ReadyButtonText").GetComponent<Text>().text = PlayerSync.PlayerInfo.IsReady ?
+                    o.transform.FindChild("Toggle").GetComponent<Toggle>().isOn = Player.IsReady;
+                    GameObject.Find("ReadyButtonText").GetComponent<Text>().text = Player.IsReady ?
                         GameRegulars.StatusNotReadyText : GameRegulars.StatusReadyText;
                 } else {
                     o.GetComponent<Image>().color = GameRegulars.BlankColor;

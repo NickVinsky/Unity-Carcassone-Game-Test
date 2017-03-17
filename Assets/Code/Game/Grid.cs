@@ -60,7 +60,7 @@ namespace Code.Game
             if (tilePos.Y == _maxY) AddCellsTop();
         }
 
-        private void AddCell(Cell v) {
+        public void AddCell(Cell v) {
             var tile = new GameObject("cell#" + v.X + ":" + v.Y);
             tile.transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             tile.AddComponent<SpriteRenderer>();

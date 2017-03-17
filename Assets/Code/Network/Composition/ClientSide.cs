@@ -1,25 +1,24 @@
 ﻿using System;
 using Code.Game.Data;
-using Code.Game.FollowerSubs;
 using Code.GUI;
 using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using static Code.Network.PlayerSync;
+using static Code.MainGame;
 
 namespace Code.Network.Composition {
     public class ClientSide {
 
         public NetPackPlayerInfo MyInfo() {
             return new NetPackPlayerInfo {
-                ID = PlayerInfo.ID,
-                PlayerName = PlayerInfo.PlayerName,
-                IsRegistred = PlayerInfo.IsRegistred,
-                IsReady = PlayerInfo.IsReady,
-                Color = PlayerInfo.Color,
-                FollowersNumber = PlayerInfo.FollowersNumber,
-                Score = PlayerInfo.Score
+                ID = Player.ID,
+                PlayerName = Player.PlayerName,
+                IsRegistred = Player.IsRegistred,
+                IsReady = Player.IsReady,
+                Color = Player.Color,
+                FollowersNumber = Player.FollowersNumber,
+                Score = Player.Score
             };
         }
 
@@ -108,12 +107,12 @@ namespace Code.Network.Composition {
                 var pFollowersNumber = Convert.ToByte(char.GetNumericValue(p[2]));
                 var pScore = Convert.ToInt32(p.Substring(3, 4));
                 var pName = p.Substring(7);
-                if (o.transform.FindChild("Name").GetComponent<Text>().text == PlayerInfo.PlayerName) PlayerInfo.MySlotNumberInGame = i;
+                if (o.transform.FindChild("Name").GetComponent<Text>().text == Player.PlayerName) Player.MySlotNumberInGame = i;
                 o.transform.FindChild("Name").GetComponent<Text>().text = pName;
                 o.transform.FindChild("Score").GetComponent<Text>().text = GameRegulars.ScoreText + pScore;
                 o.transform.FindChild("Meeple").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
 
-                if (PlayerInfo.MySlotNumberInGame == i) {
+                if (Player.MySlotNumberInGame == i) {
                     o.transform.FindChild("Meeple").GetComponent<Image>().sprite = Resources.Load<Sprite>("MyMeeple");
                 } else {
                     o.transform.FindChild("Meeple").GetComponent<Image>().sprite = Resources.Load<Sprite>("Meeple");
@@ -143,9 +142,9 @@ namespace Code.Network.Composition {
 
         public void ChatMessage(string text) {
             var mToSend = new NetPackChatMessage {
-                Player = PlayerInfo.PlayerName,
+                Player = Player.PlayerName,
                 Message = text,
-                RequesterID = PlayerInfo.ID
+                RequesterID = Player.ID
             };
             Send(NetCmd.ChatMessage, mToSend);
         }
@@ -160,7 +159,7 @@ namespace Code.Network.Composition {
             string sInfo = string.Empty;
             switch (infoType) {
                 case ConnInfo.PlayerRegistred:
-                    sInfo = PlayerInfo.PlayerName + " joined the lobby";
+                    sInfo = Player.PlayerName + " joined the lobby";
                     break;
                 case ConnInfo.PlayerDisconnected:
                     sInfo = fromPlayer + " disconnected (" + extraMessage + ")";
@@ -170,7 +169,7 @@ namespace Code.Network.Composition {
                 IsInfoMessage = true,
                 Player = "Server",
                 Message = sInfo,
-                RequesterID = PlayerInfo.ID
+                RequesterID = Player.ID
             };
             Send(NetCmd.ChatMessage, mToSend);
         }

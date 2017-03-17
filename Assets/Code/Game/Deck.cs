@@ -14,6 +14,8 @@ namespace Code.Game {
             _tilesPack.Add(type);
         }
 
+        public static int LastPickedIndex() { return _lastPickedIndex; }
+
         public static int GenerateIndex() {
             var maxIndex = _tilesPack.Count;
             var rnd = Random.Range(0, maxIndex);
@@ -28,9 +30,12 @@ namespace Code.Game {
             return result;
         }
 
-        public static int Get(int tileId) {
+        public static int GetAndSaveIndex(int tileId) {
             for (int i = 0; i < _tilesPack.Count; i++) {
-                if (_tilesPack[i] == tileId) return _tilesPack[i];
+                if (_tilesPack[i] == tileId) {
+                    _lastPickedIndex = i;
+                    return i;
+                }
             }
             return 0;
         }
@@ -49,6 +54,9 @@ namespace Code.Game {
                 return;
             }
         }
+
+        public static void SetLastPickedIndex(int index) { _lastPickedIndex = index; }
+
 
         public static void DeleteLastPicked() { _tilesPack.RemoveAt(_lastPickedIndex); }
 

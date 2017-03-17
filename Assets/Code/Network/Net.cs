@@ -11,16 +11,18 @@ namespace Code.Network {
         public static ServerSide Server = new ServerSide();
         public static ClientSide Client = new ClientSide();
         public static GameMaster Game = new GameMaster();
-        public static List<PlayerInformation> Player = new List<PlayerInformation>();
+        public static List<PlayerInfo> PlayersList = new List<PlayerInfo>();
         public static bool IsServer;
+
+        public static NetPackBlank NullMsg = new NetPackBlank();
 
         public static int NetworkPort;
         public static string NetworkAddress;
         public static float Timer = 3f;
-        public static int MaxPlayers = Enum.GetNames(typeof(PlayerColor)).Length - 1;
+        public static int MaxPlayers = 5;
+        public static int ColorsCount = Enum.GetNames(typeof(PlayerColor)).Length - 1;
 
-        static Net() {
-        }
+        static Net() {}
 
         public static void StartCountdown() {
             LobbyInspector.Timer = Timer;
@@ -33,22 +35,18 @@ namespace Code.Network {
         }
 
         public static void Reset() {
-            PlayerSync.PlayerInfo.Color = PlayerColor.NotPicked;
-            PlayerSync.PlayerInfo.ID = -10;
-            PlayerSync.PlayerInfo.IsRegistred = false;
-            PlayerSync.PlayerInfo.WaitingForColorUpgrade = false;
-            PlayerSync.PlayerInfo.IsReady = false;
+            MainGame.Player.Color = PlayerColor.NotPicked;
+            MainGame.Player.ID = -10;
+            MainGame.Player.IsRegistred = false;
+            MainGame.Player.WaitingForColorUpgrade = false;
+            MainGame.Player.IsReady = false;
 
             if (!IsServer) return;
             Server.CleanChat();
-            Player.Clear();
+            PlayersList.Clear();
             IsServer = false;
             NetworkAddress = string.Empty;
             NetworkPort = 0;
-        }
-
-        public static NetPackBlank NullMsg() {
-            return ServerRegister.NullMsg;
         }
 
         public static string ColorString(PlayerColor pColor, string target) {
@@ -76,8 +74,8 @@ namespace Code.Network {
 
         public static Color Color(PlayerColor pColor) {
             switch (pColor) {
-                case PlayerColor.Black:
-                    return GameRegulars.PlayerBlack;
+                case PlayerColor.Grey:
+                    return GameRegulars.PlayerGrey;
                 case PlayerColor.Blue:
                     return GameRegulars.PlayerBlue;
                 case PlayerColor.Green:
@@ -86,6 +84,10 @@ namespace Code.Network {
                     return GameRegulars.PlayerRed;
                 case PlayerColor.Yellow:
                     return GameRegulars.PlayerYellow;
+                case PlayerColor.Purple:
+                    return GameRegulars.PlayerPurple;
+                case PlayerColor.Cyan:
+                    return GameRegulars.PlayerCyan;
             }
             return GameRegulars.BlackColor;
         }

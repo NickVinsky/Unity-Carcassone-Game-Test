@@ -16,7 +16,9 @@ namespace Code {
         private readonly KeyInputHandler _k = new KeyInputHandler();
         public static readonly Grid Grid = new Grid();
 
-        public static GameStage Stage;
+        public static PlayerInfo Player;
+
+        //public static GameStage Stage;
 
         //private float _timer;
         //private bool _timerTrigger;
@@ -43,12 +45,7 @@ namespace Code {
         public static bool MouseOnChat;
 
         public static void ChangeGameStage(GameStage stage) {
-            if (Net.Game.IsOnline()) {
-                Net.Game.Stage = stage;
-
-                return;
-            }
-            Stage = stage;
+            Player.Stage = stage;
         }
 
         public void Init() {
@@ -56,24 +53,26 @@ namespace Code {
             Deck.InitVanillaDeck();
             Tile.SetStarting(20);
             Builder.Init();
-            Stage = GameStage.Start;
 
-            if (Net.Game.IsOnline()) return;
-            if (PlayerSync.PlayerInfo.PlayerName == null)
-                PlayerSync.PlayerInfo.PlayerName = MainMenuGUI.GetRandomName();
-            PlayerSync.PlayerInfo.Color = (PlayerColor) UnityEngine.Random.Range(1, 5);
-            PlayerSync.PlayerInfo.FollowersNumber = MaxFollowerNumbers;
-            PlayerSync.PlayerInfo.Score = 0;
+            if (Net.Game.IsOnline()) {
+                return;
+            }
+
+            Player.Stage = GameStage.Start;
+            if (Player.PlayerName == null)
+                Player.PlayerName = MainMenuGUI.GetRandomName();
+            Player.Color = (PlayerColor) UnityEngine.Random.Range(1, Net.ColorsCount);
+            Player.FollowersNumber = MaxFollowerNumbers;
+            Player.Score = 0;
             GameObject.Find("ChatPanel").transform.localScale = new Vector2(0f, 0f);
             //GameObject.Find("PlayersPanel").transform.localScale = new Vector2(0f, 0f);
             UpdateLocalPlayer();
         }
 
         public static void UpdateLocalPlayer() {
-            var curPlayer = PlayerSync.PlayerInfo;
             var isMoving = "1";
-            var l = (int) curPlayer.Color + isMoving + curPlayer.FollowersNumber.ToString("D1") +
-                    curPlayer.Score.ToString("D4") + curPlayer.PlayerName;
+            var l = (int) Player.Color + isMoving + Player.FollowersNumber.ToString("D1") +
+                    Player.Score.ToString("D4") + Player.PlayerName;
             Net.Client.RefreshInGamePlayersList(l);
         }
 
@@ -123,7 +122,7 @@ namespace Code {
 
             #region Game_Logic_Local
             if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
-            switch (Stage) {
+            switch (Player.Stage) {
                 case GameStage.Wait:
                     break;
                 case GameStage.Start:
@@ -131,7 +130,7 @@ namespace Code {
                         if (!Deck.IsEmpty()) {
                             Tile.Pick();
                             Tile.AttachToMouse();
-                            Stage = GameStage.PlacingTile;
+                            Player.Stage = GameStage.PlacingTile;
                         }
                     }
                     break;
@@ -143,23 +142,23 @@ namespace Code {
                     if (Input.GetKeyDown(_k.PickTileFromDeck)) Tile.Rotate.Clockwise();
                     if (Input.GetKeyDown(_k.ReturnTileToDeck)) {
                         Tile.Return();
-                        Stage = GameStage.Start;
+                        Player.Stage = GameStage.Start;
                     }
                     //Stage = GameStage.PlacingFollower; // In MouseEventHandler.OnMouseUp()
                     break;
                 case GameStage.PlacingFollower:
                     if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(_k.ReturnTileToDeck)) {
                         Tile.LastPlaced().HideAll();
-                        Stage = GameStage.Finish;
+                        Player.Stage = GameStage.Finish;
                     }
                     break;
                 case GameStage.Finish:
                     UpdateLocalPlayer();
                     if (Deck.IsEmpty()) {
-                        Stage = GameStage.End;
+                        Player.Stage = GameStage.End;
                         ScoreCalc.Final();
                     }
-                    Stage = GameStage.Start;
+                    Player.Stage = GameStage.Start;
                     break;
                 case GameStage.End:
                     break;

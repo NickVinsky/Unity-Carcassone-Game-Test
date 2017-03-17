@@ -46,10 +46,10 @@ namespace Code.Game.FollowerSubs {
             return _possibleLocation.Where(loc => loc.IsBarrier()).Any(loc => loc.GetNodes().Any(node => node == side));
         }
 
-        public void Opponent(GameObject o, PlayerColor owner, byte id) {
+        public void Opponent(PlayerColor owner, byte id) {
             foreach (var loc in _possibleLocation) {
                 if (!loc.CompareID(id)) continue;
-                loc.SetOwner(o, owner);
+                loc.SetOwner(owner);
                 return;
             }
         }

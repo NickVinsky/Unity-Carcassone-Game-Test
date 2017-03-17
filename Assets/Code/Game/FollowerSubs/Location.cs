@@ -3,7 +3,6 @@ using System.Linq;
 using Code.Game.Data;
 using Code.Network;
 using UnityEngine;
-using static Code.Network.PlayerSync;
 using Object = UnityEngine.Object;
 
 namespace Code.Game.FollowerSubs {
@@ -141,18 +140,18 @@ namespace Code.Game.FollowerSubs {
             _nodes = rNodes;
         }
 
-        public void SetOwner(GameObject o, PlayerColor owner) {
+        public void SetOwner(PlayerColor owner) {
             //if (owner == _owner) return;
             PosFree = false;
             _owner = owner;
             ScoreCalc.ApplyOpponentFollower(this);
-            SpriteInit(o);
+            SpriteInit();
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
         }
 
         public void SetOwner() {
             PosFree = false;
-            _owner = PlayerInfo.Color;
+            _owner = MainGame.Player.Color;
             //if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
             //if (_sprite.GetComponent<BoxCollider2D>() != null) {Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
             Object.Destroy(_sprite.GetComponent<Rigidbody2D>());
@@ -161,6 +160,9 @@ namespace Code.Game.FollowerSubs {
             ScoreCalc.ApplyFollower(this);
             MainGame.ChangeGameStage(GameStage.Finish);
 
+            Tile.Cache.Last().LocactionID = (sbyte) _id;
+            Tile.Cache.Last().LocationOwner = _owner;
+
             if (!Net.Game.IsOnline()) return;
             var name = _sprite.transform.parent.gameObject.name;
             Net.Client.SendFollower(_owner, _id, name);
@@ -168,7 +170,7 @@ namespace Code.Game.FollowerSubs {
 
         public void Show(GameObject o, sbyte rotates) {
             if (!PosFree) return;
-            SpriteInit(o);
+            SpriteInit();
             _sprite.AddComponent<BoxCollider2D>();
             _sprite.GetComponent<BoxCollider2D>().size = new Vector2(3f, 3f);
             _sprite.AddComponent<Rigidbody2D>();
@@ -177,9 +179,9 @@ namespace Code.Game.FollowerSubs {
             _sprite.GetComponent<FollowerHook>().Id = _id;
         }
 
-        private void SpriteInit(GameObject o) {
+        private void SpriteInit() {
             _sprite = new GameObject {name = Type + "(" + _meeplePos.x + ";" + _meeplePos.y + ")"};
-            _sprite.transform.SetParent(o.transform);
+            _sprite.transform.SetParent(Parent.gameObject.transform);
             _sprite.transform.localScale = new Vector3(0.08f, 0.08f, 0);
             _sprite.transform.localPosition = _meeplePos;
             _sprite.AddComponent<SpriteRenderer>();
