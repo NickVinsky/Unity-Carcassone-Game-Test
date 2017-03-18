@@ -16,7 +16,7 @@ namespace Code.Handlers {
                 return;
             }
             if (Player.Stage == GameStage.PlacingTile) {
-                if (Tile.Nearby.CanBeAttachedTo(gameObject)) {
+                if (Tile.Nearby.TileOnMouseCanBeAttachedTo(gameObject)) {
                     GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                     return;
                 }
@@ -42,7 +42,7 @@ namespace Code.Handlers {
                 return;
             }
             if (Player.Stage != GameStage.PlacingTile) return;
-            if (!Tile.Nearby.CanBeAttachedTo(gameObject) || MouseState == State.Dragging) return;
+            if (!Tile.Nearby.TileOnMouseCanBeAttachedTo(gameObject) || MouseState == State.Dragging) return;
             Tile.OnMouse.Put(gameObject);
 
             if (Player.FollowersNumber > 0) {

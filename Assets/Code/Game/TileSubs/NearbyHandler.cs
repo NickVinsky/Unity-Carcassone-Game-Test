@@ -60,43 +60,51 @@ namespace Code.Game.TileSubs {
             return GameObject.Find("cell#" + (cellPos.X + x) + ":" + (cellPos.Y + y));
         }
 
-        private bool CompareBySides(GameObject mainTile, Side sideOfMainTile) {
-            GameObject neighborTile = GetBySide(sideOfMainTile, mainTile);
-            if (neighborTile == null) return true;
-            if (neighborTile.GetComponent<TileInfo>().Type == 0) return true;
-            return CheckAttachment(sideOfMainTile, neighborTile);
-        }
-
-        public bool CheckNeighborTiles(GameObject mainTile) {
+        public bool CanBeAttachedTo(GameObject cell, TileInfo tester) {
             var r = true;
             var n = true;
             for (var i = 0; i < 4; i++) {
-                n = n && NullCheck(mainTile, (Side) i);
-                r = r && CompareBySides(mainTile, (Side) i);
+                var neighborTile = GetBySide((Side) i, cell);
+                n = n && NullCheck(neighborTile);
+                r = r && CompareBySides(tester, neighborTile, (Side) i);
             }
             return r && !n;
         }
 
-        private bool CheckAttachment(Side sideOfMainTile, GameObject targetTile) {
-            if (Tile.OnMouse.GetSide(Tile.Rotate.Set((int) sideOfMainTile - Tile.OnMouse.GetRotation())) ==
-                targetTile.GetComponent<TileInfo>().GetSide(Tile.Rotate.Set((int) GetOppositeSide(sideOfMainTile) - targetTile.GetComponent<TileInfo>().Rotates))) {
-                return true;
-            }
-            return false;
-        }
-
-        private bool NullCheck(GameObject mainTile, Side sideOfMainTile) {
-            GameObject neighborTile = GetBySide(sideOfMainTile, mainTile);
-            if (neighborTile == null) return true;
-            return neighborTile.GetComponent<TileInfo>().Type == 0;
+        public bool TileOnMouseCanBeAttachedTo(GameObject cell) {
+            return Tile.OnMouse.Exist() && !Tile.Exist(cell) && CanBeConnectedTo(cell);
         }
 
         public bool CanBeConnectedTo(GameObject cell) {
             return CheckNeighborTiles(cell) && cell.GetComponent<TileInfo>().Type == 0;
         }
 
-        public bool CanBeAttachedTo(GameObject cell) {
-            return Tile.OnMouse.Exist() && !Tile.Exist(cell) && CanBeConnectedTo(cell);
+        public bool CheckNeighborTiles(GameObject mainTile) {
+            var r = true;
+            var n = true;
+            for (var i = 0; i < 4; i++) {
+                var neighborTile = GetBySide((Side) i, mainTile);
+                n = n && NullCheck(neighborTile);
+                r = r && CompareBySides(Tile.OnMouse.GetTile(), neighborTile, (Side) i);
+            }
+            return r && !n;
+        }
+
+        private bool NullCheck(GameObject neighborTile) {
+            if (neighborTile == null) return true;
+            return !Tile.Exist(neighborTile);
+        }
+
+        private bool CompareBySides(TileInfo attachableTile, GameObject neighborTile, Side sideOfMainTile) {
+            if (neighborTile == null) return true;
+            if (!Tile.Exist(neighborTile)) return true;
+            return CheckAttachment(sideOfMainTile, attachableTile, Tile.Get(neighborTile));
+        }
+
+        private bool CheckAttachment(Side sideOfMainTile, TileInfo mainTile, TileInfo targetTile) {
+            //Debug.Log("sideOfMainTile: " + sideOfMainTile);
+            return mainTile.GetSide(Tile.Rotate.Set((int) sideOfMainTile - mainTile.Rotates)) ==
+                   targetTile.GetSide(Tile.Rotate.Set((int) GetOppositeSide(sideOfMainTile) - targetTile.Rotates));
         }
     }
 }

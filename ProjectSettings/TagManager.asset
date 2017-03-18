@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Background
   - TileOnBoard
+  - EmptyCell
   layers:
   - Default
   - TransparentFX

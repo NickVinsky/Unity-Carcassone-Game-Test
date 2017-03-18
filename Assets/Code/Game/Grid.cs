@@ -62,6 +62,7 @@ namespace Code.Game
 
         public void AddCell(Cell v) {
             var tile = new GameObject("cell#" + v.X + ":" + v.Y);
+            tile.tag = GameRegulars.EmptyCellTag;
             tile.transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             tile.AddComponent<SpriteRenderer>();
             tile.AddComponent<BoxCollider2D>();

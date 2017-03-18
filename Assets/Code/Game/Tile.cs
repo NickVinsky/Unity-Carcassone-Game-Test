@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Code.Game.Data;
 using Code.Game.TileSubs;
 using Code.Network;
@@ -48,6 +49,24 @@ namespace Code.Game {
             if (cell == null) return false;
             LastCheckedTile = cell.GetComponent<TileInfo>();
             return LastCheckedTile.Type != 0;
+        }
+
+        public static bool CannotBePlacedOnBoard(int index) {
+            var tester = new GameObject("Tester");
+            var testerTileID = Deck.GetTileByIndex(index);
+
+            tester.AddComponent<TileInfo>();
+            var testerTile = Get(tester);
+            testerTile.InitTile(testerTileID);
+
+            foreach (var emptyCell in GameObject.FindGameObjectsWithTag(GameRegulars.EmptyCellTag)) {
+                if (!Nearby.CanBeAttachedTo(emptyCell, testerTile)) continue;
+                Object.Destroy(tester);
+                return false;
+            }
+
+            //GameObject.FindGameObjectsWithTag(GameRegulars.EmptyCellTag).All(emptyCell => !Nearby.CanBeAttachedTo(emptyCell, testerTile))
+            return true;
         }
 
         public static void Highlight(string name, int color) {

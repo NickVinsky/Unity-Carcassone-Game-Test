@@ -182,7 +182,7 @@ namespace Code.Game {
                     AddCathedral(0.298f, -0.211f);
                     break;
                 case 27:
-                    AddCities("0", -0.033f, 0.045f);
+                    AddCities("0", -0.015f, 0.439f);
                     AddCities("1", 0.463f, 0.078f);
                     AddCities("2", 0f, -0.395f);
                     AddCities("3", -0.477f, 0.038f);
@@ -256,7 +256,7 @@ namespace Code.Game {
                 case 38:
                     AddRoads("1", 0.293f, -0.032f, true);
                     AddRoads("2", 0f, -0.285f);
-                    AddRoads("3", -0.261f, 0.027f, true);
+                    AddRoads("3", -0.261f, 0.027f);
                     AddFields("0127", -0.188f, 0.293f);
                     AddFields("34", 0.345f, -0.364f);
                     AddFields("56", -0.352f, -0.308f);
@@ -342,6 +342,19 @@ namespace Code.Game {
                     AddFields("34", 0.261f, -0.308f);
                     AddFields("56", -0.3f, -0.304f);
                     AddFields("70", -0.386f, 0.381f);
+                    break;
+
+                //Custom Tiles
+                case 81:
+                    AddRoads("0", 0.006f, 0.406f, true);
+                    AddFields("01234567", 0.286f, -0.268f);
+                    break;
+                case 82:
+                    AddRoads("0123", 0.006f, 0.406f);
+                    AddFields("12", 0.266f, 0.302f);
+                    AddFields("34", 0.286f, -0.268f);
+                    AddFields("56", -0.31f, -0.283f);
+                    AddFields("70", -0.293f, 0.372f);
                     break;
             }
         }

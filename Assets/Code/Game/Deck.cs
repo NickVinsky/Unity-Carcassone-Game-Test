@@ -22,6 +22,13 @@ namespace Code.Game {
             return rnd;
         }
 
+        public static int GenerateIndexSafe() {
+            var maxIndex = _tilesPack.Count;
+            var rnd = Random.Range(0, maxIndex);
+
+            return Tile.CannotBePlacedOnBoard(rnd) ? GenerateIndexSafe() : rnd;
+        }
+
         public static int GetRandomTile() {
             var rnd = GenerateIndex();
             int result = _tilesPack[rnd];
@@ -101,13 +108,6 @@ namespace Code.Game {
             AddTilesToDeck(23, 4);
             AddTilesToDeck(24, 1);
 
-            // Kings
-            AddTilesToDeck(52, 1);
-            AddTilesToDeck(53, 4);
-            AddTilesToDeck(54, 4);
-            AddTilesToDeck(55, 2);
-            AddTilesToDeck(56, 2);
-
             // Ins And Cathedrals
             AddTilesToDeck(25, 1);
             AddTilesToDeck(26, 2);
@@ -127,11 +127,22 @@ namespace Code.Game {
             AddTilesToDeck(40, 1);
             AddTilesToDeck(41, 5);
 
+            // Kings
+            AddTilesToDeck(52, 1);
+            AddTilesToDeck(53, 4);
+            AddTilesToDeck(54, 4);
+            AddTilesToDeck(55, 2);
+            AddTilesToDeck(56, 2);
+
             //Traders And Builders
             AddTilesToDeck(57, 1);
             AddTilesToDeck(58, 4);
             AddTilesToDeck(59, 3);
             AddTilesToDeck(60, 4);
+
+            //Custom Tiles
+            AddTilesToDeck(81, 4);
+            AddTilesToDeck(82, 2);
         }
 
         private static void AddTilesToDeck(int type, int quantity) {

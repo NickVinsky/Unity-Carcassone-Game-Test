@@ -119,6 +119,8 @@ namespace Code.Network.Composition {
                 Net.Client.SendUnreliable(NetCmd.Game, packet);
             }
 
+
+
             if (Player.Stage == GameStage.Wait)
                 if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
 
@@ -130,7 +132,7 @@ namespace Code.Network.Composition {
                 case GameStage.Start:
                     if (Input.GetKeyDown(k.PickTileFromDeck)) {
                         if (!Deck.IsEmpty()) {
-                            var i = Deck.GenerateIndex();
+                            var i = Deck.GenerateIndexSafe();
                             Net.Client.Action(Command.TilePicked, i, Tile.Rotate.Random());
                             AttachTileToMouse();
                             Player.Stage = GameStage.PlacingTile;
@@ -194,7 +196,7 @@ namespace Code.Network.Composition {
 
         public void OnMouseOver(GameObject c) {
             if (!MyTurn()) return; // Проверка - мой ли сейчас ход
-            if (Tile.Nearby.CanBeAttachedTo(c) && TileOnMouseExist()) {
+            if (Tile.Nearby.TileOnMouseCanBeAttachedTo(c) && TileOnMouseExist()) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                 Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 1});
                 return;
@@ -214,7 +216,7 @@ namespace Code.Network.Composition {
         }
         public void OnMouseUp(GameObject c) {
             if (!MyTurn()) return; // Проверка - мой ли сейчас ход
-            if (!Tile.Nearby.CanBeAttachedTo(c) || MainGame.MouseState == MainGame.State.Dragging) return;
+            if (!Tile.Nearby.TileOnMouseCanBeAttachedTo(c) || MainGame.MouseState == MainGame.State.Dragging) return;
             PutTileFromMouse(c);
         }
 
@@ -232,7 +234,7 @@ namespace Code.Network.Composition {
             if (!MyTurn()) return;
             if (Player.Stage != GameStage.Start) return;
             if (Deck.IsEmpty()) return;
-            var i = Deck.GenerateIndex();
+            var i = Deck.GenerateIndexSafe();
             Net.Client.Action(Command.TilePicked, i);
             AttachTileToMouse();
             Tile.AttachToMouse();

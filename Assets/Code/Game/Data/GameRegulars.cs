@@ -26,6 +26,7 @@ namespace Code.Game.Data {
         public delegate void EventDelegate(object sender, EventArgs e);
 
         public const string TileTag = "TileOnBoard";
+        public const string EmptyCellTag = "EmptyCell";
 
         public const string TileOnMouseName = "TileOnMouse";
 
