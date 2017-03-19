@@ -11,6 +11,32 @@ using static Code.MainGame;
 namespace Code.Game {
     public static class ScoreCalc {
 
+        public static void RecalcFollowersNumber(Follower type, ref PlayerInfo player, int shift) {
+            switch (type) {
+                case Follower.Meeple:
+                    player.MeeplesQuantity = (byte) (player.MeeplesQuantity + shift);
+                    break;
+                case Follower.BigMeeple:
+                    player.BigMeeplesQuantity = (byte) (player.BigMeeplesQuantity + shift);
+                    break;
+                case Follower.Mayor:
+                    player.MayorsQuantity = (byte) (player.MayorsQuantity + shift);
+                    break;
+                case Follower.Pig:
+                    player.PigsQuantity = (byte) (player.PigsQuantity + shift);
+                    break;
+                case Follower.Builder:
+                    player.BuildersQuantity = (byte) (player.BuildersQuantity + shift);
+                    break;
+                case Follower.Barn:
+                    player.BarnsQuantity = (byte) (player.BarnsQuantity + shift);
+                    break;
+                case Follower.Wagon:
+                    player.WagonsQuantity = (byte) (player.WagonsQuantity + shift);
+                    break;
+            }
+        }
+
         public static void Final() {
             foreach (var c in Builder.Monasteries) Monastery(c, true);
             foreach (var c in Builder.Cities) City(c, true);
@@ -26,9 +52,10 @@ namespace Code.Game {
         }
 
         //After follower assignment
-        public static void ApplyFollower(Location loc) {
-            if (Net.Game.IsOnline()) Net.Client.SubtractFollower(loc.GetOwner());
-            Player.FollowersNumber--;
+        public static void ApplyFollower(Location loc, Follower type) {
+            if (Net.Game.IsOnline()) Net.Client.SubtractFollower(loc.GetOwner(), type);
+            RecalcFollowersNumber(type, ref Player, -1);
+            //Player.MeeplesQuantity--;
             Builder.SetOwner(loc);
             UpdateGUI();
         }
@@ -52,13 +79,13 @@ namespace Code.Game {
             if (pFollowersQuantity == followersToControl) {
                 player.Score += score;
             }
-            player.FollowersNumber += pFollowersQuantity;
+            player.MeeplesQuantity += pFollowersQuantity;
             Net.PlayersList[index] = player;
         }
 
         private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score) {
             if (myFollowersQuantity == followersToControl) Player.Score += score;
-            Player.FollowersNumber += myFollowersQuantity;
+            Player.MeeplesQuantity += myFollowersQuantity;
         }
 
         private static void AddScore(byte[] ownerFollowers, byte followersToControl, int score) {

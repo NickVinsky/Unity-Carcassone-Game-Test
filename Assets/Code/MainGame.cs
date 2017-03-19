@@ -63,7 +63,7 @@ namespace Code {
             if (Player.PlayerName == null)
                 Player.PlayerName = MainMenuGUI.GetRandomName();
             Player.Color = (PlayerColor) UnityEngine.Random.Range(1, Net.ColorsCount);
-            Player.FollowersNumber = MaxFollowerNumbers;
+            Player.MeeplesQuantity = MaxMeeplesNumber;
             Player.Score = 0;
             GameObject.Find("ChatPanel").transform.localScale = new Vector2(0f, 0f);
             //GameObject.Find("PlayersPanel").transform.localScale = new Vector2(0f, 0f);
@@ -72,7 +72,7 @@ namespace Code {
 
         public static void UpdateLocalPlayer() {
             var isMoving = "1";
-            var l = (int) Player.Color + isMoving + Player.FollowersNumber.ToString("D1") +
+            var l = (int) Player.Color + isMoving + Player.MeeplesQuantity.ToString("D1") +
                     Player.Score.ToString("D4") + Player.PlayerName;
             Net.Client.RefreshInGamePlayersList(l);
         }

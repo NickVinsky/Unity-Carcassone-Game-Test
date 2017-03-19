@@ -157,7 +157,7 @@ namespace Code.Game.FollowerSubs {
             Object.Destroy(_sprite.GetComponent<Rigidbody2D>());
             Object.Destroy(_sprite.GetComponent<BoxCollider2D>());
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
-            ScoreCalc.ApplyFollower(this);
+            ScoreCalc.ApplyFollower(this, type);
             MainGame.ChangeGameStage(GameStage.Finish);
 
             Tile.Cache.Last().LocactionID = (sbyte) _id;
@@ -188,7 +188,7 @@ namespace Code.Game.FollowerSubs {
             _sprite.transform.localPosition = _meeplePos;
             _sprite.AddComponent<SpriteRenderer>();
             _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("3dMeeple");
-            _sprite.GetComponent<SpriteRenderer>().sortingOrder = 2;
+            _sprite.GetComponent<SpriteRenderer>().sortingOrder = 1;
         }
 
         public void RemovePlacement() {

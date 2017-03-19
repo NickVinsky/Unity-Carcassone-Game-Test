@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.Game;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Commands;
@@ -91,10 +92,10 @@ namespace Code.Network.Composition {
             }
         }
 
-        public void SubtractFollower(PlayerColor playerColor) {
+        public void SubtractFollower(PlayerColor playerColor, Follower type) {
             var player = Net.PlayersList.First(p => p.Color == playerColor);
             var index = Net.PlayersList.IndexOf(player);
-            player.FollowersNumber--;
+            ScoreCalc.RecalcFollowersNumber(type, ref player, -1);
             Net.PlayersList[index] = player;
             RefreshInGamePlayersList();
         }
@@ -106,7 +107,7 @@ namespace Code.Network.Composition {
                 if (Net.PlayersList.Any(p => p.Color == q)) {
                     var curPlayer = Net.PlayersList.First(p => p.Color == q);
                     var isMoving = q == Net.Game.CurrentPlayer ? "1" : "0";
-                    l += (int) q + isMoving + curPlayer.FollowersNumber.ToString("D1") +
+                    l += (int) q + isMoving + curPlayer.MeeplesQuantity.ToString("D1") +
                          curPlayer.Score.ToString("D4") + curPlayer.PlayerName + Environment.NewLine;
                 } else {
                     // Игрок больше не в игре

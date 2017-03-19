@@ -46,7 +46,7 @@ namespace Code.Handlers {
             if (!Tile.Nearby.TileOnMouseCanBeAttachedTo(gameObject) || MouseState == State.Dragging) return;
             Tile.OnMouse.Put(gameObject);
 
-            if (Player.FollowersNumber > 0) {
+            if (Player.MeeplesQuantity > 0) {
                 Player.Stage = GameStage.PlacingFollower;
                 Tile.ShowPossibleFollowersLocations(gameObject, Follower.Meeple);
             } else {

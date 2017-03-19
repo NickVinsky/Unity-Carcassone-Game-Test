@@ -225,7 +225,7 @@ namespace Code.Network.Composition {
         }
 
         public void PostTilePut(Cell v) {
-            if (Player.FollowersNumber > 0) {
+            if (Player.MeeplesQuantity > 0) {
                 Player.Stage = GameStage.PlacingFollower;
                 var c  = GameObject.Find("cell#" + v.X + ":" + v.Y);
                 Tile.ShowPossibleFollowersLocations(c, Follower.Meeple);

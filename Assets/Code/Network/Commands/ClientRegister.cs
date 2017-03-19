@@ -165,7 +165,7 @@ namespace Code.Network.Commands {
                     //var ChatPanel = GameObject.Find("ChatPanel");
                     //GameObject.DontDestroyOnLoad(ChatPanel.transform.root);
                     Net.Game.CurrentPlayer = m.Color;
-                    Player.FollowersNumber = GameRegulars.MaxFollowerNumbers;
+                    Player.MeeplesQuantity = GameRegulars.MaxMeeplesNumber;
                     Player.Score = 0;
                     SceneManager.LoadScene(GameRegulars.SceneGame);
                     Net.Client.UpdateScore();

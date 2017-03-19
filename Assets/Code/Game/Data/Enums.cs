@@ -31,8 +31,11 @@
     public enum Follower {
         Meeple,
         BigMeeple,
+        Mayor,
         Pig,
-        Builder
+        Builder,
+        Barn,
+        Wagon
     }
 
     /*public enum Follower {

@@ -123,6 +123,7 @@ namespace Code.Game {
         }
 
         private static void AddInnsAndCathedralsTiles(int multiplier = 1) {
+            // В оригинале всех тайлов по одной штуке, кроме собора (#26), их два
             AddTilesToDeck(25, 1, multiplier);
             AddTilesToDeck(26, 2, multiplier);
             AddTilesToDeck(27, 2, multiplier);
@@ -143,6 +144,7 @@ namespace Code.Game {
         }
 
         private static void AddKingsTiles(int multiplier = 1) {
+            // В оригинале всех тайлов по одной штуке
             AddTilesToDeck(52, 1, multiplier);
             AddTilesToDeck(53, 4, multiplier);
             AddTilesToDeck(54, 4, multiplier);
@@ -151,6 +153,7 @@ namespace Code.Game {
         }
 
         private static void AddTradersAndBuildersTiles(int multiplier = 1) {
+            // В оригинале всех тайлов по одной штуке
             AddTilesToDeck(57, 1, multiplier);
             AddTilesToDeck(58, 4, multiplier);
             AddTilesToDeck(59, 3, multiplier);

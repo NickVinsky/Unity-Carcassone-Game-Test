@@ -27,7 +27,7 @@ namespace Code.Network.Commands {
 
             Net.StopCountdown();
 
-            Net.PlayersList.Add(new PlayerInfo {UniKey = m.UniKey, ID = m.ID, PlayerName = m.PlayerName, FollowersNumber = GameRegulars.MaxFollowerNumbers, Score = 0});
+            Net.PlayersList.Add(new PlayerInfo {UniKey = m.UniKey, ID = m.ID, PlayerName = m.PlayerName, MeeplesQuantity = GameRegulars.MaxMeeplesNumber, Score = 0});
             Net.Server.SendTo(m.ID, NetCmd.Inf, new NetPackInf{Inf = ConnInfo.PlayerRegistred});
             Net.Server.SendTo(m.ID, NetCmd.ChatHistory, new NetPackChatMessage {Message = Net.Server.ChatHistory});
 
@@ -115,7 +115,7 @@ namespace Code.Network.Commands {
                         Net.Server.CommandResponse(m, pInfo);
                         break;
                     case "/followers":
-                        pInfo = "[Followers] " + p.FollowersNumber + " left";
+                        pInfo = "[Followers] " + p.MeeplesQuantity + " left";
                         Net.Server.CommandResponse(m, pInfo);
                         break;
 
@@ -177,7 +177,7 @@ namespace Code.Network.Commands {
             curPlayer.PlayerName = sender.PlayerName;
             curPlayer.IsRegistred = sender.IsRegistred;
             curPlayer.IsReady = sender.IsReady;
-            curPlayer.FollowersNumber = sender.FollowersNumber;
+            curPlayer.MeeplesQuantity = sender.FollowersNumber;
             curPlayer.Score = sender.Score;
 
             //if (lastID != curPlayer.ConnectionId || lastColor != curPlayer.Color) Net.Server.SendToAll(NetCmd.RefreshPlayersInfoAndReformPlayersList, NullMsg);
@@ -212,7 +212,7 @@ namespace Code.Network.Commands {
                 Net.StopCountdown();
             }
 
-            Net.PlayersList.Add(new PlayerInfo {ID = m.ID, PlayerName = m.PlayerName, FollowersNumber = GameRegulars.MaxFollowerNumbers, Score = 0});
+            Net.PlayersList.Add(new PlayerInfo {ID = m.ID, PlayerName = m.PlayerName, MeeplesQuantity = GameRegulars.MaxMeeplesNumber, Score = 0});
             FormAndSendLobbyPlayersList();
         }
 
@@ -229,7 +229,7 @@ namespace Code.Network.Commands {
                 PlayerName = m.PlayerName,
                 Color = m.Color,
                 IsRegistred = m.IsRegistred,
-                FollowersNumber = GameRegulars.MaxFollowerNumbers,
+                MeeplesQuantity = GameRegulars.MaxMeeplesNumber,
                 Score = 0
             });
             if (Net.Game.IsStarted()) {
@@ -263,7 +263,7 @@ namespace Code.Network.Commands {
             var curPlayer = Net.PlayersList.First(p => p.ID == sender.ID);
             var index = Net.PlayersList.IndexOf(curPlayer);
 
-            curPlayer.FollowersNumber = sender.FollowersNumber;
+            curPlayer.MeeplesQuantity = sender.FollowersNumber;
             curPlayer.Score = sender.Score;
 
             if(index != -1) Net.PlayersList[index] = curPlayer;
@@ -274,8 +274,8 @@ namespace Code.Network.Commands {
 
         [ServerCommand(NetCmd.SubtractFollower)]
         public static void SubtractFollower(NetworkMessage message) {
-            var pColor = message.ReadMessage<NetPackPlayerColor>().Color;
-            Net.Server.SubtractFollower(pColor);
+            var m = message.ReadMessage<NetPackFollower>();
+            Net.Server.SubtractFollower(m.Color, m.followerType);
         }
 
         [ServerCommand(NetCmd.Game)]

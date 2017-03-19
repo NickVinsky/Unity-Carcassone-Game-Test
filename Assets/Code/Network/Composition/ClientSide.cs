@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Commands;
@@ -6,9 +8,11 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using static Code.MainGame;
+using Object = UnityEngine.Object;
 
 namespace Code.Network.Composition {
     public class ClientSide {
+        public GameObject[] Meeples;
 
         public NetPackPlayerInfo MyInfo() {
             return new NetPackPlayerInfo {
@@ -17,7 +21,7 @@ namespace Code.Network.Composition {
                 IsRegistred = Player.IsRegistred,
                 IsReady = Player.IsReady,
                 Color = Player.Color,
-                FollowersNumber = Player.FollowersNumber,
+                FollowersNumber = Player.MeeplesQuantity,
                 Score = Player.Score
             };
         }
@@ -94,15 +98,15 @@ namespace Code.Network.Composition {
             Send(NetCmd.RefreshScore, MyInfo());
         }
 
-        public void SubtractFollower(PlayerColor playerColor) {
-            Net.Client.Send(NetCmd.SubtractFollower, new NetPackPlayerColor{ Color = playerColor});
+        public void SubtractFollower(PlayerColor playerColor, Follower type) {
+            Net.Client.Send(NetCmd.SubtractFollower, new NetPackFollower{ Color = playerColor, followerType = type});
         }
 
         public void RefreshInGamePlayersList(string m) {
             string[] pList = m.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var lastI = 0;
 
-            for (int i = 0; i < pList.Length; i++) {
+            for (var i = 0; i < pList.Length; i++) {
                 var p = pList[i];
                 var o = GameObject.Find("PlayerInGame(" + i + ")");
                 if (pList[i] == string.Empty) continue;
@@ -123,8 +127,10 @@ namespace Code.Network.Composition {
                 }
 
 
-                o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
-                o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
+                FillContainer(o, pColor, Follower.Meeple, pFollowersNumber);
+
+                //o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
+                //o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
 
 
 
@@ -141,6 +147,47 @@ namespace Code.Network.Composition {
             for (int i = lastI; i < Net.MaxPlayers; i++) {
                 var o = GameObject.Find("PlayerInGame(" + i + ")");
                 o.transform.localScale = new Vector3(0f,0f,0f);
+            }
+        }
+
+        private void FillContainer(GameObject slot, int ownerColorInt, Follower type, int quantity) {
+            var renderInterval = 0f;
+            var containerName = string.Empty;
+            var spriteName = "Meeple";
+            switch (type) {
+                case Follower.Meeple:
+                    renderInterval = 7f;
+                    containerName = "MeepleContainer";
+                    spriteName = "MeepleShadowed";
+                    break;
+                case Follower.BigMeeple:
+                    break;
+                case Follower.Mayor:
+                    break;
+                case Follower.Pig:
+                    break;
+                case Follower.Builder:
+                    break;
+            }
+
+            var parent = slot.transform.FindChild(containerName);
+            var children = (from Transform child in parent select child.gameObject).ToList();
+            children.ForEach(Object.Destroy);
+
+            Meeples = new GameObject[quantity];
+            for (var meepleCounter = quantity - 1; meepleCounter >= 0; meepleCounter--) {
+                Meeples[meepleCounter] = new GameObject("Meeple" + meepleCounter);
+                Meeples[meepleCounter].transform.SetParent(parent);
+                Meeples[meepleCounter].AddComponent<RectTransform>();
+                Meeples[meepleCounter].GetComponent<RectTransform>().anchorMin = new Vector2(0f, 0.5f);
+                Meeples[meepleCounter].GetComponent<RectTransform>().anchorMax = new Vector2(0f, 0.5f);
+                Meeples[meepleCounter].GetComponent<RectTransform>().anchoredPosition = new Vector3(10 + meepleCounter * renderInterval, 0f, 0f);
+                Meeples[meepleCounter].GetComponent<RectTransform>().localScale = new Vector3(26f, 26f, 26f);
+                Meeples[meepleCounter].GetComponent<RectTransform>().sizeDelta = new Vector2(0.8f, 0.9f);
+                Meeples[meepleCounter].AddComponent<SpriteRenderer>();
+                Meeples[meepleCounter].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spriteName);
+                Meeples[meepleCounter].GetComponent<SpriteRenderer>().color = Net.Color((PlayerColor) ownerColorInt);
+                Meeples[meepleCounter].GetComponent<SpriteRenderer>().sortingOrder = 3;
             }
         }
 

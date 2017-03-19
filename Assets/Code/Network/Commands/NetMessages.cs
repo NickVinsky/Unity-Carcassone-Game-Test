@@ -37,8 +37,9 @@ namespace Code.Network.Commands {
 
     public class NetPackBlank : MessageBase {}
 
-    public class NetPackPlayerColor : MessageBase {
+    public class NetPackFollower : MessageBase {
         public PlayerColor Color;
+        public Follower followerType;
     }
 
     public class NetPackPlayer : MessageBase {

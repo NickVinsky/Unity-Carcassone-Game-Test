@@ -101,7 +101,7 @@ namespace Code.Game.Data {
         public static readonly float TileSizeX = 88.0f;
         public static readonly float TileSizeY = 88.0f;
 
-        public const byte MaxFollowerNumbers = 7;
+        public const byte MaxMeeplesNumber = 8;
 
         #region Errors
         public const string JoinLogField = "JoinLog";

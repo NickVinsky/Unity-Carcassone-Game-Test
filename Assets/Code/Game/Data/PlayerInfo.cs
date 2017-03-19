@@ -7,7 +7,13 @@
         public PlayerColor Color;
 
         public GameStage Stage;
-        public byte FollowersNumber;
+        public byte MeeplesQuantity;
+        public byte BigMeeplesQuantity;
+        public byte MayorsQuantity;
+        public byte PigsQuantity;
+        public byte BuildersQuantity;
+        public byte BarnsQuantity;
+        public byte WagonsQuantity;
         public int Score;
 
         public bool IsRegistred;
