@@ -29,11 +29,18 @@
     }
 
     public enum Follower {
+        Meeple,
+        BigMeeple,
+        Pig,
+        Builder
+    }
+
+    /*public enum Follower {
         None,
         Monk,
         Knight,
         Farmer,
         Thief
-    }
+    }*/
     //public enum fields : int { TOP_left = 0, TOP_right = 1, RIGHT_top = 2, RIGHT_bot = 3, BOT_right = 4, BOT_left = 5, LEFT_bot = 6, LEFT_top = 7}
 }

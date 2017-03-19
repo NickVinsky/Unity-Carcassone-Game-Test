@@ -16,6 +16,7 @@ namespace Code.Game {
             foreach (var c in Builder.Cities) City(c, true);
             foreach (var c in Builder.Roads) Road(c, true);
             foreach (var c in Builder.Fields) Field(c);
+            //UpdateGUI();
         }
 
         // After tile putting
@@ -130,10 +131,8 @@ namespace Code.Game {
 
                     if (loc.LinkedToCity == null) continue;
                     foreach (var linkToCity in loc.LinkedToCity) {
-                        //Net.Client.ChatMessage("linkToCity => " + linkToCity);
                         var city = Builder.GetCity(linkedTile.GetLocation(linkToCity));
-                        if (!city.Finished()) continue;
-                        //Net.Client.ChatMessage("finished");
+                        if (!city.Finished) continue;
                         if (Enumerable.Contains(field.LinkedCities, (byte) city.ID)) continue;
                         field.LinkedCities.Add(city.ID);
                     }

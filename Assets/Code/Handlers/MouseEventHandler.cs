@@ -25,6 +25,7 @@ namespace Code.Handlers {
             }
             GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
         }
+
         private void OnMouseExit() {
             if (Net.Game.IsOnline()) {
                 Net.Game.OnMouseExit(gameObject);
@@ -47,7 +48,7 @@ namespace Code.Handlers {
 
             if (Player.FollowersNumber > 0) {
                 Player.Stage = GameStage.PlacingFollower;
-                Tile.ShowPossibleFollowersLocations(gameObject);
+                Tile.ShowPossibleFollowersLocations(gameObject, Follower.Meeple);
             } else {
                 Player.Stage = GameStage.Finish;
             }

@@ -189,7 +189,7 @@ namespace Code.Game {
                     AddFields("", -0.016f, 0.037f, A(0, 1, 2, 3));
                     break;
                 case 28:
-                    AddCities("0", -0.033f, 0.045f);
+                    AddCities("0", 0f, 0.474f);
                     AddCities("1", 0.463f, 0.078f);
                     AddCities("3", -0.477f, 0.038f);
                     AddFields("45", -0.005f, -0.167f, A(0, 1, 2));
@@ -229,7 +229,7 @@ namespace Code.Game {
                 case 34:
                     AddCities("13", 0f, 0.055f, true);
                     AddRoads("0", 0.277f, 0.511f);
-                    AddRoads("2", -0.009f, -0.416f);
+                    AddRoads("2", 0f, 0.5f);
                     AddFields("0", -0.236f, 0.511f, A(0));
                     AddFields("1", 0.277f, 0.511f, A(0));
                     AddFields("4", 0.254f, -0.408f, A(0));
@@ -331,7 +331,7 @@ namespace Code.Game {
                     AddCities("0", 0f, 0.44f);
                     AddRoads("2", 0.005f, -0.211f);
                     AddRoads("3", -0.382f, 0.055f);
-                    AddFields("234", -0.304f, -0.299f);
+                    AddFields("234", 0.295f, -0.3f);
                     AddFields("56", -0.279f, -0.284f);
                     AddFields("7", -0.476f, 0.28f);
                     break;
@@ -467,13 +467,13 @@ namespace Code.Game {
             _follower.AddLocation(this, newLoc);
         }
 
-        public void AssignFollower(byte id) {
-            _follower.HideExcept(id);
+        public void AssignFollower(byte id, Follower type) {
+            _follower.HideExcept(id, type);
         }
 
-        public void AssignOpponentFollower(PlayerColor owner, byte id) {
+        public void AssignOpponentFollower(PlayerColor owner, byte id, Follower type) {
             GameObject o = gameObject;
-            _follower.Opponent(owner, id);
+            _follower.Opponent(owner, id, type);
         }
 
         public void HideAll() {
@@ -484,8 +484,8 @@ namespace Code.Game {
             _follower.RemovePlacement(constructID);
         }
 
-        public void ShowPossibleFollowersLocations(GameObject o) {
-            _follower.Show(o, Rotates);
+        public void ShowPossibleLocations(Follower type) {
+            _follower.Show(Rotates, type);
             if (gameObject.transform.childCount == 0) MainGame.ChangeGameStage(GameStage.Finish);
         }
 

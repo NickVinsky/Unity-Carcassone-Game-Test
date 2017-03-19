@@ -12,7 +12,7 @@ namespace Code.Game.Building {
             Type = Area.Road;
         }
 
-        public bool Finished() { return 2 * Edges != Nodes; }
+        public bool NotFinished() { return 2 * Edges != Nodes; }
 
         private void CalcScore() {
             ScoreCalc.Road(this);
@@ -35,7 +35,9 @@ namespace Code.Game.Building {
         }
 
         private void FinalNodesCalcToFinish() {
-            if (Finished()) return;
+            if (NotFinished()) return;
+            Finished = true;
+
             if (!HasOwner()) return;
             CalcScore();
         }

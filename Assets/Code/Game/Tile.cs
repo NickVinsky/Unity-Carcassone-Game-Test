@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Code.Game.Data;
 using Code.Game.TileSubs;
 using Code.Network;
@@ -151,17 +150,17 @@ namespace Code.Game {
             Cursor.visible = true;
         }
 
-        public static void Reconstruct(Cell cell, int id, int tileIndex, byte rotation, sbyte locId, PlayerColor owner) {
+        public static void Reconstruct(Cell cell, int id, int tileIndex, byte rotation, sbyte locId, PlayerColor owner, Follower followerType) {
             Cache.Add(new ReconstructionInfo(cell, id, tileIndex, rotation, locId, owner));
             Deck.SetLastPickedIndex(tileIndex);
             OnMouse.Destroy();
             PickWithID(id, rotation);
             OnMouse.Put(cell);
-            Get(cell).AssignOpponentFollower(owner, (byte) locId);
+            Get(cell).AssignOpponentFollower(owner, (byte) locId, followerType);
         }
 
-        public static void ShowPossibleFollowersLocations(GameObject o) {
-            o.GetComponent<TileInfo>().ShowPossibleFollowersLocations(o);
+        public static void ShowPossibleFollowersLocations(GameObject o, Follower type) {
+            Get(o).ShowPossibleLocations(type);
         }
     }
 }

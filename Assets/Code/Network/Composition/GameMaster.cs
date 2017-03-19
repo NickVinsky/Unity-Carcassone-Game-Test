@@ -14,6 +14,7 @@ namespace Code.Network.Composition {
     public class GameMaster {
         private bool _offline = true;
         private bool _isStarted;
+        public bool InitComplite { get; private set; }
         //public GameStage Stage;
         public PlayerColor CurrentPlayer = PlayerColor.NotPicked;
         public int CurrentPlayerIndex = -1;
@@ -73,11 +74,13 @@ namespace Code.Network.Composition {
                 //Pointer[i].transform.localScale = new Vector3(0f,0f,0f);
                 Pointer[i].GetComponent<SpriteRenderer>().enabled = false;
             }
+            InitComplite = true;
         }
 
         public bool MyTurn() { return CurrentPlayer == Player.Color; }
 
         public void StreamCursor(PlayerColor playerColor, Vector3 vector) {
+            if (!InitComplite) return;
             var colorInt = (int) playerColor;
             vector = new Vector3(vector.x + _streamingCursorOffsetX, vector.y - _streamingCursorOffsetY, 0f);
             Pointer[colorInt].GetComponent<SpriteRenderer>().enabled = true;
@@ -85,6 +88,7 @@ namespace Code.Network.Composition {
         }
 
         public void StopStreamCursor(PlayerColor playerColor, Vector3 vector) {
+            if (!InitComplite) return;
             var colorInt = (int) playerColor;
             Pointer[colorInt].GetComponent<SpriteRenderer>().enabled = false;
         }
@@ -224,7 +228,7 @@ namespace Code.Network.Composition {
             if (Player.FollowersNumber > 0) {
                 Player.Stage = GameStage.PlacingFollower;
                 var c  = GameObject.Find("cell#" + v.X + ":" + v.Y);
-                Tile.ShowPossibleFollowersLocations(c);
+                Tile.ShowPossibleFollowersLocations(c, Follower.Meeple);
             } else {
                 Player.Stage = GameStage.Finish;
             }

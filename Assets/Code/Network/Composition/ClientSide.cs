@@ -50,8 +50,8 @@ namespace Code.Network.Composition {
             NetworkManager.singleton.client.SendByChannel(msgType, msg, 1);
         }
 
-        public void SendFollower(PlayerColor owner, byte id, string name) {
-            Action(Command.Follower, owner, id, name);
+        public void SendFollower(PlayerColor owner, byte id, string name, Follower type) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.Follower, Color = owner, Value = id, Text = name, Follower = type});
         }
 
         public void Action(Command command) {

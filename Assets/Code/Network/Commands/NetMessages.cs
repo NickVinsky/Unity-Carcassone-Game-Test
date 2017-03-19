@@ -84,6 +84,7 @@ namespace Code.Network.Commands {
         public int Value;
         public byte Byte;
         public PlayerColor Color;
+        public Follower Follower;
         public Vector3 Vect3;
         public Cell Vector;
         //public Vector2 mousePosition;
@@ -97,6 +98,7 @@ namespace Code.Network.Commands {
 
         public sbyte LocactionID;
         public PlayerColor LocationOwner;
+        public Follower FollowerType;
     }
 
     public class NetPackRespond : MessageBase {

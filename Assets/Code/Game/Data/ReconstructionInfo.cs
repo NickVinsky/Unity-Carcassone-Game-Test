@@ -21,5 +21,6 @@
 
         public sbyte LocactionID { get; set; }
         public PlayerColor LocationOwner { get; set; }
+        public Follower FollowerType { get; set; }
     }
 }

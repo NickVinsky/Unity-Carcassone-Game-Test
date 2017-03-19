@@ -11,6 +11,7 @@ namespace Code.Game.Building {
         public int ID { get; }
         public List<PlayerColor> Owners { get; }
         public List<Cell> LinkedTiles { get; }
+        public bool Finished { get; set; }
         public bool FinishedByPlayer { get; set; }
         public int ExtraPoints { get; protected set; }
 
@@ -34,20 +35,18 @@ namespace Code.Game.Building {
 
         public void Add(Location location) {
             var linkedConstruct = location.Link;
+            CheckForSpecialBuildings(location);
             if (linkedConstruct == ID) {
-                Edges++;
-                CheckForSpecialBuildings(location);
             } else if (linkedConstruct == -1) {
-                Edges++;
                 Nodes += location.GetNodes().Length;
                 location.Link = ID;
                 LinkTile(location.Parent.IntVector());
-                CheckForSpecialBuildings(location);
             } else {
                 Merge(location);
             }
+            Edges++;
             CalcNodesToFinish();
-            if (HasOwner()) location.PosFree = false;
+            if (HasOwner()) location.FreeMeeplePos = false;
         }
 
         public void SetOwner(Location construct) {
@@ -77,12 +76,13 @@ namespace Code.Game.Building {
         }
 
         protected void Merge(Construction former, Location formerLoc) {
+            Edges += former.Edges;
+            Nodes += former.Nodes;
             foreach (var tile in former.LinkedTiles) {
                 foreach (var fLoc in tile.Get().GetLocations()) {
                     if (!Equals(fLoc.Type)) continue;
                     if (fLoc.Link != former.ID) continue;
-                    Edges++;
-                    Nodes += fLoc.GetNodes().Length;
+                    //Nodes += fLoc.GetNodes().Length;
                     CheckForSpecialBuildings(fLoc);
                     fLoc.Link = ID;
                     LinkTile(fLoc.Parent.IntVector());
@@ -95,7 +95,7 @@ namespace Code.Game.Building {
         public void Debugger() {
             var s = Owners.Aggregate("", (current, t) => current + ", " + t);
             var vs = LinkedTiles.Aggregate(string.Empty, (current, v) => current + "(" + v.X + ";" + v.Y + ")");
-            var log = "[" + Type + "#" + ID + "][" + LinkedTiles.Count + "] " + s + "/" + vs;
+            var log = "[" + Type + "#" + ID + "][" + Nodes + "/" + Edges + "][" + LinkedTiles.Count + "] " + s + "/" + vs;
             Debug.Log(log);
             if (Net.Game.IsOnline()) Net.Client.ChatMessage(log);
         }

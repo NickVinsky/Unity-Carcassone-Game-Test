@@ -29,17 +29,17 @@ namespace Code.Game.FollowerSubs {
             return _possibleLocation.Where(loc => loc.IsBarrier()).Any(loc => loc.GetNodes().Any(node => node == side));
         }
 
-        public void Opponent(PlayerColor owner, byte id) {
+        public void Opponent(PlayerColor owner, byte id, Follower type) {
             foreach (var loc in _possibleLocation) {
                 if (!loc.CompareID(id)) continue;
-                loc.SetOwner(owner);
+                loc.SetOwner(owner, type);
                 return;
             }
         }
 
-        public void Show(GameObject o, sbyte rotates) {
+        public void Show(sbyte rotates, Follower type) {
             foreach (var loc in _possibleLocation) {
-                loc.Show(o, rotates);
+                loc.ShowMeeple(rotates, type);
             }
         }
 
@@ -49,10 +49,10 @@ namespace Code.Game.FollowerSubs {
             }
         }
 
-        public void HideExcept(byte except) {
+        public void HideExcept(byte except, Follower type) {
             foreach (var loc in _possibleLocation) {
                 if (loc.CompareID(except)) {
-                    loc.SetOwner();
+                    loc.SetOwner(type);
                     continue;
                 }
                 loc.RemovePlacement();

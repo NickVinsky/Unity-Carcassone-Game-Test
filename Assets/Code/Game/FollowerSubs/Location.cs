@@ -34,7 +34,8 @@ namespace Code.Game.FollowerSubs {
         private byte[] _nodes;
 
         private PlayerColor _owner = PlayerColor.NotPicked;
-        public bool PosFree { get; set; }
+        public Follower FollowerType { get; set; }
+        public bool FreeMeeplePos { get; set; }
 
         private Vector2 _meeplePos;
         private GameObject _sprite;
@@ -61,7 +62,7 @@ namespace Code.Game.FollowerSubs {
             HasInn = locInfo.HasInn;
 
             Link = -1;
-            PosFree = true;
+            FreeMeeplePos = true;
         }
 
         public byte[] GetNodes() { return _nodes; }
@@ -137,17 +138,19 @@ namespace Code.Game.FollowerSubs {
             _nodes = rNodes;
         }
 
-        public void SetOwner(PlayerColor owner) {
+        public void SetOwner(PlayerColor owner, Follower type) {
             //if (owner == _owner) return;
-            PosFree = false;
+            FreeMeeplePos = false;
             _owner = owner;
+            FollowerType = type;
             ScoreCalc.ApplyOpponentFollower(this);
             SpriteInit();
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
         }
 
-        public void SetOwner() {
-            PosFree = false;
+        public void SetOwner(Follower type) {
+            FreeMeeplePos = false;
+            FollowerType = type;
             _owner = MainGame.Player.Color;
             //if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
             //if (_sprite.GetComponent<BoxCollider2D>() != null) {Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
@@ -159,14 +162,15 @@ namespace Code.Game.FollowerSubs {
 
             Tile.Cache.Last().LocactionID = (sbyte) _id;
             Tile.Cache.Last().LocationOwner = _owner;
+            Tile.Cache.Last().FollowerType = FollowerType;
 
             if (!Net.Game.IsOnline()) return;
             var name = _sprite.transform.parent.gameObject.name;
-            Net.Client.SendFollower(_owner, _id, name);
+            Net.Client.SendFollower(_owner, _id, name, FollowerType);
         }
 
-        public void Show(GameObject o, sbyte rotates) {
-            if (!PosFree) return;
+        public void ShowMeeple(sbyte rotates, Follower type) {
+            if (!FreeMeeplePos) return;
             SpriteInit();
             _sprite.AddComponent<BoxCollider2D>();
             _sprite.GetComponent<BoxCollider2D>().size = new Vector2(3f, 3f);
@@ -174,6 +178,7 @@ namespace Code.Game.FollowerSubs {
             _sprite.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             _sprite.AddComponent<FollowerHook>();
             _sprite.GetComponent<FollowerHook>().Id = _id;
+            _sprite.GetComponent<FollowerHook>().Type = type;
         }
 
         private void SpriteInit() {

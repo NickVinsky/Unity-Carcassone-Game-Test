@@ -61,7 +61,8 @@ namespace Code.Network.Commands {
                     TileIndex = tile.TileIndex,
                     Rotation = tile.Rotation,
                     LocactionID = tile.LocactionID,
-                    LocationOwner = tile.LocationOwner
+                    LocationOwner = tile.LocationOwner,
+                    FollowerType = tile.FollowerType
                 };
                 Net.Server.SendTo(id, NetCmd.TileCache, cachedTile);
             }

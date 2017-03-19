@@ -83,70 +83,88 @@ namespace Code.Game {
         public static void InitVanillaDeck() {
             _tilesPack.OnAddOrRemove += EventOnAddOrRemove;
             _tilesPack.Clear();
-            AddTilesToDeck(1, 4);
-            AddTilesToDeck(2, 2);
-            AddTileToDeck(3);
-            AddTilesToDeck(4, 3);
-            AddTileToDeck(5);
-            AddTileToDeck(6);
-            AddTilesToDeck(7, 2);
-            AddTilesToDeck(8, 3);
-            AddTilesToDeck(9, 2);
-            AddTilesToDeck(10, 3);
-            AddTilesToDeck(11, 2);
-            AddTileToDeck(12);
-            AddTilesToDeck(13, 2);
-            AddTilesToDeck(14, 2);
-            AddTilesToDeck(15, 3);
-            AddTilesToDeck(16, 5);
-            AddTilesToDeck(17, 3);
-            AddTilesToDeck(18, 3);
-            AddTilesToDeck(19, 3);
-            AddTilesToDeck(20, 4); // Starting Tile
-            AddTilesToDeck(21, 8);
-            AddTilesToDeck(22, 9);
-            AddTilesToDeck(23, 4);
-            AddTilesToDeck(24, 1);
 
-            // Ins And Cathedrals
-            AddTilesToDeck(25, 1);
-            AddTilesToDeck(26, 2);
-            AddTilesToDeck(27, 2);
-            AddTilesToDeck(28, 2);
-            AddTilesToDeck(29, 3);
-            AddTilesToDeck(30, 2);
-            AddTilesToDeck(31, 2);
-            AddTilesToDeck(32, 3);
-            AddTilesToDeck(33, 3);
-            AddTilesToDeck(34, 2);
-            AddTilesToDeck(35, 1);
-            AddTilesToDeck(36, 1);
-            AddTilesToDeck(37, 1);
-            AddTilesToDeck(38, 1);
-            AddTilesToDeck(39, 1);
-            AddTilesToDeck(40, 1);
-            AddTilesToDeck(41, 5);
+            AddVanillaTiles();
 
-            // Kings
-            AddTilesToDeck(52, 1);
-            AddTilesToDeck(53, 4);
-            AddTilesToDeck(54, 4);
-            AddTilesToDeck(55, 2);
-            AddTilesToDeck(56, 2);
+            AddInnsAndCathedralsTiles();
 
-            //Traders And Builders
-            AddTilesToDeck(57, 1);
-            AddTilesToDeck(58, 4);
-            AddTilesToDeck(59, 3);
-            AddTilesToDeck(60, 4);
+            AddKingsTiles();
 
-            //Custom Tiles
-            AddTilesToDeck(81, 4);
-            AddTilesToDeck(82, 2);
+            AddTradersAndBuildersTiles();
+
+            AddCustomTiles();
         }
 
-        private static void AddTilesToDeck(int type, int quantity) {
-            for (int i = 0; i < quantity; i++) {
+        private static void AddVanillaTiles(int multiplier = 1) {
+            AddTilesToDeck(1, 4, multiplier);
+            AddTilesToDeck(2, 2, multiplier);
+            AddTilesToDeck(3, 1, multiplier);
+            AddTilesToDeck(4, 3, multiplier);
+            AddTilesToDeck(5, 1, multiplier);
+            AddTilesToDeck(6, 1, multiplier);
+            AddTilesToDeck(7, 2, multiplier);
+            AddTilesToDeck(8, 3, multiplier);
+            AddTilesToDeck(9, 2, multiplier);
+            AddTilesToDeck(10, 3, multiplier);
+            AddTilesToDeck(11, 2, multiplier);
+            AddTilesToDeck(12, 1, multiplier);
+            AddTilesToDeck(13, 2, multiplier);
+            AddTilesToDeck(14, 2, multiplier);
+            AddTilesToDeck(15, 3, multiplier);
+            AddTilesToDeck(16, 5, multiplier);
+            AddTilesToDeck(17, 3, multiplier);
+            AddTilesToDeck(18, 3, multiplier);
+            AddTilesToDeck(19, 3, multiplier);
+            AddTilesToDeck(20, 4, multiplier); // Starting Tile
+            AddTilesToDeck(21, 8, multiplier);
+            AddTilesToDeck(22, 9, multiplier);
+            AddTilesToDeck(23, 4, multiplier);
+            AddTilesToDeck(24, 1, multiplier);
+        }
+
+        private static void AddInnsAndCathedralsTiles(int multiplier = 1) {
+            AddTilesToDeck(25, 1, multiplier);
+            AddTilesToDeck(26, 2, multiplier);
+            AddTilesToDeck(27, 2, multiplier);
+            AddTilesToDeck(28, 2, multiplier);
+            AddTilesToDeck(29, 3, multiplier);
+            AddTilesToDeck(30, 2, multiplier);
+            AddTilesToDeck(31, 2, multiplier);
+            AddTilesToDeck(32, 3, multiplier);
+            AddTilesToDeck(33, 3, multiplier);
+            AddTilesToDeck(34, 2, multiplier);
+            AddTilesToDeck(35, 1, multiplier);
+            AddTilesToDeck(36, 1, multiplier);
+            AddTilesToDeck(37, 1, multiplier);
+            AddTilesToDeck(38, 1, multiplier);
+            AddTilesToDeck(39, 1, multiplier);
+            AddTilesToDeck(40, 1, multiplier);
+            AddTilesToDeck(41, 5, multiplier);
+        }
+
+        private static void AddKingsTiles(int multiplier = 1) {
+            AddTilesToDeck(52, 1, multiplier);
+            AddTilesToDeck(53, 4, multiplier);
+            AddTilesToDeck(54, 4, multiplier);
+            AddTilesToDeck(55, 2, multiplier);
+            AddTilesToDeck(56, 2, multiplier);
+        }
+
+        private static void AddTradersAndBuildersTiles(int multiplier = 1) {
+            AddTilesToDeck(57, 1, multiplier);
+            AddTilesToDeck(58, 4, multiplier);
+            AddTilesToDeck(59, 3, multiplier);
+            AddTilesToDeck(60, 4, multiplier);
+        }
+
+        private static void AddCustomTiles(int multiplier = 1) {
+            AddTilesToDeck(81, 4, multiplier);
+            AddTilesToDeck(82, 2, multiplier);
+        }
+
+        private static void AddTilesToDeck(int type, int quantity, int multiplier = 1) {
+            var totalQuantity = quantity * multiplier;
+            for (var i = 0; i < totalQuantity; i++) {
                 AddTileToDeck(type);
             }
         }

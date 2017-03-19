@@ -225,6 +225,7 @@ namespace Code.Game.Building {
             foreach (var c in Roads) c.Debugger();
             foreach (var c in Fields) c.Debugger();
             foreach (var c in Monasteries) c.Debugger();
+            Debug.Log("[======================================]");
         }
 
         public static void Init() {

@@ -77,10 +77,6 @@ namespace Code {
             Net.Client.RefreshInGamePlayersList(l);
         }
 
-        void Test() {
-
-        }
-
         // Update is called once per frame
         public void Update() {
             #region KeyDetector
@@ -124,6 +120,10 @@ namespace Code {
                 return;
             }
             #endregion
+
+            //if (Input.GetKeyDown(KeyCode.F)) ScoreCalc.Final();
+            //if (Input.GetKeyDown(KeyCode.L)) Tile.LastPlaced().HideAll();
+            //if (Input.GetKeyDown(KeyCode.K)) Tile.LastPlaced().ShowPossibleMeeplesLocations();
 
             #region Game_Logic_Local
             if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;

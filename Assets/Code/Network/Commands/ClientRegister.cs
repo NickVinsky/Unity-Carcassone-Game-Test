@@ -3,6 +3,7 @@ using Code.Game;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Attributes;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using static Code.MainGame;
@@ -115,12 +116,12 @@ namespace Code.Network.Commands {
         [ClientCommand(NetCmd.TileCache)]
         public static void ReconstructTilesOnGrid(NetworkMessage message) {
             var m = message.ReadMessage<NetPackTileCache>();
-            Tile.Reconstruct(m.Cell, m.TileID, m.TileIndex, m.Rotation, m.LocactionID, m.LocationOwner);
+            Tile.Reconstruct(m.Cell, m.TileID, m.TileIndex, m.Rotation, m.LocactionID, m.LocationOwner, m.FollowerType);
         }
 
         [ClientCommand(NetCmd.TileCacheFinish)]
         public static void ReconstructFinish(NetworkMessage message) {
-            if (Player.Stage == GameStage.PlacingFollower) Tile.ShowPossibleFollowersLocations(Tile.LastPlacedTile);
+            if (Player.Stage == GameStage.PlacingFollower) Tile.ShowPossibleFollowersLocations(Tile.LastPlacedTile, Follower.Meeple);
         }
 
 
@@ -200,7 +201,7 @@ namespace Code.Network.Commands {
                     if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vector);
                     break;
                 case Command.Follower:
-                    if (Player.Color != m.Color) Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value);
+                    if (Player.Color != m.Color) Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value, m.Follower);
                     break;
                 case Command.RemovePlacement:
                     Tile.Get(m.Vector).GetLocation(m.Byte).RemovePlacement();
