@@ -128,41 +128,57 @@ namespace Code.Game {
             AddTilesToDeck(26, 2, multiplier);
             AddTilesToDeck(27, 2, multiplier);
             AddTilesToDeck(28, 2, multiplier);
-            AddTilesToDeck(29, 3, multiplier);
-            AddTilesToDeck(30, 2, multiplier);
-            AddTilesToDeck(31, 2, multiplier);
-            AddTilesToDeck(32, 3, multiplier);
-            AddTilesToDeck(33, 3, multiplier);
-            AddTilesToDeck(34, 2, multiplier);
+            AddTilesToDeck(29, 2, multiplier);
+            AddTilesToDeck(30, 3, multiplier);
+            AddTilesToDeck(31, 3, multiplier);
+            AddTilesToDeck(32, 2, multiplier);
+            AddTilesToDeck(33, 2, multiplier);
+            AddTilesToDeck(34, 3, multiplier);
             AddTilesToDeck(35, 1, multiplier);
             AddTilesToDeck(36, 1, multiplier);
             AddTilesToDeck(37, 1, multiplier);
             AddTilesToDeck(38, 1, multiplier);
             AddTilesToDeck(39, 1, multiplier);
             AddTilesToDeck(40, 1, multiplier);
-            AddTilesToDeck(41, 5, multiplier);
+            AddTilesToDeck(41, 4, multiplier);
         }
 
         private static void AddKingsTiles(int multiplier = 1) {
             // В оригинале всех тайлов по одной штуке
             AddTilesToDeck(52, 1, multiplier);
-            AddTilesToDeck(53, 4, multiplier);
-            AddTilesToDeck(54, 4, multiplier);
+            AddTilesToDeck(53, 2, multiplier);
+            AddTilesToDeck(54, 2, multiplier);
             AddTilesToDeck(55, 2, multiplier);
-            AddTilesToDeck(56, 2, multiplier);
+            AddTilesToDeck(56, 1, multiplier);
         }
 
         private static void AddTradersAndBuildersTiles(int multiplier = 1) {
             // В оригинале всех тайлов по одной штуке
             AddTilesToDeck(57, 1, multiplier);
-            AddTilesToDeck(58, 4, multiplier);
-            AddTilesToDeck(59, 3, multiplier);
-            AddTilesToDeck(60, 4, multiplier);
+            AddTilesToDeck(58, 2, multiplier);
+            AddTilesToDeck(59, 2, multiplier);
+            AddTilesToDeck(60, 2, multiplier);
         }
 
         private static void AddCustomTiles(int multiplier = 1) {
-            AddTilesToDeck(81, 4, multiplier);
+            AddTilesToDeck(81, 2, multiplier);
             AddTilesToDeck(82, 2, multiplier);
+            AddTilesToDeck(83, 3, multiplier);
+            AddTilesToDeck(84, 5, multiplier);
+            AddTilesToDeck(85, 1, multiplier);
+            AddTilesToDeck(86, 2, multiplier);
+            AddTilesToDeck(87, 2, multiplier);
+            AddTilesToDeck(88, 2, multiplier);
+            AddTilesToDeck(89, 2, multiplier);
+            AddTilesToDeck(90, 2, multiplier);
+            AddTilesToDeck(91, 2, multiplier);
+            AddTilesToDeck(92, 2, multiplier);
+            AddTilesToDeck(93, 1, multiplier);
+            AddTilesToDeck(94, 2, multiplier);
+            AddTilesToDeck(95, 2, multiplier);
+            AddTilesToDeck(96, 2, multiplier);
+            AddTilesToDeck(97, 2, multiplier);
+
         }
 
         private static void AddTilesToDeck(int type, int quantity, int multiplier = 1) {
