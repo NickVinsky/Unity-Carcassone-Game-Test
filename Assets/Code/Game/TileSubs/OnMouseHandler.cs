@@ -47,17 +47,17 @@ namespace Code.Game.TileSubs {
 
         // Вызывается из локальной игры
         public void Put(GameObject gridCell) {
-            ApplyPuting(gridCell);
+            ApplyPuting(gridCell, MainGame.Player.Color);
             MainGame.UpdateLocalPlayer();
         }
 
         // Вызывается из сетевой игры
-        public void Put(Cell v) {
+        public void Put(Cell v, PlayerColor founder) {
             var gridCell  = GameObject.Find("cell#" + v.X + ":" + v.Y);
-            ApplyPuting(gridCell);
+            ApplyPuting(gridCell, founder);
         }
 
-        private void ApplyPuting(GameObject gridCell) {
+        private void ApplyPuting(GameObject gridCell, PlayerColor founder) {
             gridCell.tag = GameRegulars.TileTag;
             Object.Destroy(gridCell.GetComponent<BoxCollider2D>());
             var cSprite = gridCell.GetComponent<SpriteRenderer>();
@@ -65,6 +65,7 @@ namespace Code.Game.TileSubs {
             cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));
             cSprite.color = GameRegulars.NormalColor;
             var cTileInfo = gridCell.GetComponent<TileInfo>();
+            cTileInfo.Founder = founder;
             cTileInfo.Rotates = GetTile().Rotates;
             cTileInfo.InitTile(GetTile().Type);
             cTileInfo.ApplyRotation();
@@ -74,7 +75,8 @@ namespace Code.Game.TileSubs {
                 Cell = cTileInfo.IntVector(),
                 TileID = cTileInfo.Type,
                 TileIndex = Deck.LastPickedIndex(),
-                Rotation = (byte) cTileInfo.Rotates
+                Rotation = (byte) cTileInfo.Rotates,
+                Founder = founder
             };
             Tile.Cache.Add(reconstructInfo);
 

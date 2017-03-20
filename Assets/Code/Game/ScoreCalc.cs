@@ -11,7 +11,7 @@ using static Code.MainGame;
 namespace Code.Game {
     public static class ScoreCalc {
 
-        public static void RecalcFollowersNumber(Follower type, ref PlayerInfo player, int shift) {
+        public static void RecalcFollowersNumber(Follower type, PlayerInfo player, int shift) {
             switch (type) {
                 case Follower.Meeple:
                     player.MeeplesQuantity = (byte) (player.MeeplesQuantity + shift);
@@ -54,7 +54,7 @@ namespace Code.Game {
         //After follower assignment
         public static void ApplyFollower(Location loc, Follower type) {
             if (Net.Game.IsOnline()) Net.Client.SubtractFollower(loc.GetOwner(), type);
-            RecalcFollowersNumber(type, ref Player, -1);
+            RecalcFollowersNumber(type, Player, -1);
             //Player.MeeplesQuantity--;
             Builder.SetOwner(loc);
             UpdateGUI();
@@ -132,9 +132,9 @@ namespace Code.Game {
 
         public static void City(City city, bool final = false) {
             if (final && city.FinishedByPlayer) return;
-            var oArray = OwnersArray(city);
             var cathedralCoefficient = Convert.ToInt32(city.HasCathedral);
             CalcExtraPoints(city, cathedralCoefficient);
+            var oArray = OwnersArray(city);
 
 
             var score = city.ExtraPoints + city.LinkedTiles.Count * (2 + cathedralCoefficient);
@@ -177,7 +177,10 @@ namespace Code.Game {
         private static byte[] OwnersArray(Construction construct) {
             var oArray = new byte[Enum.GetNames(typeof(PlayerColor)).Length - 1];
             foreach (var owner in construct.Owners) {
-                oArray[(int) owner]++;
+                var curOwner = (int) owner.Owner;
+                if (owner.FollowerType == Follower.Meeple) oArray[curOwner]++;
+                if (owner.FollowerType == Follower.BigMeeple) oArray[curOwner] += 2;
+                if (owner.FollowerType == Follower.Mayor) oArray[curOwner] += construct.GetAsCity().CoatOfArmsQuantity;
             }
             return oArray;
         }

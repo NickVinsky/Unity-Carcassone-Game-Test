@@ -86,6 +86,10 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector});
         }
 
+        public void Action(Command command, Cell vector, PlayerColor color) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Color = color});
+        }
+
         public void Action(Command command, Cell vector, byte value) {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Byte = value});
         }
@@ -99,11 +103,11 @@ namespace Code.Network.Composition {
         }
 
         public void SubtractFollower(PlayerColor playerColor, Follower type) {
-            Net.Client.Send(NetCmd.SubtractFollower, new NetPackFollower{ Color = playerColor, followerType = type});
+            Net.Client.Send(NetCmd.SubtractFollower, new NetPackFollower{ Color = playerColor, FollowerType = type});
         }
 
         public void RefreshInGamePlayersList(string m) {
-            string[] pList = m.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var pList = m.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var lastI = 0;
 
             for (var i = 0; i < pList.Length; i++) {
@@ -127,7 +131,7 @@ namespace Code.Network.Composition {
                 }
 
 
-                FillContainer(o, pColor, Follower.Meeple, pFollowersNumber);
+               FillContainer(o, pColor, Follower.Meeple, pFollowersNumber);
 
                 //o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
                 //o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
@@ -153,11 +157,14 @@ namespace Code.Network.Composition {
         private void FillContainer(GameObject slot, int ownerColorInt, Follower type, int quantity) {
             var renderInterval = 0f;
             var containerName = string.Empty;
+            var followerName = string.Empty;
             var spriteName = "Meeple";
+
             switch (type) {
                 case Follower.Meeple:
                     renderInterval = 7f;
                     containerName = "MeepleContainer";
+                    followerName = "Meeple";
                     spriteName = "MeepleShadowed";
                     break;
                 case Follower.BigMeeple:
@@ -171,12 +178,16 @@ namespace Code.Network.Composition {
             }
 
             var parent = slot.transform.FindChild(containerName);
+            if (parent.childCount == quantity) return;
+
+
             var children = (from Transform child in parent select child.gameObject).ToList();
+            parent.DetachChildren();
             children.ForEach(Object.Destroy);
 
             Meeples = new GameObject[quantity];
             for (var meepleCounter = quantity - 1; meepleCounter >= 0; meepleCounter--) {
-                Meeples[meepleCounter] = new GameObject("Meeple" + meepleCounter);
+                Meeples[meepleCounter] = new GameObject(followerName + meepleCounter);
                 Meeples[meepleCounter].transform.SetParent(parent);
                 Meeples[meepleCounter].AddComponent<RectTransform>();
                 Meeples[meepleCounter].GetComponent<RectTransform>().anchorMin = new Vector2(0f, 0.5f);

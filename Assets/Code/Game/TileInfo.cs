@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.Sockets;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
 using UnityEngine;
@@ -11,6 +10,7 @@ namespace Code.Game {
         public int X, Y;
 
         public int Type;
+        public PlayerColor Founder { get; set; }
         private District _follower = new District();
 
         private readonly Area[] _side = {Area.Empty, Area.Empty, Area.Empty, Area.Empty};

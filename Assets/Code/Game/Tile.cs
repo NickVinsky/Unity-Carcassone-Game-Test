@@ -16,6 +16,7 @@ namespace Code.Game {
         public static int StartingTile { get; set; }
 
         public static GameObject LastPlacedTile { get; set; }
+        private static bool LastPlacedTileFounderHided { get; set; }
 
         public static TileInfo LastCheckedTile { get; private set; }
 
@@ -48,6 +49,22 @@ namespace Code.Game {
             if (cell == null) return false;
             LastCheckedTile = cell.GetComponent<TileInfo>();
             return LastCheckedTile.Type != 0;
+        }
+
+        public static void ShowLastPlaced() {
+            if (LastPlacedTile == null) return;
+            LastPlacedTile.GetComponent<SpriteRenderer>().color = Net.CombineColors(Net.Color(LastPlaced().Founder), new Color(0.8f,0.8f,0.8f,0.8f));
+            LastPlacedTile.transform.localScale = MainGame.Grid.EnlargedScale;
+            LastPlacedTile.GetComponent<SpriteRenderer>().sortingOrder = 2;
+            LastPlacedTileFounderHided = false;
+        }
+
+        public static void HideLastPlaced() {
+            if (LastPlacedTileFounderHided || LastPlacedTile == null) return;
+            LastPlacedTile.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
+            LastPlacedTile.transform.localScale = MainGame.Grid.BaseScale;
+            LastPlacedTile.GetComponent<SpriteRenderer>().sortingOrder = 1;
+            LastPlacedTileFounderHided = true;
         }
 
         public static bool CannotBePlacedOnBoard(int index) {
@@ -133,7 +150,7 @@ namespace Code.Game {
             OnMouse.GetTile().InitTile(tileType);
             OnMouse.GetTile().Rotates = (sbyte) rotates;
             OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + tileType); // 80-All, 24-Vanilla
-            OnMouse.GetSprite().sortingOrder = 3;
+            OnMouse.GetSprite().sortingOrder = 4;
             Rotate.Sprite(rotates, OnMouse.Get());
             if (Net.Game.IsOnline() && !Net.Game.MyTurn()) {
                 Cursor.visible = true;
@@ -150,12 +167,12 @@ namespace Code.Game {
             Cursor.visible = true;
         }
 
-        public static void Reconstruct(Cell cell, int id, int tileIndex, byte rotation, sbyte locId, PlayerColor owner, Follower followerType) {
+        public static void Reconstruct(Cell cell, int id, int tileIndex, PlayerColor founder, byte rotation, sbyte locId, PlayerColor owner, Follower followerType) {
             Cache.Add(new ReconstructionInfo(cell, id, tileIndex, rotation, locId, owner));
             Deck.SetLastPickedIndex(tileIndex);
             OnMouse.Destroy();
             PickWithID(id, rotation);
-            OnMouse.Put(cell);
+            OnMouse.Put(cell, founder);
             Get(cell).AssignOpponentFollower(owner, (byte) locId, followerType);
         }
 

@@ -7,6 +7,7 @@ namespace Code.Handlers {
         private readonly InGameGUI _inGameGui = new InGameGUI();
 
         void Start () {
+            //foreach (var go in GameObject.FindGameObjectsWithTag("EditorOnly")) Destroy(go);
             _mainGame.Init();
             _inGameGui.Make();
         }

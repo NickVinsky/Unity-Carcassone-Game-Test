@@ -17,6 +17,7 @@
         public Cell Cell { get; set; }
         public int TileID { get; set; }
         public int TileIndex { get; set; }
+        public PlayerColor Founder { get; set; }
         public byte Rotation { get; set; }
 
         public sbyte LocactionID { get; set; }

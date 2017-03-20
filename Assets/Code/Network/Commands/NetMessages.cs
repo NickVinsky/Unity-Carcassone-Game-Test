@@ -39,7 +39,7 @@ namespace Code.Network.Commands {
 
     public class NetPackFollower : MessageBase {
         public PlayerColor Color;
-        public Follower followerType;
+        public Follower FollowerType;
     }
 
     public class NetPackPlayer : MessageBase {
@@ -95,6 +95,7 @@ namespace Code.Network.Commands {
         public Cell Cell;
         public int TileID;
         public int TileIndex;
+        public PlayerColor Founder;
         public byte Rotation;
 
         public sbyte LocactionID;

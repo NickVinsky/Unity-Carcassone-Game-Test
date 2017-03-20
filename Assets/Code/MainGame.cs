@@ -16,7 +16,7 @@ namespace Code {
         private readonly KeyInputHandler _k = new KeyInputHandler();
         public static readonly Grid Grid = new Grid();
 
-        public static PlayerInfo Player;
+        public static PlayerInfo Player = new PlayerInfo();
 
         //public static GameStage Stage;
 
@@ -63,8 +63,6 @@ namespace Code {
             if (Player.PlayerName == null)
                 Player.PlayerName = MainMenuGUI.GetRandomName();
             Player.Color = (PlayerColor) UnityEngine.Random.Range(1, Net.ColorsCount);
-            Player.MeeplesQuantity = MaxMeeplesNumber;
-            Player.Score = 0;
             GameObject.Find("ChatPanel").transform.localScale = new Vector2(0f, 0f);
             //GameObject.Find("PlayersPanel").transform.localScale = new Vector2(0f, 0f);
             UpdateLocalPlayer();

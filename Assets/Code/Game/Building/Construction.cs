@@ -9,10 +9,12 @@ namespace Code.Game.Building {
     public class Construction {
         public Area Type { get; protected set; }
         public int ID { get; }
-        public List<PlayerColor> Owners { get; }
+        public List<Ownership> Owners { get; }
         public List<Cell> LinkedTiles { get; }
+
         public bool Finished { get; set; }
         public bool FinishedByPlayer { get; set; }
+
         public int ExtraPoints { get; protected set; }
 
         protected int Edges { get; set; }
@@ -21,7 +23,7 @@ namespace Code.Game.Building {
         protected Construction(int id, Cell v) {
             ID = id;
             FinishedByPlayer = false;
-            Owners = new List<PlayerColor>();
+            Owners = new List<Ownership>();
             LinkedTiles = new List<Cell> {v};
         }
 
@@ -50,7 +52,7 @@ namespace Code.Game.Building {
         }
 
         public void SetOwner(Location construct) {
-            Owners.Add(construct.GetOwner());
+            Owners.Add(construct.GetOwnership());
             CalcNodesToFinish();
         }
 
@@ -82,11 +84,12 @@ namespace Code.Game.Building {
                 foreach (var fLoc in tile.Get().GetLocations()) {
                     if (!Equals(fLoc.Type)) continue;
                     if (fLoc.Link != former.ID) continue;
-                    //Nodes += fLoc.GetNodes().Length;
+
                     CheckForSpecialBuildings(fLoc);
+
                     fLoc.Link = ID;
                     LinkTile(fLoc.Parent.IntVector());
-                    if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwner());
+                    if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwnership());
                 }
             }
             Delete(former);
@@ -99,5 +102,9 @@ namespace Code.Game.Building {
             Debug.Log(log);
             if (Net.Game.IsOnline()) Net.Client.ChatMessage(log);
         }
+
+        public City GetAsCity() { return this as City; }
+        public Road GetAsRoad() { return this as Road; }
+        public Field GetAsField() { return this as Field; }
     }
 }

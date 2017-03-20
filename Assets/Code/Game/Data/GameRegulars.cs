@@ -45,7 +45,8 @@ namespace Code.Game.Data {
         public const string PanelMultiplayer = "MultiplayerPanel";
         public const string PanelHost = "HostGamePanel";
         public const string PanelJoin = "JoinGamePanel";
-        public const string PanelPlayrName = "PlayerNamePanel";
+        public const string PanelPlayerName = "PlayerNamePanel";
+        public const string PanelChat = "ChatPanel";
 
         public const string PlayerNameInputField = "PlayerNameInputField";
         public const string IPFIeld = "IPInputField";
@@ -100,8 +101,6 @@ namespace Code.Game.Data {
 
         public static readonly float TileSizeX = 88.0f;
         public static readonly float TileSizeY = 88.0f;
-
-        public const byte MaxMeeplesNumber = 8;
 
         #region Errors
         public const string JoinLogField = "JoinLog";

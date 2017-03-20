@@ -11,6 +11,10 @@ namespace Code.Game
         private readonly int _sizeX;
         private readonly int _sizeY;
 
+        public Vector3 BaseScale;
+        public Vector3 EnlargedScale;
+        private bool _scaleInited;
+
         public Grid(int x, int y) {
             _sizeX = x;
             _sizeY = y;
@@ -61,8 +65,7 @@ namespace Code.Game
         }
 
         public void AddCell(Cell v) {
-            var tile = new GameObject("cell#" + v.X + ":" + v.Y);
-            tile.tag = GameRegulars.EmptyCellTag;
+            var tile = new GameObject("cell#" + v.X + ":" + v.Y) {tag = GameRegulars.EmptyCellTag};
             tile.transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
             tile.AddComponent<SpriteRenderer>();
             tile.AddComponent<BoxCollider2D>();
@@ -75,8 +78,13 @@ namespace Code.Game
             var position = new Vector3(_gridX * v.X, _gridY * v.Y, 0.0f);
             tile.transform.position = position;
             tile.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("grid");
-            tile.GetComponent<SpriteRenderer>().sortingOrder = 1 ;
+            tile.GetComponent<SpriteRenderer>().sortingOrder = 1;
             tile.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
+
+            if (_scaleInited) return;
+            BaseScale = tile.transform.localScale;
+            EnlargedScale = new Vector3(BaseScale.x * 1.25f, BaseScale.y * 1.25f, BaseScale.z * 1.25f);
+            _scaleInited = true;
         }
 
         private bool Free(Cell v) {

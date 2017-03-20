@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Code.Game.Data;
 using Code.Network.Commands;
 using Code.Network.Composition;
@@ -49,8 +50,8 @@ namespace Code.Network {
             NetworkPort = 0;
         }
 
-        public static string ColorString(PlayerColor pColor, string target) {
-            string color = "<color=#" + ColorCode(pColor) + ">" + target + "</color>";
+        public static string ColorString(PlayerColor pColor, string text) {
+            var color = "<color=#" + ColorCode(pColor) + ">" + text + "</color>";
             /*
             switch (pColor) {
                 case PlayerColor.Black:
@@ -100,12 +101,19 @@ namespace Code.Network {
                 var hexValue = Convert.ToInt32(255 * clrComponent);
                 var hexCode = hexValue.ToString("X");
                 if (hexCode.Length == 1) hexCode = "0" + hexCode;
-                Debug.Log("Iteration " + i + " src = " + sourceColor[i] + " ; hex = " + "(" + hexValue + ")" + hexCode);
+                //Debug.Log("Iteration " + i + " src = " + sourceColor[i] + " ; hex = " + "(" + hexValue + ")" + hexCode);
                 color += hexCode;
             }
-            Debug.Log("Result = " + color);
+            //Debug.Log("Result = " + color);
             //int intAgain = int.Parse(hexValue, System.Globalization.NumberStyles.HexNumber);
             return color;
+        }
+
+        public static Color CombineColors(params Color[] aColors) {
+            var result = new Color(0,0,0,0);
+            result = aColors.Aggregate(result, (current, c) => current + c);
+            result /= aColors.Length;
+            return result;
         }
     }
 }

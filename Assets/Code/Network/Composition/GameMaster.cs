@@ -15,18 +15,21 @@ namespace Code.Network.Composition {
         private bool _offline = true;
         private bool _isStarted;
         public bool InitComplite { get; private set; }
-        //public GameStage Stage;
-        public PlayerColor CurrentPlayer = PlayerColor.NotPicked;
+
+        public PlayerColor CurrentPlayerColor = PlayerColor.NotPicked;
         public int CurrentPlayerIndex = -1;
+        public string CurrentPlayerName;
 
         public bool TilePicked;
-        public Vector2 tPos;
+        public Vector2 TPos;
 
         private float _streamingCursorOffsetX;
         private float _streamingCursorOffsetY;
 
         public int LastPickedTileIndex { get; set; }
-        public bool cursorIsStreaming { get; set; }
+        public bool CursorIsStreaming { get; set; }
+
+        public bool ChatDisfocused { get; set; }
 
         public void SetOnline() { _offline = false; }
         public void SetOffline() { _offline = true; }
@@ -40,19 +43,19 @@ namespace Code.Network.Composition {
 
         public GameObject[] Pointer;
 
-
         // Выполняется только на сервере
         public void Launch() {
             Net.Server.Queue = new PlayerColor[Net.PlayersList.Count];
-            for (int i = 0; i < Net.Server.Queue.Length; i++) {
+            for (var i = 0; i < Net.Server.Queue.Length; i++) {
                 Net.Server.Queue[i] = Net.PlayersList[i].Color;
             }
             var random = new Random(DateTime.Now.Millisecond);
             Net.Server.Queue = Net.Server.Queue.OrderBy(x => random.Next()).ToArray();
             CurrentPlayerIndex = 0;
-            CurrentPlayer = Net.Server.Queue[CurrentPlayerIndex];
+            CurrentPlayerColor = Net.Server.Queue[CurrentPlayerIndex];
+            CurrentPlayerName = Net.PlayersList.First(p => p.Color == CurrentPlayerColor).PlayerName;
             GameStarted();
-            Net.Server.SendToAll(NetCmd.Game, new NetPackGame{Command = Command.Start, Color = CurrentPlayer});
+            Net.Server.SendToAll(NetCmd.Game, new NetPackGame{Command = Command.Start, Color = CurrentPlayerColor, Text = CurrentPlayerName});
         }
 
         public void Init() {
@@ -77,7 +80,7 @@ namespace Code.Network.Composition {
             InitComplite = true;
         }
 
-        public bool MyTurn() { return CurrentPlayer == Player.Color; }
+        public bool MyTurn() { return CurrentPlayerColor == Player.Color; }
 
         public void StreamCursor(PlayerColor playerColor, Vector3 vector) {
             if (!InitComplite) return;
@@ -103,6 +106,8 @@ namespace Code.Network.Composition {
         // This methods call when game is not offline
         // On client
         public void LocalClientUpadate(KeyInputHandler k) {
+            Сommentator.Comment(Player.Stage, Player.Color, CurrentPlayerColor, CurrentPlayerName);
+
             if (Input.GetKey(k.CursorStreaming)) {
                 Cursor.visible = false;
                 var pos = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
@@ -114,7 +119,7 @@ namespace Code.Network.Composition {
                 };
                 Net.Client.SendUnreliable(NetCmd.Game, packet);
             } else {
-                if (TilePicked && CurrentPlayer == Player.Color) Cursor.visible = false;
+                if (TilePicked && CurrentPlayerColor == Player.Color) Cursor.visible = false;
                 else Cursor.visible = true;
                 var packet = new NetPackGame {
                     Command = Command.CursorStopStreaming,
@@ -123,11 +128,12 @@ namespace Code.Network.Composition {
                 Net.Client.SendUnreliable(NetCmd.Game, packet);
             }
 
+            if (Input.GetKey(k.ShowLastPlacedTile)) Tile.ShowLastPlaced();
+            else Tile.HideLastPlaced();
 
 
             if (Player.Stage == GameStage.Wait)
-                if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
-
+                if (TileOnMouseExist()) Tile.AttachToCoordinates(TPos);
             if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
             switch (Player.Stage) {
                 case GameStage.Wait:
@@ -250,7 +256,7 @@ namespace Code.Network.Composition {
         private void PutTileFromMouse(GameObject o) {
             TilePicked = false;
             Net.Client.Action(Command.TileNotPicked);
-            Net.Client.Action(Command.PutTile, MainGame.Grid.GetCellCoordinates(o));
+            Net.Client.Action(Command.PutTile, MainGame.Grid.GetCellCoordinates(o), Player.Color);
         }
 
         private void RotateClockwise() {

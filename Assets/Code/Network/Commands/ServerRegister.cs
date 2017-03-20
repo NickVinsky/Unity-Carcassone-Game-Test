@@ -27,7 +27,9 @@ namespace Code.Network.Commands {
 
             Net.StopCountdown();
 
-            Net.PlayersList.Add(new PlayerInfo {UniKey = m.UniKey, ID = m.ID, PlayerName = m.PlayerName, MeeplesQuantity = GameRegulars.MaxMeeplesNumber, Score = 0});
+            var newPlayer = new PlayerInfo(m.UniKey, m.ID, m.PlayerName);
+
+            Net.PlayersList.Add(newPlayer);
             Net.Server.SendTo(m.ID, NetCmd.Inf, new NetPackInf{Inf = ConnInfo.PlayerRegistred});
             Net.Server.SendTo(m.ID, NetCmd.ChatHistory, new NetPackChatMessage {Message = Net.Server.ChatHistory});
 
@@ -59,6 +61,7 @@ namespace Code.Network.Commands {
                     Cell = tile.Cell,
                     TileID = tile.TileID,
                     TileIndex = tile.TileIndex,
+                    Founder = tile.Founder,
                     Rotation = tile.Rotation,
                     LocactionID = tile.LocactionID,
                     LocationOwner = tile.LocationOwner,
@@ -169,8 +172,6 @@ namespace Code.Network.Commands {
 
             var curPlayer = Net.PlayersList.First(p => p.ID == sender.ID);
             var index = Net.PlayersList.IndexOf(curPlayer);
-            var lastID = Net.PlayersList[index].ID;
-            var lastColor = Net.PlayersList[index].Color;
 
             curPlayer.ID = sender.ID;
             curPlayer.Color = sender.Color;
@@ -194,49 +195,9 @@ namespace Code.Network.Commands {
             ReformLobbyPlayersList(message);
         }
 
-        [ServerCommand(NetCmd.FormLobbyPlayersList)] // This Command Receives Only Player Name And ConnectionID
-        public static void FormPlayersList(NetworkMessage message) {
-            var m = message.ReadMessage<NetPackPlayerInfo>();
-            if (PlayerWithNameExist(m.PlayerName)) {
-                if (Net.Game.IsOnline()) {
-                    var curPlayer = Net.PlayersList.First(p => p.PlayerName == m.PlayerName);
-                    curPlayer.ID = m.ID;
-                    FormAndSendLobbyPlayersList();
-                    return;
-                }
-                Net.Server.SendTo(m.ID, NetCmd.Err, new NetPackErr{Err = ErrType.PlayerNameOccupied});
-                return;
-            }
-            if (!m.IsRegistred) {
-                Net.Server.SendTo(m.ID, NetCmd.Inf, new NetPackInf{Inf = ConnInfo.PlayerRegistred});
-                Net.StopCountdown();
-            }
-
-            Net.PlayersList.Add(new PlayerInfo {ID = m.ID, PlayerName = m.PlayerName, MeeplesQuantity = GameRegulars.MaxMeeplesNumber, Score = 0});
-            FormAndSendLobbyPlayersList();
-        }
-
         [ServerCommand(NetCmd.ReformLobbyPlayersList)] // This Command Used For Form Players List With Full knowlege about player (color etc.)
         public static void ReformLobbyPlayersList(NetworkMessage message) {
             FormAndSendLobbyPlayersList();
-        }
-
-        [ServerCommand(NetCmd.ReformPlayersListWithAdding)] // This Command Receives Full Player Info And Reform List (when someone leave for example)
-        public static void ReformPlayersListWithAdding(NetworkMessage message) {
-            var m = message.ReadMessage<NetPackPlayerInfo>();
-            Net.PlayersList.Add(new PlayerInfo {
-                ID = m.ID,
-                PlayerName = m.PlayerName,
-                Color = m.Color,
-                IsRegistred = m.IsRegistred,
-                MeeplesQuantity = GameRegulars.MaxMeeplesNumber,
-                Score = 0
-            });
-            if (Net.Game.IsStarted()) {
-                Net.Server.RefreshInGamePlayersList();
-            } else {
-                FormAndSendLobbyPlayersList();
-            }
         }
 
         #region InGameCommands
@@ -246,7 +207,7 @@ namespace Code.Network.Commands {
             Net.Server.SendTo(m.RequesterID, NetCmd.ChatHistory, new NetPackChatMessage {Message = Net.Server.ChatHistory});
             SendCachedTiles(m.RequesterID);
             Net.Server.SendTo(m.RequesterID, NetCmd.GameData, new NetPackGame { Byte = (byte) Net.Game.CurrentPlayerIndex,
-                Color = Net.Game.CurrentPlayer, Trigger = Net.Game.TilePicked, Value = Net.Game.LastPickedTileIndex});
+                Color = Net.Game.CurrentPlayerColor, Trigger = Net.Game.TilePicked, Value = Net.Game.LastPickedTileIndex});
             Net.Server.RefreshInGamePlayersList();
         }
 
@@ -275,7 +236,7 @@ namespace Code.Network.Commands {
         [ServerCommand(NetCmd.SubtractFollower)]
         public static void SubtractFollower(NetworkMessage message) {
             var m = message.ReadMessage<NetPackFollower>();
-            Net.Server.SubtractFollower(m.Color, m.followerType);
+            Net.Server.SubtractFollower(m.Color, m.FollowerType);
         }
 
         [ServerCommand(NetCmd.Game)]

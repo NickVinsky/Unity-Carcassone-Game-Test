@@ -1,5 +1,5 @@
 ﻿namespace Code.Game.Data {
-    public struct PlayerInfo {
+    public class PlayerInfo {
         public string UniKey;
 
         public int ID;
@@ -12,6 +12,7 @@
         public byte MayorsQuantity;
         public byte PigsQuantity;
         public byte BuildersQuantity;
+
         public byte BarnsQuantity;
         public byte WagonsQuantity;
         public int Score;
@@ -24,5 +25,28 @@
         public int MySlotNumberInGame;
 
         public bool IsMyTurn;
+
+        public PlayerInfo() {
+            InitGameRules();
+            Score = 0;
+        }
+
+        public PlayerInfo(string uniKey, int id, string playerName) {
+            UniKey = uniKey;
+            ID = id;
+            PlayerName = playerName;
+            Score = 0;
+            InitGameRules();
+        }
+
+        public void InitGameRules() {
+            MeeplesQuantity = 8;
+            BigMeeplesQuantity = 1;
+            MayorsQuantity = 1;
+            PigsQuantity = 6;
+            BuildersQuantity = 6;
+            BarnsQuantity = 1;
+            WagonsQuantity = 1;
+        }
     }
 }

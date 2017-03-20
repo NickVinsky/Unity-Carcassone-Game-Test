@@ -16,7 +16,9 @@ namespace Code.Network.Composition {
         public void NextPlayerTurn() {
             var nextPlayerIndex = Net.Game.CurrentPlayerIndex + 1;
             if (nextPlayerIndex >= Queue.Length) nextPlayerIndex = 0;
-            Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.NextPlayer, Value = nextPlayerIndex, Color = Queue[nextPlayerIndex]});
+            var nextPlayerColor = Queue[nextPlayerIndex];
+            var nextPlayerName = Net.PlayersList.First(p => p.Color == nextPlayerColor).PlayerName;
+            Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.NextPlayer, Value = nextPlayerIndex, Color = nextPlayerColor, Text = nextPlayerName});
         }
 
         public void CleanChat() { ChatHistory = string.Empty; }
@@ -95,7 +97,7 @@ namespace Code.Network.Composition {
         public void SubtractFollower(PlayerColor playerColor, Follower type) {
             var player = Net.PlayersList.First(p => p.Color == playerColor);
             var index = Net.PlayersList.IndexOf(player);
-            ScoreCalc.RecalcFollowersNumber(type, ref player, -1);
+            ScoreCalc.RecalcFollowersNumber(type, player, -1);
             Net.PlayersList[index] = player;
             RefreshInGamePlayersList();
         }
@@ -106,7 +108,7 @@ namespace Code.Network.Composition {
             foreach (var q in Net.Server.Queue) {
                 if (Net.PlayersList.Any(p => p.Color == q)) {
                     var curPlayer = Net.PlayersList.First(p => p.Color == q);
-                    var isMoving = q == Net.Game.CurrentPlayer ? "1" : "0";
+                    var isMoving = q == Net.Game.CurrentPlayerColor ? "1" : "0";
                     l += (int) q + isMoving + curPlayer.MeeplesQuantity.ToString("D1") +
                          curPlayer.Score.ToString("D4") + curPlayer.PlayerName + Environment.NewLine;
                 } else {

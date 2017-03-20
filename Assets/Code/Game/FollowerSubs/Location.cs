@@ -69,7 +69,9 @@ namespace Code.Game.FollowerSubs {
         public bool CompareID(byte id){ return id == _id;}
         public bool IsLinkedTo(int id) { return Link == id; }
         public byte GetID() { return _id; }
+
         public PlayerColor GetOwner() { return _owner; }
+        public Ownership GetOwnership() { return new Ownership{Owner = _owner, FollowerType = FollowerType }; }
 
         public bool IsBarrier() { return Type == Area.Road;}
 
@@ -157,6 +159,7 @@ namespace Code.Game.FollowerSubs {
             Object.Destroy(_sprite.GetComponent<Rigidbody2D>());
             Object.Destroy(_sprite.GetComponent<BoxCollider2D>());
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+
             ScoreCalc.ApplyFollower(this, type);
             MainGame.ChangeGameStage(GameStage.Finish);
 
@@ -188,7 +191,7 @@ namespace Code.Game.FollowerSubs {
             _sprite.transform.localPosition = _meeplePos;
             _sprite.AddComponent<SpriteRenderer>();
             _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("3dMeeple");
-            _sprite.GetComponent<SpriteRenderer>().sortingOrder = 1;
+            _sprite.GetComponent<SpriteRenderer>().sortingOrder = 2;
         }
 
         public void RemovePlacement() {

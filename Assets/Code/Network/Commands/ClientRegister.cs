@@ -1,9 +1,7 @@
-﻿using System;
-using Code.Game;
+﻿using Code.Game;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Attributes;
-using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using static Code.MainGame;
@@ -116,7 +114,7 @@ namespace Code.Network.Commands {
         [ClientCommand(NetCmd.TileCache)]
         public static void ReconstructTilesOnGrid(NetworkMessage message) {
             var m = message.ReadMessage<NetPackTileCache>();
-            Tile.Reconstruct(m.Cell, m.TileID, m.TileIndex, m.Rotation, m.LocactionID, m.LocationOwner, m.FollowerType);
+            Tile.Reconstruct(m.Cell, m.TileID, m.TileIndex, m.Founder, m.Rotation, m.LocactionID, m.LocationOwner, m.FollowerType);
         }
 
         [ClientCommand(NetCmd.TileCacheFinish)]
@@ -146,11 +144,6 @@ namespace Code.Network.Commands {
             LobbyInspector.RefreshPlayersList(message);
         }
 
-        [ClientCommand(NetCmd.RefreshPlayersInfoAndReformPlayersList)]
-        public static void RefreshPlayersInfo(NetworkMessage message) {
-            Net.Client.Send(NetCmd.ReformPlayersListWithAdding, MyInfo());
-        }
-
         [ClientCommand(NetCmd.UpdatePlayerInfo)]
         public static void UpdateMyInfo(NetworkMessage message) {
             Net.Client.Send(NetCmd.UpdatePlayerInfo, MyInfo());
@@ -164,9 +157,8 @@ namespace Code.Network.Commands {
                 case Command.Start:
                     //var ChatPanel = GameObject.Find("ChatPanel");
                     //GameObject.DontDestroyOnLoad(ChatPanel.transform.root);
-                    Net.Game.CurrentPlayer = m.Color;
-                    Player.MeeplesQuantity = GameRegulars.MaxMeeplesNumber;
-                    Player.Score = 0;
+                    Net.Game.CurrentPlayerColor = m.Color;
+                    Net.Game.CurrentPlayerName = m.Text;
                     SceneManager.LoadScene(GameRegulars.SceneGame);
                     Net.Client.UpdateScore();
                     Player.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;
@@ -182,7 +174,7 @@ namespace Code.Network.Commands {
                     Net.Game.TilePicked = false;
                     break;
                 case Command.MouseCoordinates:
-                    Net.Game.tPos = m.Vect3;
+                    Net.Game.TPos = m.Vect3;
                     break;
                 case Command.CursorStreaming:
                     Net.Game.StreamCursor(m.Color, m.Vect3);
@@ -197,11 +189,12 @@ namespace Code.Network.Commands {
                     Tile.Highlight(m.Text, m.Value);
                     break;
                 case Command.PutTile:
-                    Tile.OnMouse.Put(m.Vector);
+                    Tile.OnMouse.Put(m.Vector, m.Color);
                     if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vector);
                     break;
                 case Command.Follower:
-                    if (Player.Color != m.Color) Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value, m.Follower);
+                    if (Player.Color != m.Color)
+                        Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value, m.Follower);
                     break;
                 case Command.RemovePlacement:
                     Tile.Get(m.Vector).GetLocation(m.Byte).RemovePlacement();
@@ -211,7 +204,8 @@ namespace Code.Network.Commands {
                     break;
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;
-                    Net.Game.CurrentPlayer = m.Color;
+                    Net.Game.CurrentPlayerColor = m.Color;
+                    Net.Game.CurrentPlayerName = m.Text;
                     if (Deck.IsEmpty()) {
                         Player.Stage = GameStage.End;
                         if (Net.IsServer) ScoreCalc.Final();
@@ -226,7 +220,7 @@ namespace Code.Network.Commands {
         [ClientCommand(NetCmd.GameData)]
         public static void GetCurrentPlayerTurn(NetworkMessage message) {
             var m = message.ReadMessage<NetPackGame>();
-            Net.Game.CurrentPlayer = m.Color;
+            Net.Game.CurrentPlayerColor = m.Color;
             Net.Game.CurrentPlayerIndex = m.Byte;
             Net.Game.TilePicked = m.Trigger;
             Net.Game.LastPickedTileIndex = m.Value;

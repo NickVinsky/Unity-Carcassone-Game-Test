@@ -11,6 +11,7 @@ namespace Code.Handlers {
         public KeyCode PickTileFromDeck { get; set; }
         public KeyCode ReturnTileToDeck { get; set; }
         public KeyCode CursorStreaming { get; set; }
+        public KeyCode ShowLastPlacedTile { get; set; }
 
         public KeyInputHandler() {
             MoveCameraLeft = KeyCode.A;
@@ -22,6 +23,7 @@ namespace Code.Handlers {
             PickTileFromDeck = KeyCode.Space;
             ReturnTileToDeck = KeyCode.R;
             CursorStreaming = KeyCode.LeftControl;
+            ShowLastPlacedTile = KeyCode.LeftAlt;
         }
     }
 }

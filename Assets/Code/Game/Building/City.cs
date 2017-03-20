@@ -3,11 +3,10 @@ using Code.Game.FollowerSubs;
 
 namespace Code.Game.Building {
     public class City : Construction {
-        protected int NodesToFinish;
+        public byte CoatOfArmsQuantity { get; private set; }
         public bool HasCathedral { get; private set; }
 
         public City(int id, Cell v, Location loc) : base(id, v) {
-            NodesToFinish = loc.GetNodes().Length;
             Nodes += loc.GetNodes().Length;
             Type = Area.City;
         }
@@ -19,19 +18,21 @@ namespace Code.Game.Building {
             ScoreCalc.City(this);
         }
 
-        protected override void CheckForSpecialBuildings(Location location) {
-            if (location.HasCathedral) HasCathedral = true;
+        public override void AddExtraPoints(Location loc, int overPoints) {
+            ExtraPoints += overPoints;
+
+            if (!loc.CoatOfArms) return;
+            CoatOfArmsQuantity++;
+            ExtraPoints += 2;
         }
 
-        protected override void AddNodesToFinish(int value) {
-            NodesToFinish -= 2;
-            NodesToFinish += value;
+        protected override void CheckForSpecialBuildings(Location location) {
+            if (location.HasCathedral) HasCathedral = true;
         }
 
         public override void CalcNodesToFinish() { FinalNodesCalcToFinish(); }
 
         protected override void CalcNodesToFinish(int value) {
-            AddNodesToFinish(value);
             FinalNodesCalcToFinish();
         }
 
@@ -41,11 +42,6 @@ namespace Code.Game.Building {
 
             if (!HasOwner()) return;
             CalcScore();
-        }
-
-        public override void AddExtraPoints(Location loc, int overPoints) {
-            ExtraPoints += overPoints;
-            if (loc.CoatOfArms) ExtraPoints += 2;
         }
 
         protected override void MergeExtraPoints(int value) { ExtraPoints += value; }
