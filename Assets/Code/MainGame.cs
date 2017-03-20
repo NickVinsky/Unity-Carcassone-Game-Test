@@ -36,7 +36,7 @@ namespace Code {
         private Vector3 _dragStartPos;
 
         private static void MoveCamera(bool x, bool y, int acc) {
-            Vector3 position = Camera.main.transform.position;
+            var position = Camera.main.transform.position;
             if (x) position.x += acc * CamMoveSpeed;
             if (y) position.y += acc * CamMoveSpeed;
             Camera.main.transform.position = position;

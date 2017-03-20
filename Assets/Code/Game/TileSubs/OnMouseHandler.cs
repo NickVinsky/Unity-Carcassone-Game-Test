@@ -41,6 +41,14 @@ namespace Code.Game.TileSubs {
             return _tileOnMouse != null;
         }
 
+        public void Focus() {
+            if (!Exist()) return;
+            var tomPos = _tileOnMouse.transform.localPosition;
+            var locScale = _tileOnMouse.transform.localScale;
+            var newPos = new Vector3(tomPos.x / locScale.x, tomPos.y / locScale.y, -1f);
+            Camera.main.transform.position = newPos;
+        }
+
         public void Destroy() {
             Object.DestroyImmediate(_tileOnMouse);
         }
@@ -83,6 +91,7 @@ namespace Code.Game.TileSubs {
             Cursor.visible = true;
             //MainGame.Grid.CheckBounds(gridCell);
             ScoreCalc.Count(gridCell);
+            Tile.HideLastPlaced();
             Tile.LastPlacedTile = gridCell;
             MainGame.Grid.Expand(Tile.GetCoordinates(gridCell));
         }

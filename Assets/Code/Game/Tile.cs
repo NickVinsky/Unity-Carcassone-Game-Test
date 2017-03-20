@@ -100,6 +100,27 @@ namespace Code.Game {
             }
         }
 
+        public static string GetVariation(int tileId) {
+            int rnd;
+            var upperBound = 1;
+            switch (tileId) {
+                case 16:
+                    upperBound += 2;
+                    rnd = Random.Range(1, upperBound);
+                    return tileId + "v" + rnd;
+                case 21:
+                    upperBound += 2;
+                    rnd = Random.Range(1, upperBound);
+                    return tileId + "v" + rnd;
+                case 22:
+                    upperBound += 3;
+                    rnd = Random.Range(1, upperBound);
+                    return tileId + "v" + rnd;
+                default:
+                    return tileId.ToString();
+            }
+        }
+
         public static void SetStarting(int startTileType) {
             StartingTile = startTileType;
             var gridCell = GameObject.Find("cell#0:0");
@@ -149,7 +170,7 @@ namespace Code.Game {
             OnMouse.Get().AddComponent<TileInfo>();
             OnMouse.GetTile().InitTile(tileType);
             OnMouse.GetTile().Rotates = (sbyte) rotates;
-            OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + tileType); // 80-All, 24-Vanilla
+            OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + GetVariation(tileType)); // 80-All, 24-Vanilla
             OnMouse.GetSprite().sortingOrder = 4;
             Rotate.Sprite(rotates, OnMouse.Get());
             if (Net.Game.IsOnline() && !Net.Game.MyTurn()) {

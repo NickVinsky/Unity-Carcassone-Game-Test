@@ -99,8 +99,9 @@ namespace Code.Game.Data {
         public static readonly float CameraDistanceMax = 15.0f;
         public static readonly float CameraDistanceMin = 1.75f;
 
-        public static readonly float TileSizeX = 88.0f;
-        public static readonly float TileSizeY = 88.0f;
+        public static readonly float TileSizeX = 256.0f;
+        public static readonly float TileSizeY = 256.0f;
+        public static readonly float FollowersScale = 2.909f;
 
         #region Errors
         public const string JoinLogField = "JoinLog";

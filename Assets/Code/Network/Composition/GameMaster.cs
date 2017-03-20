@@ -137,6 +137,7 @@ namespace Code.Network.Composition {
             if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
             switch (Player.Stage) {
                 case GameStage.Wait:
+                    if (Input.GetKey(k.FocusOnTileOnMouse)) Tile.OnMouse.Focus();
                     //if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
                     break;
                 case GameStage.Start:

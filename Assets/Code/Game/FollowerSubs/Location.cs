@@ -187,7 +187,7 @@ namespace Code.Game.FollowerSubs {
         private void SpriteInit() {
             _sprite = new GameObject {name = Type + "(" + _meeplePos.x + ";" + _meeplePos.y + ")"};
             _sprite.transform.SetParent(Parent.gameObject.transform);
-            _sprite.transform.localScale = new Vector3(0.08f, 0.08f, 0);
+            _sprite.transform.localScale = new Vector3(0.22f, 0.22f, 0);
             _sprite.transform.localPosition = _meeplePos;
             _sprite.AddComponent<SpriteRenderer>();
             _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("3dMeeple");
