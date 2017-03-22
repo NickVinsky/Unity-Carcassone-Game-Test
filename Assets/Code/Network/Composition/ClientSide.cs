@@ -117,29 +117,13 @@ namespace Code.Network.Composition {
                 if (pList[i] == string.Empty) continue;
                 var pColor = (int) char.GetNumericValue(p[tracker]); tracker++;
                 var pMoves = Convert.ToBoolean(char.GetNumericValue(p[tracker])); tracker++;
-                //var pFollowersNumber = Convert.ToByte(char.GetNumericValue(p[2]));
-
                 var pMeeplesQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
-                Player.MeeplesQuantity = pMeeplesQuantity;
-
                 var pBigMeeplesQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
-                Player.BigMeeplesQuantity = pBigMeeplesQuantity;
-
                 var pMayorsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
-                Player.MayorsQuantity = pMayorsQuantity;
-
                 var pPigsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
-                Player.PigsQuantity = pPigsQuantity;
-
                 var pBuildersQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
-                Player.BuildersQuantity = pBuildersQuantity;
-
                 var pBarnsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
-                Player.BarnsQuantity = pBarnsQuantity;
-
                 var pWagonsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
-                Player.WagonsQuantity = pWagonsQuantity;
-
                 var pScore = Convert.ToInt32(p.Substring(tracker, 4)); tracker += 4;
                 Player.Score = pScore;
 
@@ -150,6 +134,13 @@ namespace Code.Network.Composition {
                 o.transform.FindChild("Meeple").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
 
                 if (Player.MySlotNumberInGame == i) {
+                    Player.MeeplesQuantity = pMeeplesQuantity;
+                    Player.BigMeeplesQuantity = pBigMeeplesQuantity;
+                    Player.MayorsQuantity = pMayorsQuantity;
+                    Player.PigsQuantity = pPigsQuantity;
+                    Player.BuildersQuantity = pBuildersQuantity;
+                    Player.BarnsQuantity = pBarnsQuantity;
+                    Player.WagonsQuantity = pWagonsQuantity;
                     o.transform.FindChild("Meeple").GetComponent<Image>().sprite = Resources.Load<Sprite>("MyMeeple");
                 } else {
                     o.transform.FindChild("Meeple").GetComponent<Image>().sprite = Resources.Load<Sprite>("Meeple");

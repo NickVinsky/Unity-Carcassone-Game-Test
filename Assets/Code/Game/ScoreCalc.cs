@@ -55,7 +55,6 @@ namespace Code.Game {
         public static void ApplyFollower(Location loc, Follower type) {
             if (Net.Game.IsOnline()) Net.Client.SubtractFollower(loc.GetOwner(), type);
             RecalcFollowersNumber(type, Player, -1);
-            //Player.MeeplesQuantity--;
             Builder.SetOwner(loc);
             UpdateGUI();
         }

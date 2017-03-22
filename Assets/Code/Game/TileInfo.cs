@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
+using Code.Network;
 using UnityEngine;
 using LocationInfo = Code.Game.FollowerSubs.LocationInfo;
 
@@ -632,6 +633,7 @@ namespace Code.Game {
                     }
                     break;
                 case Placements.BigMeeples:
+                    Net.Client.ChatMessage("BigMeeple " + MainGame.Player.Color + ": " + MainGame.Player.BigMeeplesQuantity);
                     if (MainGame.Player.BigMeeplesQuantity > 0) _follower.Show(Rotates, Follower.BigMeeple);
                     else {
                         PlacementBlocked[(int) Placements.BigMeeples] = true;
@@ -639,6 +641,7 @@ namespace Code.Game {
                     }
                     break;
                 case Placements.Mayor:
+                    Net.Client.ChatMessage("Mayor " + MainGame.Player.Color + ": " + MainGame.Player.MayorsQuantity);
                     if (MainGame.Player.MayorsQuantity > 0) _follower.Show(Rotates, Follower.Mayor);
                     else {
                         PlacementBlocked[(int) Placements.Mayor] = true;
