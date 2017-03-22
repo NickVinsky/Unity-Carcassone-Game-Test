@@ -111,14 +111,39 @@ namespace Code.Network.Composition {
             var lastI = 0;
 
             for (var i = 0; i < pList.Length; i++) {
+                var tracker = 0;
                 var p = pList[i];
                 var o = GameObject.Find("PlayerInGame(" + i + ")");
                 if (pList[i] == string.Empty) continue;
-                var pColor = (int) char.GetNumericValue(p[0]);
-                var pMoves = Convert.ToBoolean(char.GetNumericValue(p[1]));
-                var pFollowersNumber = Convert.ToByte(char.GetNumericValue(p[2]));
-                var pScore = Convert.ToInt32(p.Substring(3, 4));
-                var pName = p.Substring(7);
+                var pColor = (int) char.GetNumericValue(p[tracker]); tracker++;
+                var pMoves = Convert.ToBoolean(char.GetNumericValue(p[tracker])); tracker++;
+                //var pFollowersNumber = Convert.ToByte(char.GetNumericValue(p[2]));
+
+                var pMeeplesQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
+                Player.MeeplesQuantity = pMeeplesQuantity;
+
+                var pBigMeeplesQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
+                Player.BigMeeplesQuantity = pBigMeeplesQuantity;
+
+                var pMayorsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
+                Player.MayorsQuantity = pMayorsQuantity;
+
+                var pPigsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
+                Player.PigsQuantity = pPigsQuantity;
+
+                var pBuildersQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
+                Player.BuildersQuantity = pBuildersQuantity;
+
+                var pBarnsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
+                Player.BarnsQuantity = pBarnsQuantity;
+
+                var pWagonsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
+                Player.WagonsQuantity = pWagonsQuantity;
+
+                var pScore = Convert.ToInt32(p.Substring(tracker, 4)); tracker += 4;
+                Player.Score = pScore;
+
+                var pName = p.Substring(tracker);
                 if (o.transform.FindChild("Name").GetComponent<Text>().text == Player.PlayerName) Player.MySlotNumberInGame = i;
                 o.transform.FindChild("Name").GetComponent<Text>().text = pName;
                 o.transform.FindChild("Score").GetComponent<Text>().text = GameRegulars.ScoreText + pScore;
@@ -131,7 +156,11 @@ namespace Code.Network.Composition {
                 }
 
 
-               FillContainer(o, pColor, Follower.Meeple, pFollowersNumber);
+                var renderOffset = 0f;
+                FillContainer(o, ref renderOffset, pColor, Follower.BigMeeple, pBigMeeplesQuantity);
+                FillContainer(o, ref renderOffset, pColor, Follower.Mayor, pMayorsQuantity);
+                FillContainer(o, ref renderOffset, pColor, Follower.Meeple, pMeeplesQuantity);
+                FillContainer(o, ref renderOffset, pColor, Follower.Pig, pPigsQuantity);
 
                 //o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
                 //o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
@@ -154,46 +183,71 @@ namespace Code.Network.Composition {
             }
         }
 
-        private void FillContainer(GameObject slot, int ownerColorInt, Follower type, int quantity) {
+        private void FillContainer(GameObject slot, ref float renderOffset, int ownerColorInt, Follower type, int quantity) {
             var renderInterval = 0f;
             var containerName = string.Empty;
             var followerName = string.Empty;
             var spriteName = "Meeple";
+            var scale = new Vector3(26f, 26f, 26f);
 
             switch (type) {
                 case Follower.Meeple:
-                    renderInterval = 7f;
+                    renderInterval = 3f;
                     containerName = "MeepleContainer";
                     followerName = "Meeple";
                     spriteName = "MeepleShadowed";
+                    scale = new Vector3(26f, 26f, 26f);
                     break;
                 case Follower.BigMeeple:
+                    renderInterval = 6f;
+                    //containerName = "BigMeepleContainer";
+                    containerName = "MeepleContainer";
+                    followerName = "BigMeeple";
+                    spriteName = "MeepleShadowed";
+                    scale = new Vector3(33f, 33f, 33f);
                     break;
                 case Follower.Mayor:
+                    renderInterval = 8f;
+                    //containerName = "MayorContainer";
+                    containerName = "MeepleContainer";
+                    followerName = "Mayor";
+                    spriteName = "MayorShadowed";
+                    scale = new Vector3(26f, 33f, 30f);
                     break;
                 case Follower.Pig:
+                    renderInterval = 5f;
+                    //containerName = "PigContainer";
+                    containerName = "MeepleContainer";
+                    followerName = "Pig";
+                    spriteName = "PigShadowed";
+                    scale = new Vector3(28f, 28f, 26f);
                     break;
                 case Follower.Builder:
                     break;
             }
+            var nLen = followerName.Length - 1;
 
             var parent = slot.transform.FindChild(containerName);
-            if (parent.childCount == quantity) return;
+            //if (parent.childCount == quantity) return;
 
-
-            var children = (from Transform child in parent select child.gameObject).ToList();
-            parent.DetachChildren();
+            var children = (from Transform child in parent
+                            where child.name.Substring(0, 3) == followerName.Substring(0, 3)
+                            select child.gameObject).ToList();
+            //parent.DetachChildren();
             children.ForEach(Object.Destroy);
 
             Meeples = new GameObject[quantity];
-            for (var meepleCounter = quantity - 1; meepleCounter >= 0; meepleCounter--) {
+            // for (var meepleCounter = quantity - 1; meepleCounter >= 0; meepleCounter--) {
+            for (var meepleCounter = 0; meepleCounter < quantity; meepleCounter++) {
+                renderOffset += renderInterval + 5f;
                 Meeples[meepleCounter] = new GameObject(followerName + meepleCounter);
                 Meeples[meepleCounter].transform.SetParent(parent);
                 Meeples[meepleCounter].AddComponent<RectTransform>();
                 Meeples[meepleCounter].GetComponent<RectTransform>().anchorMin = new Vector2(0f, 0.5f);
                 Meeples[meepleCounter].GetComponent<RectTransform>().anchorMax = new Vector2(0f, 0.5f);
-                Meeples[meepleCounter].GetComponent<RectTransform>().anchoredPosition = new Vector3(10 + meepleCounter * renderInterval, 0f, 0f);
-                Meeples[meepleCounter].GetComponent<RectTransform>().localScale = new Vector3(26f, 26f, 26f);
+                Meeples[meepleCounter].GetComponent<RectTransform>().anchoredPosition = new Vector3(renderOffset, 0f, 0f);
+                // 10 + meepleCounter * renderInterval
+                Meeples[meepleCounter].GetComponent<RectTransform>().localScale = scale;
                 Meeples[meepleCounter].GetComponent<RectTransform>().sizeDelta = new Vector2(0.8f, 0.9f);
                 Meeples[meepleCounter].AddComponent<SpriteRenderer>();
                 Meeples[meepleCounter].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spriteName);

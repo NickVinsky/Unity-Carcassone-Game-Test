@@ -29,6 +29,16 @@ namespace Code.Game.Building {
 
         protected bool HasOwner() { return Owners.Count > 0; }
 
+        public bool HasPlayerMeeples(PlayerColor playerColor) {
+            return Owners.Where(owner => owner.Color == playerColor)
+                         .Any(owner => owner.FollowerType == Follower.Meeple || owner.FollowerType == Follower.BigMeeple ||
+                                       owner.FollowerType == Follower.Mayor || owner.FollowerType == Follower.Wagon);
+        }
+
+        public bool HasPigOrBuilder(PlayerColor playerColor) {
+            return Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Builder || owner.FollowerType == Follower.Pig);
+        }
+
         protected bool HasCell(Cell cell) { return Enumerable.Contains(LinkedTiles, cell); }
 
         protected void LinkTile(Cell cell) {
@@ -48,7 +58,10 @@ namespace Code.Game.Building {
             }
             Edges++;
             CalcNodesToFinish();
-            if (HasOwner()) location.FreeMeeplePos = false;
+
+            if (HasOwner()) location.ReadyForMeeple = false;
+            if (HasPlayerMeeples(MainGame.Player.Color))
+                if (!HasPigOrBuilder(MainGame.Player.Color)) location.ReadyForPigOrBuilder = true;
         }
 
         public void SetOwner(Location construct) {

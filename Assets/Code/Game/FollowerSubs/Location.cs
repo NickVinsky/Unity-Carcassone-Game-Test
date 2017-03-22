@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Code.Game.Data;
 using Code.Network;
@@ -35,7 +36,8 @@ namespace Code.Game.FollowerSubs {
 
         private PlayerColor _owner = PlayerColor.NotPicked;
         public Follower FollowerType { get; set; }
-        public bool FreeMeeplePos { get; set; }
+        public bool ReadyForMeeple { get; set; }
+        public bool ReadyForPigOrBuilder { get; set; }
 
         private Vector2 _meeplePos;
         private GameObject _sprite;
@@ -62,7 +64,7 @@ namespace Code.Game.FollowerSubs {
             HasInn = locInfo.HasInn;
 
             Link = -1;
-            FreeMeeplePos = true;
+            ReadyForMeeple = true;
         }
 
         public byte[] GetNodes() { return _nodes; }
@@ -71,7 +73,7 @@ namespace Code.Game.FollowerSubs {
         public byte GetID() { return _id; }
 
         public PlayerColor GetOwner() { return _owner; }
-        public Ownership GetOwnership() { return new Ownership{Owner = _owner, FollowerType = FollowerType }; }
+        public Ownership GetOwnership() { return new Ownership{Color = _owner, FollowerType = FollowerType }; }
 
         public bool IsBarrier() { return Type == Area.Road;}
 
@@ -142,16 +144,16 @@ namespace Code.Game.FollowerSubs {
 
         public void SetOwner(PlayerColor owner, Follower type) {
             //if (owner == _owner) return;
-            FreeMeeplePos = false;
+            ReadyForMeeple = false;
             _owner = owner;
             FollowerType = type;
             ScoreCalc.ApplyOpponentFollower(this);
-            SpriteInit();
+            SpriteInit(type);
             _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
         }
 
         public void SetOwner(Follower type) {
-            FreeMeeplePos = false;
+            ReadyForMeeple = false;
             FollowerType = type;
             _owner = MainGame.Player.Color;
             //if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
@@ -173,8 +175,7 @@ namespace Code.Game.FollowerSubs {
         }
 
         public void ShowMeeple(sbyte rotates, Follower type) {
-            if (!FreeMeeplePos) return;
-            SpriteInit();
+            SpriteInit(type);
             _sprite.AddComponent<BoxCollider2D>();
             _sprite.GetComponent<BoxCollider2D>().size = new Vector2(3f, 3f);
             _sprite.AddComponent<Rigidbody2D>();
@@ -184,13 +185,13 @@ namespace Code.Game.FollowerSubs {
             _sprite.GetComponent<FollowerHook>().Type = type;
         }
 
-        private void SpriteInit() {
+        private void SpriteInit(Follower type) {
             _sprite = new GameObject {name = Type + "(" + _meeplePos.x + ";" + _meeplePos.y + ")"};
             _sprite.transform.SetParent(Parent.gameObject.transform);
-            _sprite.transform.localScale = new Vector3(0.22f, 0.22f, 0);
+            _sprite.transform.localScale = GetSpriteScale(type);
             _sprite.transform.localPosition = _meeplePos;
             _sprite.AddComponent<SpriteRenderer>();
-            _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("3dMeeple");
+            _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(GetSpriteName(type));
             _sprite.GetComponent<SpriteRenderer>().sortingOrder = 2;
         }
 
@@ -201,6 +202,36 @@ namespace Code.Game.FollowerSubs {
             //_sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
             //Object.DestroyImmediate(_sprite);
             Object.Destroy(_sprite);
+        }
+
+        private static string GetSpriteName(Follower type) {
+            switch (type) {
+                case Follower.Meeple:
+                    return "3dMeeple";
+                case Follower.BigMeeple:
+                    return "3dMeeple";
+                case Follower.Mayor:
+                    return "3dMayor";
+                case Follower.Pig:
+                    return "3dPig";
+                case Follower.Builder:
+                    return "";
+                case Follower.Barn:
+                    return "";
+                case Follower.Wagon:
+                    return "";
+                default:
+                    return "";
+            }
+        }
+
+        private Vector3 GetSpriteScale(Follower type) {
+            switch (type) {
+                case Follower.BigMeeple:
+                    return new Vector3(0.3f, 0.3f, 0);
+                default:
+                    return new Vector3(0.22f, 0.22f, 0);
+            }
         }
 
         public void MakeTransparent() {

@@ -73,30 +73,49 @@ namespace Code.Game {
             }
         }
 
-        private static void AddScoreServer(PlayerColor playerColor, byte pFollowersQuantity, byte followersToControl, int score) {
+        private static void AddScoreServer(PlayerColor playerColor, byte pFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
             var player = Net.PlayersList.First(p => p.Color == playerColor);
             var index = Net.PlayersList.IndexOf(player);
             if (pFollowersQuantity == followersToControl) {
+                if (construct != null && construct.GetType() == typeof(Field)) {
+                    var field = (Field) construct;
+                    if (construct.HasPigOrBuilder(player.Color)) score += field.LinkedCities.Count;
+                }
                 player.Score += score;
             }
-            player.MeeplesQuantity += pFollowersQuantity;
             Net.PlayersList[index] = player;
         }
 
-        private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score) {
+        private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
             if (myFollowersQuantity == followersToControl) Player.Score += score;
-            Player.MeeplesQuantity += myFollowersQuantity;
         }
 
-        private static void AddScore(byte[] ownerFollowers, byte followersToControl, int score) {
+        private static void AddScore(byte[] ownerFollowers, byte followersToControl, int score, Construction construct = null) {
             for (var i = 0; i < ownerFollowers.Length; i++) {
                 if (ownerFollowers[i] == 0) continue;
                 var curPlayer = (PlayerColor) i;
                 if (Net.Game.IsOnline()) {
-                    if (Net.IsServer) AddScoreServer(curPlayer, ownerFollowers[i], followersToControl, score);
+                    if (Net.IsServer) AddScoreServer(curPlayer, ownerFollowers[i], followersToControl, score, construct);
                 }
                 if (curPlayer != Player.Color) continue;
-                AddScoreLocal(ownerFollowers[i], followersToControl, score);
+                AddScoreLocal(ownerFollowers[i], followersToControl, score, construct);
+            }
+        }
+
+        public static void ReturnFollower(Ownership owner) {
+            if (owner.Color == PlayerColor.NotPicked) return;
+            if (Net.Game.IsOnline()) {
+
+                var player = Net.PlayersList.First(p => p.Color == owner.Color);
+                var index = Net.PlayersList.IndexOf(player);
+                RecalcFollowersNumber(owner.FollowerType, player, 1);
+                Net.PlayersList[index] = player;
+
+            } else {
+
+                if (owner.Color != Player.Color) return;
+                RecalcFollowersNumber(owner.FollowerType, Player, 1);
+
             }
         }
 
@@ -166,8 +185,6 @@ namespace Code.Game {
                 }
             }
 
-            //Net.Client.ChatMessage("field.LinkedCities.Count: " + field.LinkedCities.Count);
-
             var oArray = OwnersArray(field);
 
             var score = field.LinkedCities.Count * 3;
@@ -177,7 +194,7 @@ namespace Code.Game {
         private static byte[] OwnersArray(Construction construct) {
             var oArray = new byte[Enum.GetNames(typeof(PlayerColor)).Length - 1];
             foreach (var owner in construct.Owners) {
-                var curOwner = (int) owner.Owner;
+                var curOwner = (int) owner.Color;
                 if (owner.FollowerType == Follower.Meeple) oArray[curOwner]++;
                 if (owner.FollowerType == Follower.BigMeeple) oArray[curOwner] += 2;
                 if (owner.FollowerType == Follower.Mayor) oArray[curOwner] += construct.GetAsCity().CoatOfArmsQuantity;
@@ -190,6 +207,7 @@ namespace Code.Game {
                 foreach (var loc in tile.Get().GetLocations()) {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
                         if (Net.Game.IsOnline()) {
+                            if (Net.IsServer) ReturnFollower(loc.GetOwnership());
                             Net.Client.Action(Command.RemovePlacement, tile, loc.GetID());
                         } else {
                             loc.RemovePlacement();
@@ -212,6 +230,7 @@ namespace Code.Game {
 
         private static void RemovePlacement(Monastery monastery) {
             if (Net.Game.IsOnline()) {
+                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetLocation(monastery.ID).GetOwnership());
                 Net.Client.Action(Command.RemovePlacementMonk, monastery.Cell, monastery.ID);
             } else {
                 Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Code.Game.Data;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace Code.Game.FollowerSubs {
     public class District {
         private TileInfo _parent;
-        private List<Location> _possibleLocation = new List<Location>();
+        private readonly List<Location> _possibleLocation = new List<Location>();
 
         //private Follower _follower = Follower.None;
 
@@ -38,9 +39,48 @@ namespace Code.Game.FollowerSubs {
         }
 
         public void Show(sbyte rotates, Follower type) {
+            var counter = 0;
             foreach (var loc in _possibleLocation) {
+                if (type == Follower.Pig) {
+                    if (loc.Type != Area.Field) continue;
+                    if (!loc.ReadyForPigOrBuilder) continue;
+                }
+                if (type == Follower.Meeple || type == Follower.BigMeeple || type == Follower.Mayor) {
+                    if (!loc.ReadyForMeeple) continue;
+                }
+                if (type == Follower.Mayor) {
+                    if (loc.Type != Area.City) continue;
+                }
                 loc.ShowMeeple(rotates, type);
+                counter++;
             }
+            if (counter > 0) return;
+
+            switch (type) {
+                case Follower.Meeple:
+                    _parent.PlacementBlocked[(int) Placements.Meeples] = true;
+                    break;
+                case Follower.BigMeeple:
+                    _parent.PlacementBlocked[(int) Placements.BigMeeples] = true;
+                    break;
+                case Follower.Mayor:
+                    _parent.PlacementBlocked[(int) Placements.Mayor] = true;
+                    break;
+                case Follower.Pig:
+                    _parent.PlacementBlocked[(int) Placements.PigsAndBuilders] = true;
+                    break;
+                case Follower.Builder:
+                    _parent.PlacementBlocked[(int) Placements.PigsAndBuilders] = true;
+                    break;
+                case Follower.Barn:
+                    _parent.PlacementBlocked[(int) Placements.BarnAndWagons] = true;
+                    break;
+                case Follower.Wagon:
+                    _parent.PlacementBlocked[(int) Placements.BarnAndWagons] = true;
+                    break;
+            }
+
+            _parent.ShowNextPossiblePlacement();
         }
 
         public void HideAll() {

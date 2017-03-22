@@ -23,6 +23,7 @@ namespace Code.Network.Commands {
         TileNotPicked,
         HighlightCell,
         PutTile,
+        Placements,
         MouseCoordinates,
         CursorStreaming,
         CursorStopStreaming,

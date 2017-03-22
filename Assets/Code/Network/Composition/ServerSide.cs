@@ -109,7 +109,14 @@ namespace Code.Network.Composition {
                 if (Net.PlayersList.Any(p => p.Color == q)) {
                     var curPlayer = Net.PlayersList.First(p => p.Color == q);
                     var isMoving = q == Net.Game.CurrentPlayerColor ? "1" : "0";
-                    l += (int) q + isMoving + curPlayer.MeeplesQuantity.ToString("D1") +
+                    l += (int) q + isMoving +
+                         curPlayer.MeeplesQuantity.ToString("D2") +
+                         curPlayer.BigMeeplesQuantity.ToString("D2") +
+                         curPlayer.MayorsQuantity.ToString("D2") +
+                         curPlayer.PigsQuantity.ToString("D2") +
+                         curPlayer.BuildersQuantity.ToString("D2") +
+                         curPlayer.BarnsQuantity.ToString("D2") +
+                         curPlayer.WagonsQuantity.ToString("D2") +
                          curPlayer.Score.ToString("D4") + curPlayer.PlayerName + Environment.NewLine;
                 } else {
                     // Игрок больше не в игре

@@ -48,5 +48,17 @@
             BarnsQuantity = 1;
             WagonsQuantity = 1;
         }
+
+        public bool FollowersEmpty() {
+            var followersCounter = 0;
+            followersCounter += MeeplesQuantity;
+            followersCounter += BigMeeplesQuantity;
+            followersCounter += MayorsQuantity;
+            followersCounter += PigsQuantity;
+            //followersCounter += BuildersQuantity;
+            //followersCounter += BarnsQuantity;
+            //followersCounter += WagonsQuantity;
+            return followersCounter == 0;
+        }
     }
 }

@@ -192,6 +192,9 @@ namespace Code.Network.Commands {
                     Tile.OnMouse.Put(m.Vector, m.Color);
                     if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vector);
                     break;
+                case Command.Placements:
+                    // if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vector);
+                    break;
                 case Command.Follower:
                     if (Player.Color != m.Color)
                         Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value, m.Follower);

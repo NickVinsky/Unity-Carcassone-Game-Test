@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Code.Game.Data {
     public struct GameRegulars {
+        public static int EnumFollowersCount = Enum.GetNames(typeof(Follower)).Length;
+        public static int EnumPlacementsCount = Enum.GetNames(typeof(Placements)).Length;
+
         public static string[] ngTitleF = {"Empress","Queen","Princess","Mistress","Marquise","Countess","Duchess","Baronet","Frau","Abess"};
         public static string[] ngTitleM = {"Emperor","King","Prince","Duke","Marquis","Earl","Count","Viscount","Baron","Lord","Despot","Magister","Cardinal"};
         public static string[] ngNobPart = {" al "," de "," di "," der "," del "," von "," van "," Mc", " Le", " la "," La"};

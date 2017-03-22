@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
 using UnityEngine;
@@ -11,7 +13,7 @@ namespace Code.Game {
 
         public int Type;
         public PlayerColor Founder { get; set; }
-        private District _follower = new District();
+        private readonly District _follower = new District();
 
         private readonly Area[] _side = {Area.Empty, Area.Empty, Area.Empty, Area.Empty};
 
@@ -21,9 +23,12 @@ namespace Code.Game {
 
         public Area GetSide(int side) { return _side[side]; }
 
+        private Placements CurrentPlacementState { get; set; }
+        public bool[] PlacementBlocked { get; set; }
+
         public List<Location> GetLocations() { return _follower.GetLocations(); }
 
-        public Location GetLocation(byte id) { return _follower.GetLocation(id); }
+        public Location GetLocation(int id) { return _follower.GetLocation((byte) id); }
 
         public Cell IntVector() {
             return new Cell(X, Y);
@@ -35,6 +40,7 @@ namespace Code.Game {
         private byte[] A(byte a, byte b, byte c, byte d) { return new[] {a, b, c, d}; }
 
         public void InitTile(int type) {
+            PlacementBlocked = new bool[GameRegulars.EnumPlacementsCount];
             Type = type;
             const float k = 2.909f;
             switch (Type) {
@@ -600,8 +606,81 @@ namespace Code.Game {
         }
 
         public void ShowPossibleLocations(Follower type) {
-            _follower.Show(Rotates, type);
-            if (gameObject.transform.childCount == 0) MainGame.ChangeGameStage(GameStage.Finish);
+            CurrentPlacementState = Placements.Meeples;
+            if (MainGame.Player.MeeplesQuantity > 0) {
+                _follower.Show(Rotates, Follower.Meeple);
+                if (gameObject.transform.childCount == 0) MainGame.ChangeGameStage(GameStage.Finish);
+            }
+            else ShowNextPossiblePlacement();
+        }
+
+        public void ShowNextPossiblePlacement() {
+            if (MainGame.Player.FollowersEmpty()) {
+                Debug.logger.Log(LogType.Exception, "FollowersEmpty");
+                MainGame.ChangeGameStage(GameStage.Finish);
+                return;
+            }
+
+            CurrentPlacementState = Next(CurrentPlacementState);
+            _follower.HideAll();
+            switch (CurrentPlacementState) {
+                case Placements.Meeples:
+                    if (MainGame.Player.MeeplesQuantity > 0) _follower.Show(Rotates, Follower.Meeple);
+                    else {
+                        PlacementBlocked[(int) Placements.Meeples] = true;
+                        ShowNextPossiblePlacement();
+                    }
+                    break;
+                case Placements.BigMeeples:
+                    if (MainGame.Player.BigMeeplesQuantity > 0) _follower.Show(Rotates, Follower.BigMeeple);
+                    else {
+                        PlacementBlocked[(int) Placements.BigMeeples] = true;
+                        ShowNextPossiblePlacement();
+                    }
+                    break;
+                case Placements.Mayor:
+                    if (MainGame.Player.MayorsQuantity > 0) _follower.Show(Rotates, Follower.Mayor);
+                    else {
+                        PlacementBlocked[(int) Placements.Mayor] = true;
+                        ShowNextPossiblePlacement();
+                    }
+                    break;
+                case Placements.PigsAndBuilders:
+                    if (MainGame.Player.PigsQuantity > 0) _follower.Show(Rotates, Follower.Pig);
+                    else {
+                        PlacementBlocked[(int) Placements.PigsAndBuilders] = true;
+                        ShowNextPossiblePlacement();
+                    }
+                    break;
+                case Placements.BarnAndWagons:
+                    PlacementBlocked[(int) Placements.BarnAndWagons] = true;
+                    ShowNextPossiblePlacement();
+                    break;
+                case Placements.AllRestricted:
+                    MainGame.ChangeGameStage(GameStage.Finish);
+                    return;
+            }
+        }
+
+        private Placements Next(Placements state) {
+            var hasFreePlacements = false;
+
+            for (var i = 1; i < PlacementBlocked.Length; i++) {
+                if (!PlacementBlocked[i]) {
+                    hasFreePlacements = true;
+                }
+            }
+            if (!hasFreePlacements) return Placements.AllRestricted;
+
+            while (true) {
+                var length = GameRegulars.EnumPlacementsCount;
+                var curPlacementInt = (int) state;
+                var nextPlacementInt = curPlacementInt + 1;
+                if (nextPlacementInt >= length) nextPlacementInt = 1;
+
+                if (!PlacementBlocked[nextPlacementInt]) return (Placements) nextPlacementInt;
+                state = (Placements) nextPlacementInt;
+            }
         }
 
         public void ApplyRotation() {

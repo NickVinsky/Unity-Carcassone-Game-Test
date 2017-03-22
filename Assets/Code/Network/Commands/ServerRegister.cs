@@ -80,7 +80,7 @@ namespace Code.Network.Commands {
             var origColorIndex = (int) origColor;
 
             if (origColor == (PlayerColor) Net.ColorsCount) m.Color = PlayerColor.NotPicked;
-            for (var i = 1; i <= Net.ColorsCount; i++) {
+            for (var i = 1; i < Net.ColorsCount; i++) {
                 var newColorIndex = i + origColorIndex;
                 if (newColorIndex > Net.ColorsCount) newColorIndex -= Net.ColorsCount;
                 var newColor = (PlayerColor) newColorIndex;
@@ -248,6 +248,10 @@ namespace Code.Network.Commands {
                     Net.Server.NextPlayerTurn();
                     break;
                 case Command.TilePicked:
+                    Net.Server.SendToAll(NetCmd.Game, m);
+                    break;
+                case Command.PutTile:
+                    // TODO Просчет возможных вариантов размещения последователей только на сервере
                     Net.Server.SendToAll(NetCmd.Game, m);
                     break;
                 case Command.MouseCoordinates:

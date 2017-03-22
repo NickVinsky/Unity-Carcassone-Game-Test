@@ -59,11 +59,11 @@ namespace Code.Network.Composition {
         }
 
         public void Init() {
-            Pointer = new GameObject[Net.ColorsCount];
+            Pointer = new GameObject[Net.ColorsCount + 1];
             var sprite = Resources.Load<Sprite>("Pointer");
             _streamingCursorOffsetX = sprite.rect.width / 200;
             _streamingCursorOffsetY = sprite.rect.height / 200;
-            for (int i = 0; i < Net.ColorsCount; i++) {
+            for (int i = 1; i <= Net.ColorsCount; i++) {
                 var curColor = (PlayerColor) i;
                 Pointer[i] = new GameObject(i + "//" + curColor);
                 Object.DontDestroyOnLoad(Pointer[i]);
@@ -72,7 +72,7 @@ namespace Code.Network.Composition {
                 Pointer[i].AddComponent<SpriteRenderer>();
                 Pointer[i].GetComponent<SpriteRenderer>().sprite = sprite;
                 Pointer[i].GetComponent<SpriteRenderer>().color = Net.Color(curColor);
-                Pointer[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
+                Pointer[i].GetComponent<SpriteRenderer>().sortingOrder = 5;
 
                 //Pointer[i].transform.localScale = new Vector3(0f,0f,0f);
                 Pointer[i].GetComponent<SpriteRenderer>().enabled = false;
@@ -159,6 +159,9 @@ namespace Code.Network.Composition {
                     //Stage = GameStage.PlacingFollower; // OnMouseUp()
                     break;
                 case GameStage.PlacingFollower:
+                    if (Input.GetKeyDown(KeyCode.Tab)) {
+                        Tile.LastPlaced().ShowNextPossiblePlacement();
+                    }
                     if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(k.ReturnTileToDeck)) {
                         Tile.LastPlaced().HideAll();
                         Player.Stage = GameStage.Finish;
@@ -232,13 +235,13 @@ namespace Code.Network.Composition {
         }
 
         public void PostTilePut(Cell v) {
-            if (Player.MeeplesQuantity > 0) {
+            //if (Player.MeeplesQuantity > 0) {
                 Player.Stage = GameStage.PlacingFollower;
                 var c  = GameObject.Find("cell#" + v.X + ":" + v.Y);
                 Tile.ShowPossibleFollowersLocations(c, Follower.Meeple);
-            } else {
-                Player.Stage = GameStage.Finish;
-            }
+            //} else {
+                //Player.Stage = GameStage.Finish;
+            //}
         }
 
         public void DeckClick(Vector2 t, Vector2 m) {
