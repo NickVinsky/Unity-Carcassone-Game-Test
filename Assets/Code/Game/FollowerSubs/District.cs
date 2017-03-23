@@ -15,6 +15,8 @@ namespace Code.Game.FollowerSubs {
 
         public List<Location> GetLocations() { return _possibleLocation; }
 
+        public int GetSize() { return _possibleLocation.Count; }
+
         public void AddLocation(TileInfo parent, LocationInfo locInfo) {
             var nextId = (byte) _possibleLocation.Count;
             locInfo.LocID = nextId;

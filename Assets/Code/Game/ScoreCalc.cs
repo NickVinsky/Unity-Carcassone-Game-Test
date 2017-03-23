@@ -79,6 +79,7 @@ namespace Code.Game {
                 if (construct != null && construct.GetType() == typeof(Field)) {
                     var field = (Field) construct;
                     if (construct.HasPigOrBuilder(playerColor)) score += field.LinkedCities.Count;
+                    //Debug.Log("Extra + " + field.LinkedCities.Count);
                 }
                 player.Score += score;
             }

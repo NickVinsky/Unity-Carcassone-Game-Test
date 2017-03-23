@@ -20,11 +20,17 @@ namespace Code.Game.Building {
         protected int Edges { get; set; }
         protected int Nodes { get; set; }
 
+        private bool _needRecalc = false;
+        private Construction _constructToRecalc;
+        private Cell _lastCell;
+        private bool _lastCellRecalced = false;
+
         protected Construction(int id, Cell v) {
             ID = id;
             FinishedByPlayer = false;
             Owners = new List<Ownership>();
             LinkedTiles = new List<Cell> {v};
+            _lastCell = v;
         }
 
         protected bool HasOwner() { return Owners.Count > 0; }
@@ -59,6 +65,10 @@ namespace Code.Game.Building {
         }
 
         public void Add(Location location) {
+            if (!_lastCell.Equals(location.Parent.IntVector())) {
+                _lastCellRecalced = false;
+            }
+            _lastCell = location.Parent.IntVector();
             var linkedConstruct = location.Link;
             CheckForSpecialBuildings(location);
             if (linkedConstruct == ID) {
@@ -75,8 +85,8 @@ namespace Code.Game.Building {
             if (HasOwner()) location.ReadyForMeeple = false;
             if (HasBarn()) {
                 if (Type == Area.Field && !HasOnlyBarns()) {
-                    var field = (Field) this;
-                    ScoreCalc.Field(field);
+                    _needRecalc = true;
+                    _constructToRecalc = (Field) this;
                 }
                 location.ReadyForMeeple = false;
                 location.ReadyForPigOrBuilder = false;
@@ -88,6 +98,17 @@ namespace Code.Game.Building {
 
 
             PostAddingAction(location);
+            Recalc();
+        }
+
+        public void Recalc() {
+            if (!_needRecalc) return;
+            if (_lastCellRecalced) return;
+
+            var field = (Field) _constructToRecalc;
+            ScoreCalc.Field(field);
+            _needRecalc = false;
+            _lastCellRecalced = true;
         }
 
         public void SetOwner(Location construct) {

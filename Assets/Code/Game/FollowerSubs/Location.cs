@@ -51,6 +51,9 @@ namespace Code.Game.FollowerSubs {
 
         public string GetMeeplePos() { return "[" + _meeplePos.x + ";" + _meeplePos.y + "]"; }
 
+        public int GetDistrictSize() { return District.GetSize(); }
+        public bool LastInDistrict() { return District.GetSize() == _id + 1; }
+
         public Location(TileInfo parent, District district, LocationInfo locInfo) {
             Parent = parent;
             District = district;
