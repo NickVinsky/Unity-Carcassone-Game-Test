@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using Code.Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -166,12 +165,16 @@ namespace Code.GUI {
         }
 
         public static void SaveName() {
+            var dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\karkas\\";
             var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\karkas\\favName";
+            if (!Directory.Exists(path)) Directory.CreateDirectory(dir);
             File.WriteAllText(path, PlayerNameField.GetComponent<InputField>().text);
         }
 
         public static void SaveServer() {
+            var dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\karkas\\";
             var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\karkas\\favServer";
+            if (!Directory.Exists(path)) Directory.CreateDirectory(dir);
             File.WriteAllText(path, ServerAddressField.GetComponent<InputField>().text + Environment.NewLine +
                                     ServerPortField.GetComponent<InputField>().text);
         }
