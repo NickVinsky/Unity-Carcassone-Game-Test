@@ -192,7 +192,7 @@ namespace Code.Game {
 
             var notGathered = Convert.ToInt32(!field.Gathered);
             var score = field.LinkedCities.Count * (1 + 2 * notGathered);
-            AddScore(oArray, oArray.Max(), score);
+            AddScore(oArray, oArray.Max(), score, field);
 
             if (final) return;
             field.FinishedByPlayer = true;
