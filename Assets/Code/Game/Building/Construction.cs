@@ -41,6 +41,8 @@ namespace Code.Game.Building {
 
         public bool HasBarn() { return Owners.Any(owner => owner.FollowerType == Follower.Barn); }
 
+        public bool HasOnlyBarns() { return Owners.All(owner => owner.FollowerType == Follower.Barn); }
+
         protected bool HasCell(Cell cell) { return Enumerable.Contains(LinkedTiles, cell); }
 
         protected bool HasCells(params Cell[] cell) {
@@ -72,7 +74,7 @@ namespace Code.Game.Building {
 
             if (HasOwner()) location.ReadyForMeeple = false;
             if (HasBarn()) {
-                if (Type == Area.Field && Owners.Count > 1) {
+                if (Type == Area.Field && !HasOnlyBarns()) {
                     var field = (Field) this;
                     ScoreCalc.Field(field);
                 }
