@@ -39,6 +39,13 @@ namespace Code.Game.FollowerSubs {
         public bool ReadyForMeeple { get; set; }
         public bool ReadyForPigOrBuilder { get; set; }
 
+        // 0     1
+        //  |---|
+        //  |---|
+        //  |---|
+        // 3     2
+        public bool[] ReadyForBarn { get; set; }
+
         private Vector2 _meeplePos;
         private GameObject _sprite;
 
@@ -65,6 +72,7 @@ namespace Code.Game.FollowerSubs {
 
             Link = -1;
             ReadyForMeeple = true;
+            ReadyForBarn = new bool[4];
         }
 
         public byte[] GetNodes() { return _nodes; }
@@ -175,7 +183,30 @@ namespace Code.Game.FollowerSubs {
         }
 
         public void ShowMeeple(sbyte rotates, Follower type) {
-            SpriteInit(type);
+            if (type == Follower.Barn) {
+                for (var i = 0; i < 4; i++) {
+                    if (!ReadyForBarn[i]) continue;
+                    ShowBarn(i, rotates);
+                    return;
+                }
+            } else {
+                SpriteInit(type);
+                AddHook(type);
+            }
+        }
+
+        private void SpriteInit(Follower type) { SpriteInit(type, _meeplePos); }
+        private void SpriteInit(Follower type, Vector2 position) {
+            _sprite = new GameObject {name = type + "//" + Type + "(" + _meeplePos.x + ";" + _meeplePos.y + ")"};
+            _sprite.transform.SetParent(Parent.gameObject.transform);
+            _sprite.transform.localScale = GetSpriteScale(type);
+            _sprite.transform.localPosition = position;
+            _sprite.AddComponent<SpriteRenderer>();
+            _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(GetSpriteName(type));
+            _sprite.GetComponent<SpriteRenderer>().sortingOrder = 2;
+        }
+
+        private void AddHook(Follower type) {
             _sprite.AddComponent<BoxCollider2D>();
             _sprite.GetComponent<BoxCollider2D>().size = new Vector2(3f, 3f);
             _sprite.AddComponent<Rigidbody2D>();
@@ -185,14 +216,19 @@ namespace Code.Game.FollowerSubs {
             _sprite.GetComponent<FollowerHook>().Type = type;
         }
 
-        private void SpriteInit(Follower type) {
-            _sprite = new GameObject {name = Type + "(" + _meeplePos.x + ";" + _meeplePos.y + ")"};
-            _sprite.transform.SetParent(Parent.gameObject.transform);
-            _sprite.transform.localScale = GetSpriteScale(type);
-            _sprite.transform.localPosition = _meeplePos;
-            _sprite.AddComponent<SpriteRenderer>();
-            _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(GetSpriteName(type));
-            _sprite.GetComponent<SpriteRenderer>().sortingOrder = 2;
+        private void ShowBarn(int placement, sbyte rotates) {
+            var space = GameRegulars.TileSizeX / 200;
+            Vector2 position;
+            placement -= rotates;
+            if (placement < 0) placement += 4;
+            if (placement == 0) position = new Vector2(-space, space);
+            else if (placement == 1) position = new Vector2(space, space);
+            else if (placement == 2) position = new Vector2(space, -space);
+            else if (placement == 3) position = new Vector2(-space, -space);
+            else position = new Vector2(0, 0);
+
+            SpriteInit(Follower.Barn, position);
+            AddHook(Follower.Barn);
         }
 
         public void RemovePlacement() {
@@ -217,7 +253,7 @@ namespace Code.Game.FollowerSubs {
                 case Follower.Builder:
                     return "";
                 case Follower.Barn:
-                    return "";
+                    return "3dBarn";
                 case Follower.Wagon:
                     return "";
                 default:
@@ -229,6 +265,12 @@ namespace Code.Game.FollowerSubs {
             switch (type) {
                 case Follower.BigMeeple:
                     return new Vector3(0.3f, 0.3f, 0);
+                case Follower.Mayor:
+                    return new Vector3(0.26f, 0.26f, 0);
+                case Follower.Pig:
+                    return new Vector3(0.28f, 0.28f, 0);
+                case Follower.Barn:
+                    return new Vector3(0.5f, 0.5f, 0);
                 default:
                     return new Vector3(0.22f, 0.22f, 0);
             }

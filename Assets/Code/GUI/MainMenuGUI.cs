@@ -179,19 +179,19 @@ namespace Code.GUI {
         public static string GetRandomName() {
             var genName = string.Empty;
             var rnd = Random.value;
-            var IsMale = rnd > 0.5f;
+            var isMale = rnd > 0.5f;
             rnd = Random.value;
-            var UseNoblePart = rnd > 0.5f;
+            var useNoblePart = rnd > 0.5f;
             string randTitle = string.Empty, randNobPart = " ", randName = string.Empty;
-            switch (IsMale) {
+            switch (isMale) {
                 case true:
                     randTitle = ngTitleM[Random.Range(0, ngTitleM.Length)];
-                    if (UseNoblePart) randNobPart = ngNobPart[Random.Range(0, ngNobPart.Length)];
+                    if (useNoblePart) randNobPart = ngNobPart[Random.Range(0, ngNobPart.Length)];
                     randName = ngNameM[Random.Range(0, ngNameM.Length)];
                     break;
                 case false:
                     randTitle = ngTitleF[Random.Range(0, ngTitleF.Length)];
-                    if (UseNoblePart) randNobPart = ngNobPart[Random.Range(0, ngNobPart.Length)];
+                    if (useNoblePart) randNobPart = ngNobPart[Random.Range(0, ngNobPart.Length)];
                     randName = ngNameF[Random.Range(0, ngNameF.Length)];
                     break;
             }

@@ -148,6 +148,7 @@ namespace Code.Network.Composition {
 
 
                 var renderOffset = 0f;
+                FillContainer(o, ref renderOffset, pColor, Follower.Barn, pBarnsQuantity);
                 FillContainer(o, ref renderOffset, pColor, Follower.BigMeeple, pBigMeeplesQuantity);
                 FillContainer(o, ref renderOffset, pColor, Follower.Mayor, pMayorsQuantity);
                 FillContainer(o, ref renderOffset, pColor, Follower.Meeple, pMeeplesQuantity);
@@ -211,9 +212,16 @@ namespace Code.Network.Composition {
                     containerName = "MeepleContainer";
                     followerName = "Pig";
                     spriteName = "PigShadowed";
-                    scale = new Vector3(28f, 28f, 26f);
+                    scale = new Vector3(28f, 28f, 28f);
                     break;
                 case Follower.Builder:
+                    break;
+                case Follower.Barn:
+                    renderInterval = 7f;
+                    containerName = "MeepleContainer";
+                    followerName = "Barn";
+                    spriteName = "BarnShadowed";
+                    scale = new Vector3(28f, 28f, 28f);
                     break;
             }
             var nLen = followerName.Length - 1;

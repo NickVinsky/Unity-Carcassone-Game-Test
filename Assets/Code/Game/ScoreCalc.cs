@@ -41,7 +41,7 @@ namespace Code.Game {
             foreach (var c in Builder.Monasteries) Monastery(c, true);
             foreach (var c in Builder.Cities) City(c, true);
             foreach (var c in Builder.Roads) Road(c, true);
-            foreach (var c in Builder.Fields) Field(c);
+            foreach (var c in Builder.Fields) Field(c, true);
             //UpdateGUI();
         }
 
@@ -87,6 +87,10 @@ namespace Code.Game {
 
         private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
             if (myFollowersQuantity == followersToControl) Player.Score += score;
+            if (construct != null && construct.GetType() == typeof(Field)) {
+                var field = (Field) construct;
+                if (construct.HasPigOrBuilder(Player.Color)) Player.Score += field.LinkedCities.Count;
+            }
         }
 
         private static void AddScore(byte[] ownerFollowers, byte followersToControl, int score, Construction construct = null) {
@@ -167,7 +171,7 @@ namespace Code.Game {
             RemovePlacements(city);
         }
 
-        public static void Field(Field field) {
+        public static void Field(Field field, bool final = false) {
             foreach (var linkedCell in field.LinkedTiles) {
                 var linkedTile = linkedCell.Get();
                 foreach (var loc in linkedTile.GetLocations()) {
@@ -186,8 +190,13 @@ namespace Code.Game {
 
             var oArray = OwnersArray(field);
 
-            var score = field.LinkedCities.Count * 3;
+            var notGathered = Convert.ToInt32(!field.Gathered);
+            var score = field.LinkedCities.Count * (1 + 2 * notGathered);
             AddScore(oArray, oArray.Max(), score);
+
+            if (final) return;
+            field.FinishedByPlayer = true;
+            RemovePlacements(field);
         }
 
         private static byte[] OwnersArray(Construction construct) {
@@ -205,6 +214,7 @@ namespace Code.Game {
             foreach (var tile in construct.LinkedTiles) {
                 foreach (var loc in tile.Get().GetLocations()) {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
+                        if (loc.GetOwnership().FollowerType == Follower.Barn) continue;
                         if (Net.Game.IsOnline()) {
                             if (Net.IsServer) ReturnFollower(loc.GetOwnership());
                             Net.Client.Action(Command.RemovePlacement, tile, loc.GetID());

@@ -610,7 +610,7 @@ namespace Code.Game {
             CurrentPlacementState = Placements.Meeples;
             if (MainGame.Player.MeeplesQuantity > 0) {
                 _follower.Show(Rotates, Follower.Meeple);
-                if (gameObject.transform.childCount == 0) MainGame.ChangeGameStage(GameStage.Finish);
+                //if (gameObject.transform.childCount == 0) MainGame.ChangeGameStage(GameStage.Finish);
             }
             else ShowNextPossiblePlacement();
         }
@@ -654,8 +654,11 @@ namespace Code.Game {
                     }
                     break;
                 case Placements.BarnAndWagons:
-                    PlacementBlocked[(int) Placements.BarnAndWagons] = true;
-                    ShowNextPossiblePlacement();
+                    if (MainGame.Player.BarnsQuantity > 0) _follower.Show(Rotates, Follower.Barn);
+                    else {
+                        PlacementBlocked[(int) Placements.BarnAndWagons] = true;
+                        ShowNextPossiblePlacement();
+                    }
                     break;
                 case Placements.AllRestricted:
                     MainGame.ChangeGameStage(GameStage.Finish);

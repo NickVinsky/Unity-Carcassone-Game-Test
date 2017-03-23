@@ -26,12 +26,17 @@
         public Cell Bot() { return new Cell(X, Y - 1);}
         public Cell Left() { return new Cell(X - 1, Y);}
 
-        public Cell Corner() { return new Cell(X - 1, Y - 1);}
+        public Cell CornerLeftBot() { return new Cell(X - 1, Y - 1);}
+        public Cell CornerRightBot() { return new Cell(X + 1, Y - 1);}
+        public Cell CornerLeftTop() { return new Cell(X - 1, Y + 1);}
+        public Cell CornerRightTop() { return new Cell(X + 1, Y + 1);}
 
         public void OffsetTop() { Y += 1; }
         public void OffsetRight() { X += 1; }
         public void OffsetBot() { Y -= 1; }
         public void OffsetLeft() { X -= 1; }
+
+        public Cell Offset(int x, int y) { return new Cell(X + x, Y + y);}
 
         public string XY() { return "(" + X + ";" + Y + ")"; }
     }

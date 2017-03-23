@@ -41,6 +41,10 @@ namespace Code.Game.FollowerSubs {
         public void Show(sbyte rotates, Follower type) {
             var counter = 0;
             foreach (var loc in _possibleLocation) {
+                if (type == Follower.Barn) {
+                    if (loc.Type != Area.Field) continue;
+                    if (loc.ReadyForBarn.All(p => !p)) continue;
+                }
                 if (type == Follower.Pig) {
                     if (loc.Type != Area.Field) continue;
                     if (!loc.ReadyForPigOrBuilder) continue;
@@ -54,8 +58,9 @@ namespace Code.Game.FollowerSubs {
                 loc.ShowMeeple(rotates, type);
                 counter++;
             }
-            if (counter > 0) return;
 
+
+            if (counter > 0) return;
             switch (type) {
                 case Follower.Meeple:
                     _parent.PlacementBlocked[(int) Placements.Meeples] = true;

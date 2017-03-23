@@ -271,7 +271,7 @@ namespace Code.Game.Building {
 
         private static void MonasteriesChecker(TileInfo pivotTile) {
             //Debug.Log("pivot " + pivotTile.IntVector().XY());
-            var corner = pivotTile.IntVector().Corner();
+            var corner = pivotTile.IntVector().CornerLeftBot();
             for (var iX = 0; iX < 3; iX++) {
                 for (var iY = 0; iY < 3; iY++) {
                     //var d = new Cell(corner, iX, iY);

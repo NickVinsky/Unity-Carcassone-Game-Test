@@ -27,7 +27,7 @@ namespace Code.Game.Building {
 
         public void CalcSurroundings() {
             SurroundingsCount = 0;
-            var corner = Cell.Corner();
+            var corner = Cell.CornerLeftBot();
             for (var iX = 0; iX < 3; iX++) {
                 for (var iY = 0; iY < 3; iY++) {
                     if (Tile.Exist(new Cell(corner, iX, iY))) SurroundingsCount++;

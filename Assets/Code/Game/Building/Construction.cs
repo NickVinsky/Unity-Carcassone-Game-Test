@@ -39,7 +39,18 @@ namespace Code.Game.Building {
             return Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Builder || owner.FollowerType == Follower.Pig);
         }
 
+        public bool HasBarn() { return Owners.Any(owner => owner.FollowerType == Follower.Barn); }
+
         protected bool HasCell(Cell cell) { return Enumerable.Contains(LinkedTiles, cell); }
+
+        protected bool HasCells(params Cell[] cell) {
+            var cellNotFound = false;
+            foreach (var c in cell) {
+                if (HasCell(c)) continue;
+                cellNotFound = true;
+            }
+            return !cellNotFound;
+        }
 
         protected void LinkTile(Cell cell) {
             if (!HasCell(cell)) LinkedTiles.Add(cell);
@@ -60,14 +71,29 @@ namespace Code.Game.Building {
             CalcNodesToFinish();
 
             if (HasOwner()) location.ReadyForMeeple = false;
-            if (HasPlayerMeeples(MainGame.Player.Color))
-                if (!HasPigOrBuilder(MainGame.Player.Color)) location.ReadyForPigOrBuilder = true;
+            if (HasBarn()) {
+                location.ReadyForMeeple = false;
+                location.ReadyForPigOrBuilder = false;
+            }
+            else {
+                if (HasPlayerMeeples(MainGame.Player.Color))
+                    if (!HasPigOrBuilder(MainGame.Player.Color)) location.ReadyForPigOrBuilder = true;
+            }
+
+
+            PostAddingAction(location);
         }
 
         public void SetOwner(Location construct) {
             Owners.Add(construct.GetOwnership());
             CalcNodesToFinish();
+
+            if (construct.GetOwnership().FollowerType != Follower.Barn) return;
+            var field = (Field) this;
+            ScoreCalc.Field(field);
         }
+
+        protected virtual void PostAddingAction(Location location) {}
 
         protected virtual void CheckForSpecialBuildings(Location location){}
 
@@ -91,12 +117,14 @@ namespace Code.Game.Building {
         }
 
         protected void Merge(Construction former, Location formerLoc) {
+            var barnDetected = false;
             Edges += former.Edges;
             Nodes += former.Nodes;
             foreach (var tile in former.LinkedTiles) {
                 foreach (var fLoc in tile.Get().GetLocations()) {
                     if (!Equals(fLoc.Type)) continue;
                     if (fLoc.Link != former.ID) continue;
+                    if (fLoc.GetOwnership().FollowerType == Follower.Barn) barnDetected = true;
 
                     CheckForSpecialBuildings(fLoc);
 
@@ -104,6 +132,11 @@ namespace Code.Game.Building {
                     LinkTile(fLoc.Parent.IntVector());
                     if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwnership());
                 }
+            }
+            if (barnDetected) {
+                var field = (Field) this;
+                field.Gathered = true;
+                ScoreCalc.Field(field);
             }
             Delete(former);
         }
