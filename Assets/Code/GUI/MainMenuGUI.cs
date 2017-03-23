@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using Code.Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,7 +19,13 @@ namespace Code.GUI {
         private readonly GUIElement _hostGameButton;
         private readonly GUIElement _joinGameButton;
         private readonly GUIElement _quitGameButton;
+        private readonly GUIElement _saveNameButton;
+        private readonly GUIElement _saveServerButton;
         public string PlayerName;
+
+        public static GameObject PlayerNameField;
+        public static GameObject ServerAddressField;
+        public static GameObject ServerPortField;
 
         public MainMenuGUI() {
             _netGameButton = new GUIElement {
@@ -27,6 +35,14 @@ namespace Code.GUI {
             _rndNameButton = new GUIElement {
                 Name = "RandomNameButton",
                 Action = RandomNameClick
+            };
+            _saveNameButton = new GUIElement {
+                Name = "SaveNameButton",
+                Action = SaveName
+            };
+            _saveServerButton = new GUIElement {
+                Name = "SaveServerButton",
+                Action = SaveServer
             };
             _newGameButton = new GUIElement {
                 Name = NewGameButton,
@@ -109,19 +125,55 @@ namespace Code.GUI {
         }
 
         public void Make() {
+            PlayerNameField = GameObject.Find(PlayerNameInputField);
+            ServerAddressField = GameObject.Find(IPField);
+            ServerPortField = GameObject.Find(PortField);
+
             SwitchPanels(PanelMultiplayer, PanelLobby);
-            GenerateName();
+            LoadData();
             AddListener(_rndNameButton);
             AddListener(_newGameButton);
             AddListener(_netGameButton);
             AddListener(_joinGameButton);
             AddListener(_hostGameButton);
             AddListener(_quitGameButton);
+            AddListener(_quitGameButton);
+            AddListener(_saveNameButton);
+            AddListener(_saveServerButton);
             /*
             InitTextButton(_newGameButton);
             InitTextButton(_hostGameButton);
             InitTextButton(_joinGameButton);
             InitTextButton(_quitGameButton);*/
+        }
+
+        public static void LoadData() {
+            string path;
+
+            path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\karkas\\favName";
+            if (File.Exists(path)) {
+                var loadedName = File.ReadAllLines(path)[0];
+                if (string.IsNullOrEmpty(loadedName)) GenerateName();
+                else PlayerNameField.GetComponent<InputField>().text = loadedName;
+            } else GenerateName();
+
+            path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\karkas\\favServer";
+            if (File.Exists(path)) {
+                var loadedServerData = File.ReadAllLines(path);
+                ServerAddressField.GetComponent<InputField>().text = loadedServerData[0];
+                ServerPortField.GetComponent<InputField>().text = loadedServerData[1];
+            }
+        }
+
+        public static void SaveName() {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\karkas\\favName";
+            File.WriteAllText(path, PlayerNameField.GetComponent<InputField>().text);
+        }
+
+        public static void SaveServer() {
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\karkas\\favServer";
+            File.WriteAllText(path, ServerAddressField.GetComponent<InputField>().text + Environment.NewLine +
+                                    ServerPortField.GetComponent<InputField>().text);
         }
 
         public static string GetRandomName() {
@@ -148,7 +200,7 @@ namespace Code.GUI {
 
         private static void GenerateName() {
             var genName = GetRandomName();
-            GameObject.Find(PlayerNameInputField).GetComponent<InputField>().text = genName;
+            PlayerNameField.GetComponent<InputField>().text = genName;
         }
 
         private void RandomNameClick() {

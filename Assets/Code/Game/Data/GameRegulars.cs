@@ -52,7 +52,7 @@ namespace Code.Game.Data {
         public const string PanelChat = "ChatPanel";
 
         public const string PlayerNameInputField = "PlayerNameInputField";
-        public const string IPFIeld = "IPInputField";
+        public const string IPField = "IPInputField";
         public const string PortField = "PortInputField";
         public const string ChatFieldName = "ChatInput";
         public const string ChatHistoryName = "ChatHistory";

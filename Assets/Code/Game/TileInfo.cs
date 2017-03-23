@@ -633,7 +633,6 @@ namespace Code.Game {
                     }
                     break;
                 case Placements.BigMeeples:
-                    Net.Client.ChatMessage("BigMeeple " + MainGame.Player.Color + ": " + MainGame.Player.BigMeeplesQuantity);
                     if (MainGame.Player.BigMeeplesQuantity > 0) _follower.Show(Rotates, Follower.BigMeeple);
                     else {
                         PlacementBlocked[(int) Placements.BigMeeples] = true;
@@ -641,7 +640,6 @@ namespace Code.Game {
                     }
                     break;
                 case Placements.Mayor:
-                    Net.Client.ChatMessage("Mayor " + MainGame.Player.Color + ": " + MainGame.Player.MayorsQuantity);
                     if (MainGame.Player.MayorsQuantity > 0) _follower.Show(Rotates, Follower.Mayor);
                     else {
                         PlacementBlocked[(int) Placements.Mayor] = true;
