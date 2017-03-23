@@ -181,6 +181,7 @@ namespace Code.Network.Composition {
             var followerName = string.Empty;
             var spriteName = "Meeple";
             var scale = new Vector3(26f, 26f, 26f);
+            var sortingOrder = 3;
 
             switch (type) {
                 case Follower.Meeple:
@@ -189,6 +190,7 @@ namespace Code.Network.Composition {
                     followerName = "Meeple";
                     spriteName = "MeepleShadowed";
                     scale = new Vector3(26f, 26f, 26f);
+                    sortingOrder = 11;
                     break;
                 case Follower.BigMeeple:
                     renderInterval = 6f;
@@ -197,6 +199,7 @@ namespace Code.Network.Composition {
                     followerName = "BigMeeple";
                     spriteName = "MeepleShadowed";
                     scale = new Vector3(33f, 33f, 33f);
+                    sortingOrder = 13;
                     break;
                 case Follower.Mayor:
                     renderInterval = 8f;
@@ -205,6 +208,7 @@ namespace Code.Network.Composition {
                     followerName = "Mayor";
                     spriteName = "MayorShadowed";
                     scale = new Vector3(26f, 33f, 30f);
+                    sortingOrder = 14;
                     break;
                 case Follower.Pig:
                     renderInterval = 5f;
@@ -213,6 +217,7 @@ namespace Code.Network.Composition {
                     followerName = "Pig";
                     spriteName = "PigShadowed";
                     scale = new Vector3(28f, 28f, 28f);
+                    sortingOrder = 10;
                     break;
                 case Follower.Builder:
                     break;
@@ -222,6 +227,7 @@ namespace Code.Network.Composition {
                     followerName = "Barn";
                     spriteName = "BarnShadowed";
                     scale = new Vector3(28f, 28f, 28f);
+                    sortingOrder = 12;
                     break;
             }
             var nLen = followerName.Length - 1;
@@ -251,7 +257,7 @@ namespace Code.Network.Composition {
                 Meeples[meepleCounter].AddComponent<SpriteRenderer>();
                 Meeples[meepleCounter].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spriteName);
                 Meeples[meepleCounter].GetComponent<SpriteRenderer>().color = Net.Color((PlayerColor) ownerColorInt);
-                Meeples[meepleCounter].GetComponent<SpriteRenderer>().sortingOrder = 3;
+                Meeples[meepleCounter].GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
             }
         }
 

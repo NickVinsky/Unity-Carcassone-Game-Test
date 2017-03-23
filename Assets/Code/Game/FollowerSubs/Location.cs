@@ -202,7 +202,7 @@ namespace Code.Game.FollowerSubs {
             _sprite.transform.localScale = GetSpriteScale(type);
             _sprite.transform.localPosition = position;
             _sprite.AddComponent<SpriteRenderer>();
-            _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(GetSpriteName(type));
+            _sprite.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(GetSpriteName(type, Type == Area.Field));
             _sprite.GetComponent<SpriteRenderer>().sortingOrder = 2;
         }
 
@@ -240,11 +240,13 @@ namespace Code.Game.FollowerSubs {
             Object.Destroy(_sprite);
         }
 
-        private static string GetSpriteName(Follower type) {
+        private static string GetSpriteName(Follower type, bool variation = false) {
             switch (type) {
                 case Follower.Meeple:
+                    if (variation) return "3dMeepleFarmer";
                     return "3dMeeple";
                 case Follower.BigMeeple:
+                    if (variation) return "3dMeepleFarmer";
                     return "3dMeeple";
                 case Follower.Mayor:
                     return "3dMayor";
