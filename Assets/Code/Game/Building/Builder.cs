@@ -220,12 +220,12 @@ namespace Code.Game.Building {
         }
 
         private static void LogConstructions() {
-            if (true) return;
-            foreach (var c in Cities) c.Debugger();
-            foreach (var c in Roads) c.Debugger();
-            foreach (var c in Fields) c.Debugger();
-            foreach (var c in Monasteries) c.Debugger();
-            Debug.Log("[======================================]");
+            //if (true) return;
+            //foreach (var c in Cities) c.Debugger();
+            //foreach (var c in Roads) c.Debugger();
+            //foreach (var c in Fields) c.Debugger();
+            //foreach (var c in Monasteries) c.Debugger();
+            //Debug.Log("[======================================]");
         }
 
         public static void Init() {

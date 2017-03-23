@@ -78,7 +78,7 @@ namespace Code.Game {
             if (pFollowersQuantity == followersToControl) {
                 if (construct != null && construct.GetType() == typeof(Field)) {
                     var field = (Field) construct;
-                    if (construct.HasPigOrBuilder(player.Color)) score += field.LinkedCities.Count;
+                    if (construct.HasPigOrBuilder(playerColor)) score += field.LinkedCities.Count;
                 }
                 player.Score += score;
             }
@@ -192,15 +192,18 @@ namespace Code.Game {
 
             var notGathered = Convert.ToInt32(!field.Gathered);
             var score = field.LinkedCities.Count * (1 + 2 * notGathered);
+            //Debug.Log("Cities: " + field.LinkedCities.Count + " ; (1 + 2 * notGathered) = " + (1 + 2 * notGathered) + " ; k = " + notGathered);
             AddScore(oArray, oArray.Max(), score, field);
 
+            field.Gathered = true;
+            field.Abandon();
             if (final) return;
             field.FinishedByPlayer = true;
             RemovePlacements(field);
         }
 
         private static byte[] OwnersArray(Construction construct) {
-            var oArray = new byte[Enum.GetNames(typeof(PlayerColor)).Length - 1];
+            var oArray = new byte[Net.ColorsCount + 1];
             foreach (var owner in construct.Owners) {
                 var curOwner = (int) owner.Color;
                 if (owner.FollowerType == Follower.Meeple) oArray[curOwner]++;

@@ -72,6 +72,10 @@ namespace Code.Game.Building {
 
             if (HasOwner()) location.ReadyForMeeple = false;
             if (HasBarn()) {
+                if (Type == Area.Field && Owners.Count > 1) {
+                    var field = (Field) this;
+                    ScoreCalc.Field(field);
+                }
                 location.ReadyForMeeple = false;
                 location.ReadyForPigOrBuilder = false;
             }
@@ -117,14 +121,19 @@ namespace Code.Game.Building {
         }
 
         protected void Merge(Construction former, Location formerLoc) {
-            var barnDetected = false;
+            //var barnDetected = false;
             Edges += former.Edges;
             Nodes += former.Nodes;
+            if (former.Type == Area.Field) {
+                var field = (Field) this;
+                var formerField = (Field) former;
+                if (formerField.Gathered) field.Gathered = formerField.Gathered;
+            }
             foreach (var tile in former.LinkedTiles) {
                 foreach (var fLoc in tile.Get().GetLocations()) {
                     if (!Equals(fLoc.Type)) continue;
                     if (fLoc.Link != former.ID) continue;
-                    if (fLoc.GetOwnership().FollowerType == Follower.Barn) barnDetected = true;
+                    //if (fLoc.GetOwnership().FollowerType == Follower.Barn) barnDetected = true;
 
                     CheckForSpecialBuildings(fLoc);
 
@@ -133,16 +142,17 @@ namespace Code.Game.Building {
                     if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwnership());
                 }
             }
-            if (barnDetected) {
+            /*if (barnDetected) {
                 var field = (Field) this;
                 field.Gathered = true;
+                Debug.Log("ReGathering Field...");
                 ScoreCalc.Field(field);
-            }
+            }*/
             Delete(former);
         }
 
         public void Debugger() {
-            var s = Owners.Aggregate("", (current, t) => current + ", " + t);
+            var s = Owners.Aggregate("", (current, t) => current + ", " + t.FollowerType);
             var vs = LinkedTiles.Aggregate(string.Empty, (current, v) => current + "(" + v.X + ";" + v.Y + ")");
             var log = "[" + Type + "#" + ID + "][" + Nodes + "/" + Edges + "][" + LinkedTiles.Count + "] " + s + "/" + vs;
             Debug.Log(log);

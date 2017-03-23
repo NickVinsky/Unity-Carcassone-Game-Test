@@ -115,6 +115,12 @@ namespace Code.Game.Building {
             }
         }
 
+        public void Abandon() {
+            for (var i = 0; i < Owners.Count; i++) {
+                if (Owners[i].FollowerType != Follower.Barn) Owners.RemoveAt(i);
+            }
+        }
+
         protected override void Merge(Location construct) {
             base.Merge(construct);
             base.Merge(Builder.GetField(construct), construct);

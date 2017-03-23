@@ -273,8 +273,8 @@ namespace Code.Game {
                     break;
                 case 39:
                     AddRoads("13", 0f, 0f, true);
-                    AddFields("0127", 0f, -0.3f * k);
-                    AddFields("3456", 0.233f * k, 0.409f * k);
+                    AddFields("0127", 0.946f, 0.995f);
+                    AddFields("3456", 0f, -0.8f);
                     break;
                 case 40:
                     AddRoads("23", -0.032f * k, 0f, true);
@@ -344,9 +344,9 @@ namespace Code.Game {
                     AddCities("0", 0f, 0.44f * k);
                     AddRoads("2", 0.005f * k, -0.211f * k);
                     AddRoads("3", -0.382f * k, 0.055f * k);
-                    AddFields("234", 0.295f * k, -0.3f * k);
+                    AddFields("234", 0.295f * k, -0.3f * k, A(0));
                     AddFields("56", -0.279f * k, -0.284f * k);
-                    AddFields("7", -0.476f * k, 0.28f * k);
+                    AddFields("7", -0.476f * k, 0.28f * k, A(0));
                     break;
                 case 60:
                     AddRoads("02", 0f, 0.44f * k);
