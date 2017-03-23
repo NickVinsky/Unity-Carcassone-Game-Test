@@ -230,7 +230,7 @@ namespace Code.Network.Composition {
         }
         public void OnMouseUp(GameObject c) {
             if (!MyTurn()) return; // Проверка - мой ли сейчас ход
-            if (!Tile.Nearby.TileOnMouseCanBeAttachedTo(c) || MainGame.MouseState == MainGame.State.Dragging) return;
+            if (!Tile.Nearby.TileOnMouseCanBeAttachedTo(c) || MouseState == State.Dragging) return;
             PutTileFromMouse(c);
         }
 

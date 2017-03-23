@@ -243,7 +243,7 @@ namespace Code.Game {
 
         private static void RemovePlacement(Monastery monastery) {
             if (Net.Game.IsOnline()) {
-                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetLocation(monastery.ID).GetOwnership());
+                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetMonastery().GetOwnership());
                 Net.Client.Action(Command.RemovePlacementMonk, monastery.Cell, monastery.ID);
             } else {
                 Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);

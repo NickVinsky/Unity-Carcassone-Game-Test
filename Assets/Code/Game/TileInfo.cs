@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using Code.Network;
 using UnityEngine;
 using LocationInfo = Code.Game.FollowerSubs.LocationInfo;
 
@@ -30,6 +27,8 @@ namespace Code.Game {
         public List<Location> GetLocations() { return _follower.GetLocations(); }
 
         public Location GetLocation(int id) { return _follower.GetLocation((byte) id); }
+
+        public Location GetMonastery() { return _follower.GetMonastery(); }
 
         public Cell IntVector() {
             return new Cell(X, Y);
@@ -607,9 +606,9 @@ namespace Code.Game {
         }
 
         public void ShowPossibleLocations(Follower type) {
-            CurrentPlacementState = Placements.Meeples;
+            CurrentPlacementState = Placements.AllRestricted;
             if (MainGame.Player.MeeplesQuantity > 0) {
-                _follower.Show(Rotates, Follower.Meeple);
+                _follower.Show(Rotates, type);
                 //if (gameObject.transform.childCount == 0) MainGame.ChangeGameStage(GameStage.Finish);
             }
             else ShowNextPossiblePlacement();
@@ -617,7 +616,6 @@ namespace Code.Game {
 
         public void ShowNextPossiblePlacement() {
             if (MainGame.Player.FollowersEmpty()) {
-                Debug.logger.Log(LogType.Exception, "FollowersEmpty");
                 MainGame.ChangeGameStage(GameStage.Finish);
                 return;
             }
@@ -684,6 +682,12 @@ namespace Code.Game {
 
                 if (!PlacementBlocked[nextPlacementInt]) return (Placements) nextPlacementInt;
                 state = (Placements) nextPlacementInt;
+            }
+        }
+
+        public void UpdatePossiblePlacements() {
+            for (var i = 1; i < PlacementBlocked.Length; i++) {
+                PlacementBlocked[i] = false;
             }
         }
 

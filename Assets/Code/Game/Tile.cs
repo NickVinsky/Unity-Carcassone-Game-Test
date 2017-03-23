@@ -131,6 +131,7 @@ namespace Code.Game {
             gridCell.GetComponent<TileInfo>().Rotates = 0;
             gridCell.GetComponent<TileInfo>().InitTile(StartingTile);
             MainGame.Grid.Expand(new Cell(0, 0));
+            LastPlacedTile = gridCell;
         }
 
         public static void AttachToMouse() {
@@ -171,7 +172,7 @@ namespace Code.Game {
             OnMouse.GetTile().InitTile(tileType);
             OnMouse.GetTile().Rotates = (sbyte) rotates;
             OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + GetVariation(tileType)); // 80-All, 24-Vanilla
-            OnMouse.GetSprite().sortingOrder = 4;
+            OnMouse.GetSprite().sortingOrder = 100;
             Rotate.Sprite(rotates, OnMouse.Get());
             if (Net.Game.IsOnline() && !Net.Game.MyTurn()) {
                 Cursor.visible = true;

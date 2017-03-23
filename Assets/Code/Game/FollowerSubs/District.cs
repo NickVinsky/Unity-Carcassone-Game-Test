@@ -28,6 +28,10 @@ namespace Code.Game.FollowerSubs {
             return _possibleLocation.First(l => l.CompareID(id));
         }
 
+        public Location GetMonastery() {
+            return _possibleLocation.First(l => l.Type == Area.Monastery);
+        }
+
         public bool SideFree(byte side) {
             return _possibleLocation.Where(loc => loc.IsBarrier()).Any(loc => loc.GetNodes().Any(node => node == side));
         }

@@ -43,8 +43,8 @@
             MeeplesQuantity = 8;
             BigMeeplesQuantity = 1;
             MayorsQuantity = 1;
-            PigsQuantity = 6;
-            BuildersQuantity = 6;
+            PigsQuantity = 1;
+            BuildersQuantity = 1;
             BarnsQuantity = 1;
             WagonsQuantity = 1;
         }

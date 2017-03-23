@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Code.Game;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Commands;
@@ -141,6 +142,7 @@ namespace Code.Network.Composition {
                     Player.BuildersQuantity = pBuildersQuantity;
                     Player.BarnsQuantity = pBarnsQuantity;
                     Player.WagonsQuantity = pWagonsQuantity;
+                    Tile.LastPlaced().UpdatePossiblePlacements();
                     o.transform.FindChild("Meeple").GetComponent<Image>().sprite = Resources.Load<Sprite>("MyMeeple");
                 } else {
                     o.transform.FindChild("Meeple").GetComponent<Image>().sprite = Resources.Load<Sprite>("Meeple");
