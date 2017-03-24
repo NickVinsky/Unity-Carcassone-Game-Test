@@ -265,7 +265,7 @@ namespace Code.Game {
                     AddFields("34", 0.356f * k, -0.391f * k);
                     break;
                 case 38:
-                    AddRoads("1",1.19f, 0.088f, true);
+                    AddRoads("1", 1.19f, 0.088f, true);
                     AddRoads("2", -0.066f, -1.109f);
                     AddRoads("3", -0.85f, 0.037f);
                     AddFields("0127", -0.55f, 0.85f);
@@ -478,6 +478,85 @@ namespace Code.Game {
                     AddFields("234", 1.166f, 0.273f, A(0));
                     AddFields("56", -0.718f, -0.555f);
                     AddFields("7", -1.373f, 0.681f, A(0));
+                    break;
+                case 98:
+                    AddCities("0", -0.297f, 1.461f);
+                    AddRoads("12", -0.183f, -0.239f);
+                    AddFields("2", 1.374f, 0.709f, A(0));
+                    AddFields("34", 0.789f, -0.624f);
+                    AddFields("567", -1.117f, -0.08f, A(0));
+                    break;
+                case 99:
+                    AddCities("0", 0.153f, 1.241f);
+                    AddRoads("1", 0.846f, 0.11f);
+                    AddRoads("2", -0.092f, -0.488f);
+                    AddFields("2", 1.313f, 0.573f, A(0));
+                    AddFields("34", 0.787f, -0.669f);
+                    AddFields("567", -1.308f, -0.587f, A(0));
+                    break;
+                case 100:
+                    AddCities("0", 0.044f, 1.271f);
+                    AddRoads("1", 0.487f, 0.185f);
+                    AddRoads("3", -0.157f, -0.602f);
+                    AddFields("2", 1.395f, 0.641f, A(0));
+                    AddFields("37", 0.925f, -0.517f);
+                    AddFields("456", -1.139f, -1.047f);
+                    break;
+                case 101:
+                    AddCities("3", -1.378f, 0.125f);
+                    AddRoads("0", -0.043f, 0.514f);
+                    AddRoads("12", 0.54f, -0.418f);
+                    AddFields("0", -0.571f, 1.337f, A(0));
+                    AddFields("125", 0.872f, 0.775f, A(0));
+                    AddFields("34", 1.24f, -1.085f);
+                    break;
+                case 102:
+                    AddCities("01", 0.955f, 0.792f);
+                    AddRoads("3", -0.418f, -0.012f);
+                    AddFields("456", -0.276f, -0.832f, A(0));
+                    AddFields("7", -1.275f, 0.638f, A(0));
+                    break;
+                case 103:
+                    AddCities("01", 0.5f, 0.6f);
+                    AddRoads("2", 0.13f, -0.942f);
+                    AddRoads("3", -1.16f, 0.204f);
+                    AddFields("4", 0.74f, -1.3f, A(0));
+                    AddFields("5", -0.533f, -1.328f, A(0));
+                    AddFields("6", -1.358f, -0.464f, A(0));
+                    AddFields("7", -1.424f, 0.804f, A(0));
+                    break;
+                case 104:
+                    AddCities("0", -0.098f, 0.904f);
+                    AddFields("2345", 0.829f, -0.691f, A(0));
+                    AddFields("67", -1.353f, 0.155f, A(0));
+                    break;
+                case 105:
+                    AddCities("01", 0.395f, 1.159f, true);
+                    AddCities("2", -0.07f, -1.299f);
+                    AddFields("67", -0.805f, 0.077f, A(0, 1));
+                    break;
+                case 106:
+                    AddCities("01", 1.238f, 0.271f, true);
+                    AddRoads("23", -0.618f, -0.474f, true);
+                    AddFields("47", 0.241f, -0.549f, A(0));
+                    AddFields("56", -1.054f, -1.064f);
+                    break;
+                case 107:
+                    AddCities("01", 1.039f, 1.013f);
+                    AddRoads("2", 0.041f, -0.485f, true);
+                    AddFields("4", 0.64f, -1.147f, A(0));
+                    AddFields("567", -1.342f, -0.477f, A(0));
+                    break;
+                case 108:
+                    AddCities("0", 0f, 1.257f);
+                    AddRoads("12", 0.417f, -0.208f, true);
+                    AddFields("2567", -1.187f, 0.459f, A(0));
+                    AddFields("34", 1.072f, -0.836f);
+                    break;
+                case 109:
+                    AddRoads("12", 0.2f, -0.059f, true);
+                    AddFields("012567", -0.778f, -0.57f);
+                    AddFields("34", 0.877f, -0.736f);
                     break;
             }
         }
