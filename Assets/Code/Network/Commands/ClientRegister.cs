@@ -2,6 +2,7 @@
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Attributes;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using static Code.MainGame;
@@ -190,10 +191,9 @@ namespace Code.Network.Commands {
                     break;
                 case Command.PutTile:
                     Tile.OnMouse.Put(m.Vector, m.Color);
-                    if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vector);
                     break;
                 case Command.Placements:
-                    // if (Net.Game.MyTurn()) Net.Game.PostTilePut(m.Vector);
+                    if (Net.Game.MyTurn()) Net.Game.PostTilePut();
                     break;
                 case Command.Follower:
                     if (Player.Color != m.Color)

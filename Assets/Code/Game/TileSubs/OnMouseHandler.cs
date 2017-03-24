@@ -90,9 +90,9 @@ namespace Code.Game.TileSubs {
 
             Cursor.visible = true;
             //MainGame.Grid.CheckBounds(gridCell);
-            ScoreCalc.Count(gridCell);
             Tile.HideLastPlaced();
             Tile.LastPlacedTile = gridCell;
+            ScoreCalc.Count(gridCell);
             MainGame.Grid.Expand(Tile.GetCoordinates(gridCell));
         }
     }

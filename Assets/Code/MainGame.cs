@@ -11,7 +11,6 @@ using static Code.Game.Data.GameRegulars;
 
 namespace Code {
     public class MainGame {
-
         // Use this for initialization
         private readonly KeyInputHandler _k = new KeyInputHandler();
         public static readonly Grid Grid = new Grid();

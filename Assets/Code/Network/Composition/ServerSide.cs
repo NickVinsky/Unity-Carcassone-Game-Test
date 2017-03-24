@@ -7,6 +7,7 @@ using Code.GUI;
 using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Networking.NetworkSystem;
 
 namespace Code.Network.Composition {
     public class ServerSide {
@@ -100,6 +101,10 @@ namespace Code.Network.Composition {
             ScoreCalc.RecalcFollowersNumber(type, player, -1);
             Net.PlayersList[index] = player;
             RefreshInGamePlayersList();
+        }
+
+        public void AllowPlacement() {
+            Net.Server.SendToAll(NetCmd.Game, new NetPackGame { Command = Command.Placements});
         }
 
         public void RefreshInGamePlayersList() {

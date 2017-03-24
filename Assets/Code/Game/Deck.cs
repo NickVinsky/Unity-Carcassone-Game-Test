@@ -126,7 +126,7 @@ namespace Code.Game {
             // В оригинале всех тайлов по одной штуке, кроме собора (#26), их два
             AddTilesToDeck(25, 1, multiplier);
             AddTilesToDeck(26, 2, multiplier);
-            AddTilesToDeck(27, 2, multiplier);
+            AddTilesToDeck(27, 250, multiplier);
             AddTilesToDeck(28, 2, multiplier);
             AddTilesToDeck(29, 2, multiplier);
             AddTilesToDeck(30, 3, multiplier);

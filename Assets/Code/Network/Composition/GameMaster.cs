@@ -234,11 +234,11 @@ namespace Code.Network.Composition {
             PutTileFromMouse(c);
         }
 
-        public void PostTilePut(Cell v) {
+        public void PostTilePut() {
             //if (Player.MeeplesQuantity > 0) {
                 Player.Stage = GameStage.PlacingFollower;
-                var c  = GameObject.Find("cell#" + v.X + ":" + v.Y);
-                Tile.ShowPossibleFollowersLocations(c, Follower.Meeple);
+                //var c  = GameObject.Find("cell#" + v.X + ":" + v.Y);
+                Tile.ShowPossibleFollowersLocations(Tile.LastPlacedTile, Follower.Meeple);
             //} else {
                 //Player.Stage = GameStage.Finish;
             //}

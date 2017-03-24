@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
+using Code.Network;
 using UnityEngine;
 
 namespace Code.Game.Building {
