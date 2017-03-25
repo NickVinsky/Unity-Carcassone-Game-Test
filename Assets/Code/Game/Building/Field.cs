@@ -13,7 +13,7 @@ namespace Code.Game.Building {
         }
 
         protected override void PostAddingAction(Location location) {
-            if (location.Type != Area.Field || HasBarn() || !HasMeeples()) return;
+            if (location.Type != Area.Field || HasBarn()) return;
 
             var center = location.Parent.IntVector();
             var hasLinks = new bool[4, 3];
