@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Code.GameComponents {
+namespace Code.Game {
     public class TilesPack<T> : List<T> {
 
         public event EventHandler OnAddOrRemove;

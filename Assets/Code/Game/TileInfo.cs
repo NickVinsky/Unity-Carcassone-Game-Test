@@ -688,11 +688,6 @@ namespace Code.Game {
 
         public void ShowPossibleLocations(Follower type) {
             CurrentPlacementState = Placements.AllRestricted;
-            //if (MainGame.Player.MeeplesQuantity > 0) {
-            //    _follower.Show(Rotates, type);
-                //if (gameObject.transform.childCount == 0) MainGame.ChangeGameStage(GameStage.Finish);
-            //}
-            //else ShowNextPossiblePlacement();
             ShowNextPossiblePlacement();
         }
 
@@ -705,36 +700,30 @@ namespace Code.Game {
             CurrentPlacementState = Next(CurrentPlacementState);
             _follower.HideAll();
             switch (CurrentPlacementState) {
-                case Placements.Meeples:
-                    if (MainGame.Player.MeeplesQuantity > 0) _follower.Show(Rotates, Follower.Meeple);
+                case Placements.MeeplesPigsAndBuilders:
+                    if (MainGame.Player.MeeplesQuantity > 0 || MainGame.Player.PigsQuantity > 0)
+                        _follower.Show(Rotates, Placements.MeeplesPigsAndBuilders, Follower.Meeple, Follower.Pig);
                     else {
-                        PlacementBlocked[(int) Placements.Meeples] = true;
+                        PlacementBlocked[(int) Placements.MeeplesPigsAndBuilders] = true;
                         ShowNextPossiblePlacement();
                     }
                     break;
                 case Placements.BigMeeples:
-                    if (MainGame.Player.BigMeeplesQuantity > 0) _follower.Show(Rotates, Follower.BigMeeple);
+                    if (MainGame.Player.BigMeeplesQuantity > 0) _follower.Show(Rotates, Placements.BigMeeples, Follower.BigMeeple);
                     else {
                         PlacementBlocked[(int) Placements.BigMeeples] = true;
                         ShowNextPossiblePlacement();
                     }
                     break;
                 case Placements.Mayor:
-                    if (MainGame.Player.MayorsQuantity > 0) _follower.Show(Rotates, Follower.Mayor);
+                    if (MainGame.Player.MayorsQuantity > 0) _follower.Show(Rotates, Placements.Mayor, Follower.Mayor);
                     else {
                         PlacementBlocked[(int) Placements.Mayor] = true;
                         ShowNextPossiblePlacement();
                     }
                     break;
-                case Placements.PigsAndBuilders:
-                    if (MainGame.Player.PigsQuantity > 0) _follower.Show(Rotates, Follower.Pig);
-                    else {
-                        PlacementBlocked[(int) Placements.PigsAndBuilders] = true;
-                        ShowNextPossiblePlacement();
-                    }
-                    break;
                 case Placements.BarnAndWagons:
-                    if (MainGame.Player.BarnsQuantity > 0) _follower.Show(Rotates, Follower.Barn);
+                    if (MainGame.Player.BarnsQuantity > 0) _follower.Show(Rotates, Placements.BarnAndWagons, Follower.Barn);
                     else {
                         PlacementBlocked[(int) Placements.BarnAndWagons] = true;
                         ShowNextPossiblePlacement();
@@ -769,14 +758,6 @@ namespace Code.Game {
 
         public void TryToFinish() {
             MainGame.ChangeGameStage(GameStage.Finish);
-            //UpdatePossiblePlacements();
-            //ShowNextPossiblePlacement();
-        }
-
-        public void UpdatePossiblePlacements() {
-            for (var i = 1; i < PlacementBlocked.Length; i++) {
-                PlacementBlocked[i] = false;
-            }
         }
 
         public void ApplyRotation() {

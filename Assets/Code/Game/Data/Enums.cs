@@ -40,11 +40,10 @@
 
     public enum Placements {
         AllRestricted = 0,
-        Meeples = 1,
+        MeeplesPigsAndBuilders = 1,
         BigMeeples = 2,
         Mayor = 3,
-        PigsAndBuilders = 4,
-        BarnAndWagons = 5
+        BarnAndWagons = 4
     }
 
     /*public enum Follower {

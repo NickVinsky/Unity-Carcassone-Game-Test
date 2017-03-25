@@ -44,49 +44,43 @@ namespace Code.Game.FollowerSubs {
             }
         }
 
-        public void Show(sbyte rotates, Follower type) {
+        public void Show(sbyte rotates, Placements placement, params Follower[] followers) {
             var counter = 0;
             foreach (var loc in _possibleLocation) {
-                if (type == Follower.Barn) {
-                    if (loc.Type != Area.Field) continue;
-                    if (loc.ReadyForBarn.All(p => !p)) continue;
+                foreach (var follower in followers) {
+                    if (placement == Placements.BarnAndWagons) {
+                        if (loc.Type != Area.Field) continue;
+                        if (loc.ReadyForBarn.All(p => !p)) continue;
+                    }
+                    if (placement == Placements.MeeplesPigsAndBuilders) {
+                        if (follower == Follower.Meeple && !loc.ReadyForMeeple) continue;
+                        if (follower == Follower.Pig && !loc.ReadyForPigOrBuilder) continue;
+                    }
+                    if (placement == Placements.BigMeeples) {
+                        if (!loc.ReadyForMeeple) continue;
+                    }
+                    if (placement == Placements.Mayor) {
+                        if (loc.Type != Area.City) continue;
+                        if (!loc.ReadyForMeeple) continue;
+                    }
+
+                    loc.ShowMeeple(rotates, follower);
+                    counter++;
                 }
-                if (type == Follower.Pig) {
-                    if (loc.Type != Area.Field) continue;
-                    if (!loc.ReadyForPigOrBuilder) continue;
-                }
-                if (type == Follower.Meeple || type == Follower.BigMeeple || type == Follower.Mayor) {
-                    if (!loc.ReadyForMeeple) continue;
-                }
-                if (type == Follower.Mayor) {
-                    if (loc.Type != Area.City) continue;
-                }
-                loc.ShowMeeple(rotates, type);
-                counter++;
             }
 
-
             if (counter > 0) return;
-            switch (type) {
-                case Follower.Meeple:
-                    _parent.PlacementBlocked[(int) Placements.Meeples] = true;
+            switch (placement) {
+                case Placements.MeeplesPigsAndBuilders:
+                    _parent.PlacementBlocked[(int) Placements.MeeplesPigsAndBuilders] = true;
                     break;
-                case Follower.BigMeeple:
+                case Placements.BigMeeples:
                     _parent.PlacementBlocked[(int) Placements.BigMeeples] = true;
                     break;
-                case Follower.Mayor:
+                case Placements.Mayor:
                     _parent.PlacementBlocked[(int) Placements.Mayor] = true;
                     break;
-                case Follower.Pig:
-                    _parent.PlacementBlocked[(int) Placements.PigsAndBuilders] = true;
-                    break;
-                case Follower.Builder:
-                    _parent.PlacementBlocked[(int) Placements.PigsAndBuilders] = true;
-                    break;
-                case Follower.Barn:
-                    _parent.PlacementBlocked[(int) Placements.BarnAndWagons] = true;
-                    break;
-                case Follower.Wagon:
+                case Placements.BarnAndWagons:
                     _parent.PlacementBlocked[(int) Placements.BarnAndWagons] = true;
                     break;
             }
