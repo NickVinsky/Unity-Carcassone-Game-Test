@@ -20,8 +20,8 @@ namespace Code.Game.Building {
         protected int Edges { get; set; }
         protected int Nodes { get; set; }
 
-        private bool _needRecalc = false;
-        private Construction _constructToRecalc;
+        private bool _needBarnRecalc = false;
+        private Construction _fieldToRecalc;
         private Cell _lastCell;
         private bool _lastCellRecalced = false;
 
@@ -70,7 +70,7 @@ namespace Code.Game.Building {
             if (!HasCell(cell)) LinkedTiles.Add(cell);
         }
 
-        public void Add(Location location) {
+        public void Add(Location location, PlayerColor founder) {
             if (!_lastCell.Equals(location.Parent.IntVector())) {
                 _lastCellRecalced = false;
             }
@@ -86,38 +86,38 @@ namespace Code.Game.Building {
                 Merge(location);
             }
             Edges++;
-            CalcNodesToFinish();
+
 
             if (HasOwner()) location.ReadyForMeeple = false;
             if (HasBarn()) {
                 if (Type == Area.Field && !HasOnlyBarns()) {
-                    _needRecalc = true;
-                    _constructToRecalc = (Field) this;
+                    _needBarnRecalc = true;
+                    _fieldToRecalc = (Field) this;
                 }
                 location.ReadyForMeeple = false;
                 location.ReadyForPigOrBuilder = false;
             }
             else {
-                if (HasPlayerMeeples(MainGame.Player.Color)) {
-                    if (!HasPigOrBuilder(MainGame.Player.Color)) location.ReadyForPigOrBuilder = true;
-                    if (HasBuilder(MainGame.Player.Color)) {
+                if (HasPlayerMeeples(founder)) {
+                    if (!HasPigOrBuilder(founder) && !FinishedByPlayer) location.ReadyForPigOrBuilder = true;
+                    if (HasBuilder(founder)) {
                         Net.Client.RequestAdditionalTurn();
                     }
                 }
             }
 
-
+            CalcNodesToFinish();
             PostAddingAction(location);
-            Recalc();
+            RecalcBarn();
         }
 
-        public void Recalc() {
-            if (!_needRecalc) return;
+        public void RecalcBarn() {
+            if (!_needBarnRecalc) return;
             if (_lastCellRecalced) return;
 
-            var field = (Field) _constructToRecalc;
+            var field = (Field) _fieldToRecalc;
             ScoreCalc.Field(field);
-            _needRecalc = false;
+            _needBarnRecalc = false;
             _lastCellRecalced = true;
         }
 

@@ -180,7 +180,7 @@ namespace Code.Game.Building {
             return null;
         }
 
-        public static void Assimilate(GameObject putedTileGameObject) { // putedTile - координаты только что поставленного тайла
+        public static void Assimilate(GameObject putedTileGameObject, PlayerColor founder) { // putedTile - координаты только что поставленного тайла
             var v = Tile.GetCoordinates(putedTileGameObject);
             var putedTile = Tile.Get(putedTileGameObject);
             var freeSides = new List<byte>();
@@ -190,7 +190,7 @@ namespace Code.Game.Building {
                 if (Tile.Nearby.Exist(v, side)) {
                     var neighborTile = Tile.Nearby.GetLast();
                     foreach (var loc in neighborTile.GetLocations()) {
-                        Connect(putedTile, side, loc);
+                        Connect(putedTile, side, loc, founder);
                     }
                 } else {
                     freeSides.Add(i);
@@ -287,7 +287,7 @@ namespace Code.Game.Building {
         }
 
 
-        private static void Connect(TileInfo pTile, Side side, Location nLoc) {
+        private static void Connect(TileInfo pTile, Side side, Location nLoc, PlayerColor founder) {
             //if (nLoc.Type == Area.Monastery) GetMonastery(nLoc).CalcSurroundings();
             foreach (var pLoc in pTile.GetLocations()) {
 
@@ -299,7 +299,7 @@ namespace Code.Game.Building {
                 if (pLoc.Type != nLoc.Type) continue;
                 var commonNodes = FindCommonNodes(pLoc, nLoc, side);
                 if (commonNodes.Length == 0) continue;
-                Link(pLoc, nLoc);
+                Link(pLoc, nLoc, founder);
             }
         }
 
@@ -313,16 +313,16 @@ namespace Code.Game.Building {
             }
         }
 
-        private static void Link(Location p, Location n) {
+        private static void Link(Location p, Location n, PlayerColor founder) {
             switch (p.Type) {
                 case Area.Field:
-                    GetField(n).Add(p);
+                    GetField(n).Add(p, founder);
                     break;
                 case Area.Road:
-                    GetRoad(n).Add(p);
+                    GetRoad(n).Add(p, founder);
                     break;
                 case Area.City:
-                    GetCity(n).Add(p);
+                    GetCity(n).Add(p, founder);
                     break;
                 case Area.Monastery:
                     break;

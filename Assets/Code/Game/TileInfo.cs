@@ -447,8 +447,7 @@ namespace Code.Game {
                     break;
                 case 93:
                     AddCities("13", 0.597f, 0.259f, true);
-                    AddRoads("0", 0.076f, 1.361f);
-                    AddRoads("2", 0.037f, -1.439f);
+                    AddRoads("02", 0.037f, -1.439f);
                     AddFields("0", -0.679f, 1.462f, A(0));
                     AddFields("1", 0.813f, 1.455f, A(0));
                     AddFields("45", 0.667f, -1.064f, A(0));

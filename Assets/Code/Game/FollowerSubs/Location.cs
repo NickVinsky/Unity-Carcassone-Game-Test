@@ -159,8 +159,17 @@ namespace Code.Game.FollowerSubs {
             _owner = owner;
             FollowerType = type;
             ScoreCalc.ApplyOpponentFollower(this);
-            SpriteInit(type);
-            _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+            if (type == Follower.Barn) {
+                for (var i = 0; i < 4; i++) {
+                    if (!ReadyForBarn[i]) continue;
+                    ShowBarn(i, Parent.Rotates);
+                    _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+                    return;
+                }
+            } else {
+                SpriteInit(type);
+                _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+            }
         }
 
         public void SetOwner(Follower type) {
@@ -190,6 +199,7 @@ namespace Code.Game.FollowerSubs {
                 for (var i = 0; i < 4; i++) {
                     if (!ReadyForBarn[i]) continue;
                     ShowBarn(i, rotates);
+                    AddHook(Follower.Barn);
                     return;
                 }
             } else {
@@ -231,7 +241,6 @@ namespace Code.Game.FollowerSubs {
             else position = new Vector2(0, 0);
 
             SpriteInit(Follower.Barn, position);
-            AddHook(Follower.Barn);
         }
 
         public void RemovePlacement() {
@@ -240,7 +249,12 @@ namespace Code.Game.FollowerSubs {
             //Object.Destroy(_sprite.GetComponent<SpriteRenderer>());
             //_sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
             //Object.DestroyImmediate(_sprite);
+            //_owner = PlayerColor.NotPicked;
             Object.Destroy(_sprite);
+        }
+
+        public void Cleanup() {
+            _owner = PlayerColor.NotPicked;
         }
 
         private static string GetSpriteName(Follower type, bool variation = false) {

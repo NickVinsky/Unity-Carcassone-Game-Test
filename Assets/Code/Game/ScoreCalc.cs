@@ -46,8 +46,8 @@ namespace Code.Game {
         }
 
         // After tile putting
-        public static void Count(GameObject cell) {
-            Builder.Assimilate(cell);
+        public static void Count(GameObject cell, PlayerColor founder) {
+            Builder.Assimilate(cell, founder);
             UpdateGUI();
             if (Net.IsServer) Net.Server.AllowPlacement();
         }
@@ -106,7 +106,9 @@ namespace Code.Game {
             }
         }
 
-        public static void ReturnFollower(Ownership owner) {
+        public static void ReturnFollower(Location location) {
+            var owner = location.GetOwnership();
+
             if (owner.Color == PlayerColor.NotPicked) return;
             if (Net.Game.IsOnline()) {
 
@@ -121,6 +123,7 @@ namespace Code.Game {
                 RecalcFollowersNumber(owner.FollowerType, Player, 1);
 
             }
+            location.Cleanup();
         }
 
         public static void Monastery(Monastery monastery, bool final = false) {
@@ -220,7 +223,7 @@ namespace Code.Game {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
                         if (loc.GetOwnership().FollowerType == Follower.Barn) continue;
                         if (Net.Game.IsOnline()) {
-                            if (Net.IsServer) ReturnFollower(loc.GetOwnership());
+                            if (Net.IsServer) ReturnFollower(loc);
                             Net.Client.Action(Command.RemovePlacement, tile, loc.GetID());
                         } else {
                             loc.RemovePlacement();
@@ -243,7 +246,7 @@ namespace Code.Game {
 
         private static void RemovePlacement(Monastery monastery) {
             if (Net.Game.IsOnline()) {
-                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetMonastery().GetOwnership());
+                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetMonastery());
                 Net.Client.Action(Command.RemovePlacementMonk, monastery.Cell, monastery.ID);
             } else {
                 Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);

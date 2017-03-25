@@ -92,7 +92,7 @@ namespace Code.Game.TileSubs {
             //MainGame.Grid.CheckBounds(gridCell);
             Tile.HideLastPlaced();
             Tile.LastPlacedTile = gridCell;
-            ScoreCalc.Count(gridCell);
+            ScoreCalc.Count(gridCell, founder);
             MainGame.Grid.Expand(Tile.GetCoordinates(gridCell));
         }
     }
