@@ -144,5 +144,13 @@ namespace Code.Network.Composition {
             else newMessage = m.Player + ": " + m.Message;
             Net.Server.ChatHistory = h + newMessage;
         }
+
+        public void GameResults() {
+            var newList = new List<PlayerInfo>(Net.PlayersList);
+            var orderedPlayersList = newList.OrderByDescending(p => p.Score);
+            var finalists = orderedPlayersList.Aggregate(string.Empty, (current, p) => current + ((int) p.Color + p.Score.ToString("D4")) + p.PlayerName + Environment.NewLine);
+            finalists = finalists.TrimEnd('\r', '\n');
+            Net.Server.SendToAll(NetCmd.Finalists, new NetPackMessage{ Message = finalists});
+        }
     }
 }

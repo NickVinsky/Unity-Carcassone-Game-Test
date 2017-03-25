@@ -43,6 +43,7 @@ namespace Code.Game {
             foreach (var c in Builder.Roads) Road(c, true);
             foreach (var c in Builder.Fields) Field(c, true);
             //UpdateGUI();
+            Net.Server.GameResults();
         }
 
         // After tile putting
@@ -74,6 +75,7 @@ namespace Code.Game {
         }
 
         private static void AddScoreServer(PlayerColor playerColor, byte pFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
+            if (playerColor == PlayerColor.NotPicked) return;
             var player = Net.PlayersList.First(p => p.Color == playerColor);
             var index = Net.PlayersList.IndexOf(player);
             if (pFollowersQuantity == followersToControl) {

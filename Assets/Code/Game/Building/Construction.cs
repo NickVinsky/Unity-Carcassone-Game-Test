@@ -86,6 +86,7 @@ namespace Code.Game.Building {
                 Merge(location);
             }
             Edges++;
+            CalcNodesToFinish();
 
 
             if (HasOwner()) location.ReadyForMeeple = false;
@@ -106,7 +107,6 @@ namespace Code.Game.Building {
                 }
             }
 
-            CalcNodesToFinish();
             PostAddingAction(location);
             RecalcBarn();
         }

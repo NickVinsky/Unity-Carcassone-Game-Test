@@ -220,6 +220,12 @@ namespace Code.Network.Commands {
             }
         }
 
+        [ClientCommand(NetCmd.Finalists)]
+        public static void GameResults(NetworkMessage message) {
+            var m = message.ReadMessage<NetPackMessage>();
+            Сommentator.GameResults(m.Message);
+        }
+
         [ClientCommand(NetCmd.GameData)]
         public static void GetCurrentPlayerTurn(NetworkMessage message) {
             var m = message.ReadMessage<NetPackGame>();

@@ -10,6 +10,7 @@ namespace Code.Game.FollowerSubs {
     public class Location {
         public TileInfo Parent { get; }
         public District District { get; }
+        public bool Indexed { get; set; }
 
         private readonly byte _id;
         public Area Type { get; }
@@ -254,7 +255,8 @@ namespace Code.Game.FollowerSubs {
         }
 
         public void Cleanup() {
-            _owner = PlayerColor.NotPicked;
+            Indexed = true;
+            if (Type == Area.Field) _owner = PlayerColor.NotPicked;
         }
 
         private static string GetSpriteName(Follower type, bool variation = false) {
