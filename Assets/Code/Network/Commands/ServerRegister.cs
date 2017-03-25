@@ -3,6 +3,7 @@ using System.Linq;
 using Code.Game;
 using Code.Game.Data;
 using Code.Network.Attributes;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 
@@ -245,7 +246,23 @@ namespace Code.Network.Commands {
             switch (m.Command) {
                 case Command.FinishTurn:
                     //Net.Server.SendToAll(NetCmd.Game, m);
-                    Net.Server.NextPlayerTurn();
+                    //Debug.Log("LastTilesLeft = " + Net.Game.TilesLeftBeforeAdditionalTurn + "; DeckSize = " + Deck.DeckSize());
+                    if (Net.Game.HasAdditionalTurn && Net.Game.TilesLeftBeforeAdditionalTurn - 1 == Deck.DeckSize()) {
+                        Net.Server.SendToAll(NetCmd.Game, new NetPackGame {
+                            Command = Command.NextPlayer,
+                            Value = Net.Game.CurrentPlayerIndex,
+                            Color = Net.Game.CurrentPlayerColor,
+                            Text = Net.Game.CurrentPlayerName
+                        });
+                        Net.Game.HasAdditionalTurn = false;
+                    } else {
+                        Net.Game.HasAdditionalTurn = false;
+                        Net.Game.TilesLeftBeforeAdditionalTurn = Deck.DeckSize();
+                        Net.Server.NextPlayerTurn();
+                    }
+                    break;
+                case Command.AdditionalTurn:
+                    Net.Game.HasAdditionalTurn = true;
                     break;
                 case Command.TilePicked:
                     Net.Server.SendToAll(NetCmd.Game, m);

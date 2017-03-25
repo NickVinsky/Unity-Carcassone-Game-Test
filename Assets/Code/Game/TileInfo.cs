@@ -701,8 +701,8 @@ namespace Code.Game {
             _follower.HideAll();
             switch (CurrentPlacementState) {
                 case Placements.MeeplesPigsAndBuilders:
-                    if (MainGame.Player.MeeplesQuantity > 0 || MainGame.Player.PigsQuantity > 0)
-                        _follower.Show(Rotates, Placements.MeeplesPigsAndBuilders, Follower.Meeple, Follower.Pig);
+                    if (MainGame.Player.MeeplesQuantity > 0 || MainGame.Player.PigsQuantity > 0 || MainGame.Player.BuildersQuantity > 0)
+                        _follower.Show(Rotates, Placements.MeeplesPigsAndBuilders, Follower.Meeple, Follower.Pig, Follower.Builder);
                     else {
                         PlacementBlocked[(int) Placements.MeeplesPigsAndBuilders] = true;
                         ShowNextPossiblePlacement();

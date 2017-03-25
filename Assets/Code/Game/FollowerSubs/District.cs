@@ -52,13 +52,30 @@ namespace Code.Game.FollowerSubs {
                         if (loc.Type != Area.Field) continue;
                         if (loc.ReadyForBarn.All(p => !p)) continue;
                     }
+
                     if (placement == Placements.MeeplesPigsAndBuilders) {
-                        if (follower == Follower.Meeple && !loc.ReadyForMeeple) continue;
-                        if (follower == Follower.Pig && !loc.ReadyForPigOrBuilder) continue;
+                        switch (follower) {
+                            case Follower.Pig:
+                                if (MainGame.Player.PigsQuantity <= 0) continue;
+                                if (loc.Type != Area.Field) continue;
+                                if (!loc.ReadyForPigOrBuilder) continue;
+                                break;
+                            case Follower.Builder:
+                                if (MainGame.Player.BuildersQuantity <= 0) continue;
+                                if (!(loc.Type == Area.City || loc.Type == Area.Road)) continue;
+                                if (!loc.ReadyForPigOrBuilder) continue;
+                                break;
+                            case Follower.Meeple:
+                                if (MainGame.Player.MeeplesQuantity <= 0) continue;
+                                if (!loc.ReadyForMeeple) continue;
+                                break;
+                        }
                     }
+
                     if (placement == Placements.BigMeeples) {
                         if (!loc.ReadyForMeeple) continue;
                     }
+
                     if (placement == Placements.Mayor) {
                         if (loc.Type != Area.City) continue;
                         if (!loc.ReadyForMeeple) continue;

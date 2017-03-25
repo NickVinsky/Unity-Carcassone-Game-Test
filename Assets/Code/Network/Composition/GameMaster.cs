@@ -23,6 +23,9 @@ namespace Code.Network.Composition {
         public bool TilePicked;
         public Vector2 TPos;
 
+        public bool HasAdditionalTurn { get; set; }
+        public int TilesLeftBeforeAdditionalTurn { get; set; }
+
         private float _streamingCursorOffsetX;
         private float _streamingCursorOffsetY;
 

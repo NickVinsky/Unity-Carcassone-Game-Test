@@ -41,8 +41,14 @@ namespace Code.Game.Building {
                                        owner.FollowerType == Follower.Mayor || owner.FollowerType == Follower.Wagon);
         }
 
+        public bool HasMeeples() { return Owners.Any(owner => owner.FollowerType == Follower.Meeple || owner.FollowerType == Follower.BigMeeple); }
+
         public bool HasPigOrBuilder(PlayerColor playerColor) {
-            return Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Builder || owner.FollowerType == Follower.Pig);
+            return Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Pig || owner.FollowerType == Follower.Builder);
+        }
+
+        public bool HasBuilder(PlayerColor playerColor) {
+            return Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Builder);
         }
 
         public bool HasBarn() { return Owners.Any(owner => owner.FollowerType == Follower.Barn); }
@@ -92,8 +98,12 @@ namespace Code.Game.Building {
                 location.ReadyForPigOrBuilder = false;
             }
             else {
-                if (HasPlayerMeeples(MainGame.Player.Color))
+                if (HasPlayerMeeples(MainGame.Player.Color)) {
                     if (!HasPigOrBuilder(MainGame.Player.Color)) location.ReadyForPigOrBuilder = true;
+                    if (HasBuilder(MainGame.Player.Color)) {
+                        Net.Client.RequestAdditionalTurn();
+                    }
+                }
             }
 
 

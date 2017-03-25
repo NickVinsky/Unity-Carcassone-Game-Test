@@ -7,7 +7,6 @@ using Code.GUI;
 using Code.Network.Commands;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.NetworkSystem;
 
 namespace Code.Network.Composition {
     public class ServerSide {

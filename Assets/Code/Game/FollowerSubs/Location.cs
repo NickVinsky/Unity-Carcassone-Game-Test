@@ -256,7 +256,7 @@ namespace Code.Game.FollowerSubs {
                 case Follower.Pig:
                     return "3dPig";
                 case Follower.Builder:
-                    return "";
+                    return "3dBuilder";
                 case Follower.Barn:
                     return "3dBarn";
                 case Follower.Wagon:
@@ -273,6 +273,8 @@ namespace Code.Game.FollowerSubs {
                 case Follower.Mayor:
                     return new Vector3(0.26f, 0.26f, 0);
                 case Follower.Pig:
+                    return new Vector3(0.28f, 0.28f, 0);
+                case Follower.Builder:
                     return new Vector3(0.28f, 0.28f, 0);
                 case Follower.Barn:
                     return new Vector3(0.5f, 0.5f, 0);

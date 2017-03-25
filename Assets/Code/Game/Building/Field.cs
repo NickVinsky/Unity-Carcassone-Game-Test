@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using UnityEngine;
 
 namespace Code.Game.Building {
     public class Field : Construction {
@@ -14,7 +13,7 @@ namespace Code.Game.Building {
         }
 
         protected override void PostAddingAction(Location location) {
-            if (location.Type != Area.Field || HasBarn()) return;
+            if (location.Type != Area.Field || HasBarn() || !HasMeeples()) return;
 
             var center = location.Parent.IntVector();
             var hasLinks = new bool[4, 3];

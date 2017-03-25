@@ -59,6 +59,10 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = Command.Follower, Color = owner, Value = id, Text = name, Follower = type});
         }
 
+        public void RequestAdditionalTurn() {
+            Net.Client.Send(NetCmd.Game, new NetPackGame {Command = Command.AdditionalTurn});
+        }
+
         public void Action(Command command) {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command});
         }
@@ -152,6 +156,7 @@ namespace Code.Network.Composition {
                 FillContainer(o, ref renderOffset, pColor, Follower.Barn, pBarnsQuantity);
                 FillContainer(o, ref renderOffset, pColor, Follower.BigMeeple, pBigMeeplesQuantity);
                 FillContainer(o, ref renderOffset, pColor, Follower.Mayor, pMayorsQuantity);
+                FillContainer(o, ref renderOffset, pColor, Follower.Builder, pBuildersQuantity);
                 FillContainer(o, ref renderOffset, pColor, Follower.Meeple, pMeeplesQuantity);
                 FillContainer(o, ref renderOffset, pColor, Follower.Pig, pPigsQuantity);
 
@@ -200,7 +205,7 @@ namespace Code.Network.Composition {
                     followerName = "BigMeeple";
                     spriteName = "MeepleShadowed";
                     scale = new Vector3(33f, 33f, 33f);
-                    sortingOrder = 13;
+                    sortingOrder = 14;
                     break;
                 case Follower.Mayor:
                     renderInterval = 8f;
@@ -209,7 +214,7 @@ namespace Code.Network.Composition {
                     followerName = "Mayor";
                     spriteName = "MayorShadowed";
                     scale = new Vector3(26f, 33f, 30f);
-                    sortingOrder = 14;
+                    sortingOrder = 15;
                     break;
                 case Follower.Pig:
                     renderInterval = 5f;
@@ -221,6 +226,12 @@ namespace Code.Network.Composition {
                     sortingOrder = 10;
                     break;
                 case Follower.Builder:
+                    renderInterval = 7f;
+                    containerName = "MeepleContainer";
+                    followerName = "Builder";
+                    spriteName = "BuilderShadowed";
+                    scale = new Vector3(30f, 30f, 30f);
+                    sortingOrder = 12;
                     break;
                 case Follower.Barn:
                     renderInterval = 7f;
@@ -228,7 +239,7 @@ namespace Code.Network.Composition {
                     followerName = "Barn";
                     spriteName = "BarnShadowed";
                     scale = new Vector3(28f, 28f, 28f);
-                    sortingOrder = 12;
+                    sortingOrder = 13;
                     break;
             }
             var nLen = followerName.Length - 1;

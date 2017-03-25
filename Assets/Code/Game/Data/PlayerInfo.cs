@@ -55,7 +55,7 @@
             followersCounter += BigMeeplesQuantity;
             followersCounter += MayorsQuantity;
             followersCounter += PigsQuantity;
-            //followersCounter += BuildersQuantity;
+            followersCounter += BuildersQuantity;
             followersCounter += BarnsQuantity;
             //followersCounter += WagonsQuantity;
             return followersCounter == 0;
