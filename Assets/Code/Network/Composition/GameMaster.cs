@@ -131,7 +131,10 @@ namespace Code.Network.Composition {
                 Net.Client.SendUnreliable(NetCmd.Game, packet);
             }
 
-            if (Input.GetKey(k.ShowLastPlacedTile)) Tile.ShowLastPlaced();
+            if (Input.GetKey(k.ShowLastPlacedTile)) {
+                Tile.ShowLastPlaced();
+                if (Input.GetKey(k.FocusOnTileOnMouse)) Tile.FocusLastPlaced();
+            }
             else Tile.HideLastPlaced();
 
 

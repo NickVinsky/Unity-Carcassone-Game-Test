@@ -51,6 +51,13 @@ namespace Code.Game {
             return LastCheckedTile.Type != 0;
         }
 
+        public static void FocusLastPlaced() {
+            var tomPos = LastPlacedTile.transform.localPosition;
+            var locScale = LastPlacedTile.transform.localScale;
+            var newPos = new Vector3(tomPos.x / locScale.x, tomPos.y / locScale.y, -1f);
+            Camera.main.transform.position = newPos;
+        }
+
         public static void ShowLastPlaced() {
             if (LastPlacedTile == null) return;
             LastPlacedTile.GetComponent<SpriteRenderer>().color = Net.CombineColors(Net.Color(LastPlaced().Founder), new Color(0.8f,0.8f,0.8f,0.8f));
@@ -82,6 +89,7 @@ namespace Code.Game {
             }
 
             //GameObject.FindGameObjectsWithTag(GameRegulars.EmptyCellTag).All(emptyCell => !Nearby.CanBeAttachedTo(emptyCell, testerTile))
+            Object.Destroy(tester);
             return true;
         }
 

@@ -87,19 +87,10 @@ namespace Code.Game.Data {
         public const string ServerCountdownColor = "b5463b";
         public const string ServerGameLaunchingColor = "1c8205";
 
-        public static readonly Vector2 FollowerPositionCenter = new Vector2(0f, 0.06f);
-        public static readonly Vector2 FollowerPositionTop = new Vector2(0.02f, 0.334f);
-        public static readonly Vector2 FollowerPositionBot = new Vector2(-0.02f, -0.262f);
-        public static readonly Vector2 FollowerPositionLeft = new Vector2(-0.3f, 0.045f);
-        public static readonly Vector2 FollowerPositionRight = new Vector2(0.3f, 0f);
-        public static readonly Vector2 FollowerPositionSEMid = new Vector2(0.1f, -0.075f);
-        public static readonly Vector2 FollowerPositionSWMid = new Vector2(-0.1f, -0.075f);
-        public static readonly Vector2 FollowerPositionSE = new Vector2(0.35f, -0.275f);
-        public static readonly Vector2 FollowerPositionSW = new Vector2(-0.275f, -0.25f);
-
-        public static readonly float ScrollSpeed = 0.25f;
-        public static readonly float CamMoveSpeed = 0.15f;
-        public static readonly float CameraDistanceMax = 15.0f;
+        public static readonly float ScrollSpeed = 0.5f;
+        public static readonly float CamMoveSpeed = 0.25f;
+        public static readonly float ZoomToOrthRatio = 5f;
+        public static readonly float CameraDistanceMax = 33.0f;
         public static readonly float CameraDistanceMin = 1.75f;
 
         public static readonly float TileSizeX = 256.0f;

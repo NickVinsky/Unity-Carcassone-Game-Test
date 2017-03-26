@@ -12,7 +12,7 @@ namespace Code.Game.Building {
             Type = Area.Road;
         }
 
-        public bool NotFinished() { return 2 * Edges != Nodes; }
+        public override bool NotFinished() { return 2 * Edges != Nodes; }
 
         private void CalcScore() {
             ScoreCalc.Road(this);

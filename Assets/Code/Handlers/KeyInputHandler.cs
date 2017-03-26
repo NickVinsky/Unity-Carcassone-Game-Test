@@ -13,6 +13,7 @@ namespace Code.Handlers {
         public KeyCode CursorStreaming { get; set; }
         public KeyCode ShowLastPlacedTile { get; set; }
         public KeyCode FocusOnTileOnMouse { get; set; }
+        public KeyCode ResetCameraPosition { get; set; }
 
         public KeyInputHandler() {
             MoveCameraLeft = KeyCode.A;
@@ -26,6 +27,7 @@ namespace Code.Handlers {
             CursorStreaming = KeyCode.LeftControl;
             ShowLastPlacedTile = KeyCode.LeftAlt;
             FocusOnTileOnMouse = KeyCode.LeftShift;
+            ResetCameraPosition = KeyCode.C;
         }
     }
 }

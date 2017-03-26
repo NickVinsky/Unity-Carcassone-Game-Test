@@ -5,6 +5,7 @@ using Code.Game.Data;
 using Code.GUI;
 using Code.Handlers;
 using Code.Network;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 using static Code.Game.Data.GameRegulars;
@@ -34,7 +35,9 @@ namespace Code {
         public static State MouseState;
         private Vector3 _dragStartPos;
 
-        private static void MoveCamera(bool x, bool y, int acc) {
+        private float Zoom { get; set; }
+
+        private static void MoveCamera(bool x, bool y, float acc) {
             var position = Camera.main.transform.position;
             if (x) position.x += acc * CamMoveSpeed;
             if (y) position.y += acc * CamMoveSpeed;
@@ -89,10 +92,14 @@ namespace Code {
 
             #region CameraMovement
 
+            Zoom = Camera.main.orthographicSize / ZoomToOrthRatio;
+
             if (!MouseOnChat) {
-                _cameraDistance -= Input.mouseScrollDelta.y * ScrollSpeed;
-                _cameraDistance = Mathf.Clamp(_cameraDistance, CameraDistanceMin, CameraDistanceMax);
-                Camera.main.orthographicSize = _cameraDistance;
+                if (Input.mouseScrollDelta.y != 0) {
+                    _cameraDistance -= Input.mouseScrollDelta.y * ScrollSpeed * Zoom;
+                    _cameraDistance = Mathf.Clamp(_cameraDistance, CameraDistanceMin, CameraDistanceMax);
+                    Camera.main.orthographicSize = _cameraDistance;
+                }
             }
 
             //_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -100,11 +107,13 @@ namespace Code {
             if (Input.GetKey(KeyCode.Escape)) Application.Quit();
 
             if (!LobbyInspector.ChatField.GetComponent<InputField>().isFocused) {
-                if (Input.GetKey(_k.MoveCameraUp)) MoveCamera(false, true, 1);
-                if (Input.GetKey(_k.MoveCameraDown)) MoveCamera(false, true, -1);
-                if (Input.GetKey(_k.MoveCameraRight)) MoveCamera(true, false, 1);
-                if (Input.GetKey(_k.MoveCameraLeft)) MoveCamera(true, false, -1);
+                if (Input.GetKey(_k.MoveCameraUp)) MoveCamera(false, true, 0.5f + Zoom);
+                if (Input.GetKey(_k.MoveCameraDown)) MoveCamera(false, true, -0.5f - Zoom);
+                if (Input.GetKey(_k.MoveCameraRight)) MoveCamera(true, false, 0.5f + Zoom);
+                if (Input.GetKey(_k.MoveCameraLeft)) MoveCamera(true, false, -0.5f - Zoom);
             }
+
+            if (Input.GetKeyDown(_k.ResetCameraPosition)) Camera.main.transform.position = new Vector3(0f, 0f, -1f);
 
             if (MouseState == State.None && Input.GetMouseButtonDown(0) && !MouseOnChat) InitDrag();
             if ((MouseState == State.PreDragging || MouseState == State.Dragging) && Input.GetMouseButton(0)) MoveCamera();

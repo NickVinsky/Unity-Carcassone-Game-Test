@@ -259,6 +259,7 @@ namespace Code.Network.Composition {
                 renderOffset += renderInterval + 5f;
                 Meeples[meepleCounter] = new GameObject(followerName + meepleCounter);
                 Meeples[meepleCounter].transform.SetParent(parent);
+                Meeples[meepleCounter].transform.localPosition = new Vector3(Meeples[meepleCounter].transform.localPosition.x, Meeples[meepleCounter].transform.localPosition.y, 0f);
                 Meeples[meepleCounter].AddComponent<RectTransform>();
                 Meeples[meepleCounter].GetComponent<RectTransform>().anchorMin = new Vector2(0f, 0.5f);
                 Meeples[meepleCounter].GetComponent<RectTransform>().anchorMax = new Vector2(0f, 0.5f);

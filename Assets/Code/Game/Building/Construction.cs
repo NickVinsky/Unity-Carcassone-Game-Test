@@ -66,6 +66,8 @@ namespace Code.Game.Building {
             return !cellNotFound;
         }
 
+        public virtual bool NotFinished() { return true; }
+
         protected void LinkTile(Cell cell) {
             if (!HasCell(cell)) LinkedTiles.Add(cell);
         }
@@ -100,7 +102,7 @@ namespace Code.Game.Building {
             }
             else {
                 if (HasPlayerMeeples(founder)) {
-                    if (!HasPigOrBuilder(founder) && !FinishedByPlayer) location.ReadyForPigOrBuilder = true;
+                    if (!HasPigOrBuilder(founder) && NotFinished()) location.ReadyForPigOrBuilder = true;
                     if (HasBuilder(founder)) {
                         Net.Client.RequestAdditionalTurn();
                     }
