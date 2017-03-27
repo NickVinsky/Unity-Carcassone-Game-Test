@@ -48,6 +48,11 @@ namespace Code.Game.Building {
         public static Road LastRoad { get; set; }
         public static Field LastField { get; set; }
 
+        public static int BiggestCitySize;
+        public static PlayerColor BiggestCityFounder = PlayerColor.NotPicked;
+        public static int BiggestRoadSize;
+        public static PlayerColor BiggestRoadFounder = PlayerColor.NotPicked;
+
         public static string ArrayToString(byte[] array) {
             return array.Length == 0 ? "Array is empty!" : array.Aggregate(string.Empty, (current, a) => current + a);
         }

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
-using Code.Game;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Commands;
@@ -14,6 +12,10 @@ using Object = UnityEngine.Object;
 namespace Code.Network.Composition {
     public class ClientSide {
         public GameObject[] Meeples;
+        private Vector3 v { get; set; }
+
+        private const float OffsetFromLeft = 231.8773f;
+        private const float PatronIconWidth = 52f;
 
         public NetPackPlayerInfo MyInfo() {
             return new NetPackPlayerInfo {
@@ -122,6 +124,8 @@ namespace Code.Network.Composition {
                 if (pList[i] == string.Empty) continue;
                 var pColor = (int) char.GetNumericValue(p[tracker]); tracker++;
                 var pMoves = Convert.ToBoolean(char.GetNumericValue(p[tracker])); tracker++;
+                var hasKingsPatronage = Convert.ToBoolean(char.GetNumericValue(p[tracker])); tracker++;
+                var hasAtamansPatronage = Convert.ToBoolean(char.GetNumericValue(p[tracker])); tracker++;
                 var pMeeplesQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
                 var pBigMeeplesQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
                 var pMayorsQuantity = Convert.ToByte(p.Substring(tracker, 2)); tracker += 2;
@@ -133,9 +137,9 @@ namespace Code.Network.Composition {
                 Player.Score = pScore;
 
                 var pName = p.Substring(tracker);
-                if (o.transform.FindChild("Name").GetComponent<Text>().text == Player.PlayerName) Player.MySlotNumberInGame = i;
-                o.transform.FindChild("Name").GetComponent<Text>().text = pName;
-                o.transform.FindChild("Score").GetComponent<Text>().text = GameRegulars.ScoreText + pScore;
+                if (o.transform.FindChild("Panel").FindChild("Name").GetComponent<Text>().text == Player.PlayerName) Player.MySlotNumberInGame = i;
+                o.transform.FindChild("Panel").FindChild("Name").GetComponent<Text>().text = pName;
+                o.transform.FindChild("Panel").FindChild("Score").GetComponent<Text>().text = GameRegulars.ScoreText + pScore;
                 o.transform.FindChild("Meeple").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
 
                 if (Player.MySlotNumberInGame == i) {
@@ -160,6 +164,23 @@ namespace Code.Network.Composition {
                 FillContainer(o, ref renderOffset, pColor, Follower.Meeple, pMeeplesQuantity);
                 FillContainer(o, ref renderOffset, pColor, Follower.Pig, pPigsQuantity);
 
+                var patronsCount = 0;
+                AddPatron(hasKingsPatronage, o.transform.FindChild("King"), ref patronsCount, (PlayerColor) pColor);
+                AddPatron(hasAtamansPatronage, o.transform.FindChild("Ataman"), ref patronsCount, (PlayerColor) pColor);
+
+                /*var king = o.transform.FindChild("King");
+                if (hasKingsPatronage) {
+                    king.GetComponent<Image>().enabled = true;
+                    v = king.transform.localPosition;
+                    king.transform.localPosition = new Vector3(OffsetFromMeeple, v.y, v.z);
+                    king.GetComponent<Outline>().effectColor = Net.Color((PlayerColor) pColor);
+                    patronsCount++;
+                } else king.GetComponent<Image>().enabled = false;*/
+
+                v = o.transform.FindChild("Panel").GetComponent<RectTransform>().anchoredPosition;
+                o.transform.FindChild("Panel").GetComponent<RectTransform>().anchoredPosition = new Vector3(OffsetFromLeft + PatronIconWidth * patronsCount, v.y, v.z);
+
+
                 //o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
                 //o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
 
@@ -175,10 +196,20 @@ namespace Code.Network.Composition {
 
                 lastI = i + 1;
             }
-            for (int i = lastI; i < Net.MaxPlayers; i++) {
+            for (var i = lastI; i < Net.MaxPlayers; i++) {
                 var o = GameObject.Find("PlayerInGame(" + i + ")");
                 o.transform.localScale = new Vector3(0f,0f,0f);
             }
+        }
+
+        private void AddPatron(bool hasPatron, Transform patron, ref int patronCounter, PlayerColor color) {
+            if (hasPatron) {
+                patron.GetComponent<Image>().enabled = true;
+                v = patron.GetComponent<RectTransform>().anchoredPosition; // MeepleOffset + PatronIconWidth * patronCounter + 4f
+                patron.GetComponent<RectTransform>().anchoredPosition = new Vector3(74f + PatronIconWidth * patronCounter, v.y, v.z);
+                patron.GetComponent<Outline>().effectColor = Net.Color(color);
+                patronCounter++;
+            } else patron.GetComponent<Image>().enabled = false;
         }
 
         private void FillContainer(GameObject slot, ref float renderOffset, int ownerColorInt, Follower type, int quantity) {
@@ -244,7 +275,7 @@ namespace Code.Network.Composition {
             }
             var nLen = followerName.Length - 1;
 
-            var parent = slot.transform.FindChild(containerName);
+            var parent = slot.transform.FindChild("Panel").FindChild(containerName);
             //if (parent.childCount == quantity) return;
 
             var children = (from Transform child in parent

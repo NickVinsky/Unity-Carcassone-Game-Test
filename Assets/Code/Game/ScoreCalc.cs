@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Code.Game.Building;
 using Code.Game.Data;
@@ -37,11 +38,27 @@ namespace Code.Game {
             }
         }
 
+        //var player = Net.IsServer ? Net.PlayersList.First(p => p.Color == Builder.BiggestCityFounder) : Player;
+        public static void UpdateKingsPatronage() { foreach (var t in Net.PlayersList) t.HasKingsPatronage = t.Color == Builder.BiggestCityFounder; }
+        public static void UpdateAtamansPatronage() { foreach (var t in Net.PlayersList) t.HasAtamansPatronage = t.Color == Builder.BiggestRoadFounder; }
+
+        public static void PatronBonus(PlayerColor color, List<Construction> list) {
+            if (color == PlayerColor.NotPicked) return;
+            var player = Net.PlayersList.First(p => p.Color == color);
+            var index = Net.PlayersList.IndexOf(player);
+
+            player.Score += list.Count(c => c.Finished);
+
+            Net.PlayersList[index] = player;
+        }
+
         public static void Final() {
             foreach (var c in Builder.Monasteries) Monastery(c, true);
             foreach (var c in Builder.Cities) City(c, true);
             foreach (var c in Builder.Roads) Road(c, true);
             foreach (var c in Builder.Fields) Field(c, true);
+            PatronBonus(Builder.BiggestCityFounder, Builder.Cities.Cast<Construction>().ToList());
+            PatronBonus(Builder.BiggestRoadFounder, Builder.Roads.Cast<Construction>().ToList());
             //UpdateGUI();
             Net.Server.GameResults();
         }
@@ -49,6 +66,8 @@ namespace Code.Game {
         // After tile putting
         public static void Count(GameObject cell, PlayerColor founder) {
             Builder.Assimilate(cell, founder);
+            UpdateKingsPatronage();
+            UpdateAtamansPatronage();
             UpdateGUI();
             if (Net.IsServer) Net.Server.AllowPlacement();
         }
@@ -149,7 +168,7 @@ namespace Code.Game {
             CalcExtraPoints(road, 0);
 
             var score = road.LinkedTiles.Count;
-            score += innCoefficient * road.LinkedTiles.Count;
+            score += innCoefficient * road.Size();
             if (final) if (road.HasInn) score = 0;
             AddScore(oArray, oArray.Max(), score);
 
@@ -165,7 +184,7 @@ namespace Code.Game {
             var oArray = OwnersArray(city);
 
 
-            var score = city.ExtraPoints + city.LinkedTiles.Count * (2 + cathedralCoefficient);
+            var score = city.ExtraPoints + city.Size() * (2 + cathedralCoefficient);
             if (final) {
                 if (city.HasCathedral) score = 0;
                 else score /= 2;
@@ -197,7 +216,7 @@ namespace Code.Game {
             var oArray = OwnersArray(field);
 
             var notGathered = Convert.ToInt32(!field.Gathered);
-            var score = field.LinkedCities.Count * (1 + 2 * notGathered);
+            var score = field.Size() * (1 + 2 * notGathered);
             //Debug.Log("Cities: " + field.LinkedCities.Count + " ; (1 + 2 * notGathered) = " + (1 + 2 * notGathered) + " ; k = " + notGathered);
             AddScore(oArray, oArray.Max(), score, field);
 

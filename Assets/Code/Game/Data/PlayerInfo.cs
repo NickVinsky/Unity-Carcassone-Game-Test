@@ -17,6 +17,9 @@
         public byte WagonsQuantity;
         public int Score;
 
+        public bool HasKingsPatronage;
+        public bool HasAtamansPatronage;
+
         public bool IsRegistred;
         public bool IsReady;
         public bool WaitingForColorUpgrade;

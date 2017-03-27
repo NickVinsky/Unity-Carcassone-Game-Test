@@ -3,7 +3,6 @@ using System.Linq;
 using Code.Game;
 using Code.Game.Data;
 using Code.Network.Attributes;
-using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 
@@ -147,6 +146,7 @@ namespace Code.Network.Commands {
             Net.PlayersList[index] = curPlayer;
 
             if (AllIsReady()) Net.StartCountdown();
+            else Net.StopCountdown();
             FormAndSendLobbyPlayersList();
         }
 

@@ -30,15 +30,17 @@ namespace Code.Game.Building {
             if (location.HasCathedral) HasCathedral = true;
         }
 
-        public override void CalcNodesToFinish() { FinalNodesCalcToFinish(); }
+        public override void CalcNodesToFinish(PlayerColor founder) { FinalNodesCalcToFinish(founder); }
 
-        protected override void CalcNodesToFinish(int value) {
-            FinalNodesCalcToFinish();
-        }
-
-        private void FinalNodesCalcToFinish() {
+        private void FinalNodesCalcToFinish(PlayerColor founder) {
             if (NotFinished()) return;
+            PlayerWhoFinished = founder;
             Finished = true;
+
+            if (Builder.BiggestCitySize < Size()) {
+                Builder.BiggestCitySize = Size();
+                Builder.BiggestCityFounder = PlayerWhoFinished;
+            }
 
             if (!HasOwner()) return;
             CalcScore();

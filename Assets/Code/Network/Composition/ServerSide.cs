@@ -113,7 +113,9 @@ namespace Code.Network.Composition {
                 if (Net.PlayersList.Any(p => p.Color == q)) {
                     var curPlayer = Net.PlayersList.First(p => p.Color == q);
                     var isMoving = q == Net.Game.CurrentPlayerColor ? "1" : "0";
-                    l += (int) q + isMoving +
+                    var hasKingsPatronage = curPlayer.HasKingsPatronage ? "1" : "0";
+                    var hasAtamansPatronage = curPlayer.HasAtamansPatronage ? "1" : "0";
+                    l += (int) q + isMoving + hasKingsPatronage + hasAtamansPatronage +
                          curPlayer.MeeplesQuantity.ToString("D2") +
                          curPlayer.BigMeeplesQuantity.ToString("D2") +
                          curPlayer.MayorsQuantity.ToString("D2") +

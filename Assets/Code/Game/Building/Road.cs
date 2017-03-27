@@ -27,16 +27,17 @@ namespace Code.Game.Building {
             NodesToFinish += value;
         }
 
-        public override void CalcNodesToFinish() { FinalNodesCalcToFinish(); }
+        public override void CalcNodesToFinish(PlayerColor founder) { FinalNodesCalcToFinish(founder); }
 
-        protected override void CalcNodesToFinish(int value) {
-            AddNodesToFinish(value);
-            FinalNodesCalcToFinish();
-        }
-
-        private void FinalNodesCalcToFinish() {
+        private void FinalNodesCalcToFinish(PlayerColor founder) {
             if (NotFinished()) return;
+            PlayerWhoFinished = founder;
             Finished = true;
+
+            if (Builder.BiggestRoadSize < Size()) {
+                Builder.BiggestRoadSize = Size();
+                Builder.BiggestRoadFounder = PlayerWhoFinished;
+            }
 
             if (!HasOwner()) return;
             CalcScore();

@@ -14,6 +14,7 @@ namespace Code.Game.Building {
 
         public bool Finished { get; set; }
         public bool FinishedByPlayer { get; set; }
+        public PlayerColor PlayerWhoFinished { get; set; }
 
         public int ExtraPoints { get; protected set; }
 
@@ -62,6 +63,8 @@ namespace Code.Game.Building {
             return !cellNotFound;
         }
 
+        public int Size() { return LinkedTiles.Count; }
+
         public virtual bool NotFinished() { return true; }
 
         protected void LinkTile(Cell cell) {
@@ -80,7 +83,7 @@ namespace Code.Game.Building {
                 Merge(location);
             }
             Edges++;
-            CalcNodesToFinish();
+            CalcNodesToFinish(founder);
 
 
             if (HasOwner()) location.ReadyForMeeple = false;
@@ -103,7 +106,7 @@ namespace Code.Game.Building {
 
         public void SetOwner(Location construct) {
             Owners.Add(construct.GetOwnership());
-            CalcNodesToFinish();
+            CalcNodesToFinish(construct.GetOwner());
 
             if (construct.GetOwnership().FollowerType != Follower.Barn) return;
             var field = (Field) this;
@@ -118,7 +121,7 @@ namespace Code.Game.Building {
 
         protected virtual void AddNodesToFinish(int value){}
 
-        public virtual void CalcNodesToFinish(){}
+        public virtual void CalcNodesToFinish(PlayerColor founder){}
 
         protected virtual void CalcNodesToFinish(int value){}
 
