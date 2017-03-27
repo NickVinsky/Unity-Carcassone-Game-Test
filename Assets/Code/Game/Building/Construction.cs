@@ -73,6 +73,7 @@ namespace Code.Game.Building {
         }
 
         public void Add(Location location, PlayerColor founder) {
+            Debug.Log("//Adding engaged// " + location.Type);
             if (!_lastCell.Equals(location.Parent.IntVector())) {
                 _lastCellRecalced = false;
             }
@@ -114,9 +115,11 @@ namespace Code.Game.Building {
         }
 
         public void RecalcBarn() {
+            Debug.Log("// IN RECALC BARN //");
             if (!_needBarnRecalc) return;
             if (_lastCellRecalced) return;
 
+            Debug.Log("// [RECALCING BARN] //");
             var field = (Field) _fieldToRecalc;
             ScoreCalc.Field(field);
             _needBarnRecalc = false;

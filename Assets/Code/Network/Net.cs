@@ -51,26 +51,7 @@ namespace Code.Network {
         }
 
         public static string ColorString(PlayerColor pColor, string text) {
-            var color = "<color=#" + ColorCode(pColor) + ">" + text + "</color>";
-            /*
-            switch (pColor) {
-                case PlayerColor.Black:
-                    color = "<color=#" + "000000" + ">" + target + "</color>";
-                    break;
-                case PlayerColor.Blue:
-                    color = "<color=#" + "0061ff" + ">" + target + "</color>";
-                    break;
-                case PlayerColor.Green:
-                    color = "<color=#" + "29b20e" + ">" + target + "</color>";
-                    break;
-                case PlayerColor.Red:
-                    color = "<color=#" + "d62902" + ">" + target + "</color>";
-                    break;
-                case PlayerColor.Yellow:
-                    color = "<color=#" + "efe813" + ">" + target + "</color>";
-                    break;
-            }*/
-            return color;
+            return "<color=#" + ColorCode(pColor) + ">" + text + "</color>";
         }
 
         public static Color Color(PlayerColor pColor) {

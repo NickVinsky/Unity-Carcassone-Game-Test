@@ -75,7 +75,7 @@ namespace Code.Network.Composition {
                 Pointer[i].AddComponent<SpriteRenderer>();
                 Pointer[i].GetComponent<SpriteRenderer>().sprite = sprite;
                 Pointer[i].GetComponent<SpriteRenderer>().color = Net.Color(curColor);
-                Pointer[i].GetComponent<SpriteRenderer>().sortingOrder = 5;
+                Pointer[i].GetComponent<SpriteRenderer>().sortingOrder = 101;
 
                 //Pointer[i].transform.localScale = new Vector3(0f,0f,0f);
                 Pointer[i].GetComponent<SpriteRenderer>().enabled = false;
