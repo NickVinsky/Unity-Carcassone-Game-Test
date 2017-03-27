@@ -20,17 +20,13 @@ namespace Code.Game.Building {
         protected int Edges { get; set; }
         protected int Nodes { get; set; }
 
-        private bool _needBarnRecalc = false;
-        private Construction _fieldToRecalc;
-        private Cell _lastCell;
-        private bool _lastCellRecalced = false;
+        public bool NeedBarnRecalc { get; set; }
 
         protected Construction(int id, Cell v) {
             ID = id;
             FinishedByPlayer = false;
             Owners = new List<Ownership>();
             LinkedTiles = new List<Cell> {v};
-            _lastCell = v;
         }
 
         protected bool HasOwner() { return Owners.Count > 0; }
@@ -73,11 +69,6 @@ namespace Code.Game.Building {
         }
 
         public void Add(Location location, PlayerColor founder) {
-            Debug.Log("//Adding engaged// " + location.Type);
-            if (!_lastCell.Equals(location.Parent.IntVector())) {
-                _lastCellRecalced = false;
-            }
-            _lastCell = location.Parent.IntVector();
             var linkedConstruct = location.Link;
             CheckForSpecialBuildings(location);
             if (linkedConstruct == ID) {
@@ -94,10 +85,7 @@ namespace Code.Game.Building {
 
             if (HasOwner()) location.ReadyForMeeple = false;
             if (HasBarn()) {
-                if (Type == Area.Field && !HasOnlyBarns()) {
-                    _needBarnRecalc = true;
-                    _fieldToRecalc = (Field) this;
-                }
+                if (Type == Area.Field && !HasOnlyBarns()) NeedBarnRecalc = true;
                 location.ReadyForMeeple = false;
                 location.ReadyForPigOrBuilder = false;
             }
@@ -111,19 +99,6 @@ namespace Code.Game.Building {
             }
 
             PostAddingAction(location);
-            RecalcBarn();
-        }
-
-        public void RecalcBarn() {
-            Debug.Log("// IN RECALC BARN //");
-            if (!_needBarnRecalc) return;
-            if (_lastCellRecalced) return;
-
-            Debug.Log("// [RECALCING BARN] //");
-            var field = (Field) _fieldToRecalc;
-            ScoreCalc.Field(field);
-            _needBarnRecalc = false;
-            _lastCellRecalced = true;
         }
 
         public void SetOwner(Location construct) {

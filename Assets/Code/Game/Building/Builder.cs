@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
-using Code.Network;
 using UnityEngine;
 
 namespace Code.Game.Building {
@@ -44,6 +43,10 @@ namespace Code.Game.Building {
         public static readonly List<Road> Roads = new List<Road>();
         public static readonly List<Field> Fields = new List<Field>();
         public static readonly List<Monastery> Monasteries = new List<Monastery>();
+
+        public static City LastCity { get; set; }
+        public static Road LastRoad { get; set; }
+        public static Field LastField { get; set; }
 
         public static string ArrayToString(byte[] array) {
             return array.Length == 0 ? "Array is empty!" : array.Aggregate(string.Empty, (current, a) => current + a);
@@ -301,6 +304,7 @@ namespace Code.Game.Building {
                 if (commonNodes.Length == 0) continue;
                 Link(pLoc, nLoc, founder);
             }
+            LastField?.RecalcBarn();
         }
 
         private static void Create(TileInfo tile, List<byte> freeSides) {
@@ -316,13 +320,19 @@ namespace Code.Game.Building {
         private static void Link(Location p, Location n, PlayerColor founder) {
             switch (p.Type) {
                 case Area.Field:
-                    GetField(n).Add(p, founder);
+                    var field = GetField(n);
+                    field.Add(p, founder);
+                    LastField = field;
                     break;
                 case Area.Road:
-                    GetRoad(n).Add(p, founder);
+                    var road = GetRoad(n);
+                    road.Add(p, founder);
+                    LastRoad = road;
                     break;
                 case Area.City:
-                    GetCity(n).Add(p, founder);
+                    var city = GetCity(n);
+                    city.Add(p, founder);
+                    LastCity = city;
                     break;
                 case Area.Monastery:
                     break;

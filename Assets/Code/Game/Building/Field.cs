@@ -115,6 +115,13 @@ namespace Code.Game.Building {
             }
         }
 
+        public void RecalcBarn() {
+            if (!NeedBarnRecalc) return;
+
+            ScoreCalc.Field(this);
+            NeedBarnRecalc = false;
+        }
+
         public void Abandon() {
             for (var i = 0; i < Owners.Count; i++) {
                 if (Owners[i].FollowerType != Follower.Barn) Owners.RemoveAt(i);
