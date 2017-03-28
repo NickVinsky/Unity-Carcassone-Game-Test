@@ -216,7 +216,7 @@ namespace Code.Game {
             var oArray = OwnersArray(field);
 
             var notGathered = Convert.ToInt32(!field.Gathered);
-            var score = field.Size() * (1 + 2 * notGathered);
+            var score = field.LinkedCities.Count * (1 + 2 * notGathered);
             //Debug.Log("Cities: " + field.LinkedCities.Count + " ; (1 + 2 * notGathered) = " + (1 + 2 * notGathered) + " ; k = " + notGathered);
             AddScore(oArray, oArray.Max(), score, field);
 
