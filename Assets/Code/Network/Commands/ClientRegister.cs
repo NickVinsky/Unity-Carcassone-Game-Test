@@ -162,7 +162,7 @@ namespace Code.Network.Commands {
                     Net.Game.CurrentPlayerName = m.Text;
                     SceneManager.LoadScene(GameRegulars.SceneGame);
                     Net.Client.UpdateScore();
-                    Player.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;
+                    Player.Stage = Net.Game.MyTurn ? GameStage.Start : GameStage.Wait;
                     Net.Game.GameStarted();
                     Net.Client.Send(NetCmd.TransferCache, new NetPackChatMessage {RequesterID = Player.ID});
                     break;
@@ -175,7 +175,7 @@ namespace Code.Network.Commands {
                     Net.Game.TilePicked = false;
                     break;
                 case Command.MouseCoordinates:
-                    Net.Game.TPos = m.Vect3;
+                    Net.Game.Pos = m.Vect3;
                     break;
                 case Command.CursorStreaming:
                     Net.Game.StreamCursor(m.Color, m.Vect3);
@@ -193,7 +193,7 @@ namespace Code.Network.Commands {
                     Tile.OnMouse.Put(m.Vector, m.Color);
                     break;
                 case Command.Placements:
-                    if (Net.Game.MyTurn()) Net.Game.PostTilePut();
+                    if (Net.Game.MyTurn) Net.Game.PostTilePut();
                     break;
                 case Command.Follower:
                     if (Player.Color != m.Color)
@@ -209,11 +209,11 @@ namespace Code.Network.Commands {
                     Net.Game.CurrentPlayerIndex = m.Value;
                     Net.Game.CurrentPlayerColor = m.Color;
                     Net.Game.CurrentPlayerName = m.Text;
-                    if (Deck.IsEmpty()) {
+                    if (Deck.IsEmpty) {
                         Player.Stage = GameStage.End;
                         if (Net.IsServer) ScoreCalc.Final();
                     } else {
-                        Player.Stage = Net.Game.MyTurn() ? GameStage.Start : GameStage.Wait;
+                        Player.Stage = Net.Game.MyTurn ? GameStage.Start : GameStage.Wait;
                     }
                     if (Net.IsServer) Net.Server.RefreshInGamePlayersList();
                     break;

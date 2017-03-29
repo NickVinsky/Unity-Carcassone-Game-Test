@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using Code.Game.Data;
 using Code.Game.FollowerSubs;
 using UnityEngine;
@@ -21,25 +19,18 @@ namespace Code.Game {
 
         //public bool[] Field = new bool[8];
 
-        public Area GetSide(int side) { return _side[side]; }
+        public Area GetSide(int side) => _side[side];
 
         private Placements CurrentPlacementState { get; set; }
         public bool[] PlacementBlocked { get; set; }
 
-        public List<Location> GetLocations() { return _follower.GetLocations(); }
+        public List<Location> GetLocations => _follower.LocationsList;
+        public Location GetLocation(int id) => _follower.GetLocation((byte) id);
+        public Location GetMonastery => _follower.GetMonastery;
 
-        public Location GetLocation(int id) { return _follower.GetLocation((byte) id); }
+        public Cell IntVector => new Cell(X, Y);
 
-        public Location GetMonastery() { return _follower.GetMonastery(); }
-
-        public Cell IntVector() {
-            return new Cell(X, Y);
-        }
-
-        private byte[] A(byte a) { return new[] {a}; }
-        private byte[] A(byte a, byte b) { return new[] {a, b}; }
-        private byte[] A(byte a, byte b, byte c) { return new[] {a, b, c}; }
-        private byte[] A(byte a, byte b, byte c, byte d) { return new[] {a, b, c, d}; }
+        private static byte[] A(params byte[] a) => a;
 
         public void InitTile(int type) {
             PlacementBlocked = new bool[GameRegulars.EnumPlacementsCount];
@@ -673,7 +664,7 @@ namespace Code.Game {
         }
 
         public void AssignOpponentFollower(PlayerColor owner, byte id, Follower type) {
-            GameObject o = gameObject;
+            //var o = gameObject;
             _follower.Opponent(owner, id, type);
         }
 

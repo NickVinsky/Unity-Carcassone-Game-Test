@@ -55,7 +55,7 @@ namespace Code {
             Tile.SetStarting(20);
             Builder.Init();
 
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
                 Net.Game.Init();
                 return;
             }
@@ -120,7 +120,7 @@ namespace Code {
             #endregion
 
             #region NetGame
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
                 Net.Game.LocalClientUpadate(_k);
                 return;
             }
@@ -137,7 +137,7 @@ namespace Code {
                     break;
                 case GameStage.Start:
                     if (Input.GetKeyDown(_k.PickTileFromDeck)) {
-                        if (!Deck.IsEmpty()) {
+                        if (!Deck.IsEmpty) {
                             Tile.Pick();
                             Tile.AttachToMouse();
                             Player.Stage = GameStage.PlacingTile;
@@ -158,13 +158,13 @@ namespace Code {
                     break;
                 case GameStage.PlacingFollower:
                     if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(_k.ReturnTileToDeck)) {
-                        Tile.LastPlaced().HideAll();
+                        Tile.LastPlaced.HideAll();
                         Player.Stage = GameStage.Finish;
                     }
                     break;
                 case GameStage.Finish:
                     UpdateLocalPlayer();
-                    if (Deck.IsEmpty()) {
+                    if (Deck.IsEmpty) {
                         Player.Stage = GameStage.End;
                         ScoreCalc.Final();
                     }
@@ -182,7 +182,7 @@ namespace Code {
         }
 
         public void FixedUpdate() {
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
                 Net.Game.FixedUpdate(_k);
             }
         }

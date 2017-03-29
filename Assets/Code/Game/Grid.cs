@@ -40,21 +40,13 @@ namespace Code.Game
 
         public void Expand(Cell pivot) {
             //Debug.Log("Top" + pivot.Top().XY() + "/Right" + pivot.Right().XY() + "/Bot" + pivot.Bot().XY() + "/left" + pivot.Left().XY());
-            Add(pivot.Top());
-            Add(pivot.Left());
-            Add(pivot.Right());
-            Add(pivot.Bot());
+            Add(pivot.Top);
+            Add(pivot.Left);
+            Add(pivot.Right);
+            Add(pivot.Bot);
         }
 
-        public Cell GetCellCoordinates(GameObject cell) {
-            //char[] separatingChars = { '#', ':' };
-            //var coordinates = cell.name.Split(separatingChars);
-            //var x = Convert.ToInt32(coordinates[1]);
-            //var y = Convert.ToInt32(coordinates[2]);
-            var x = cell.GetComponent<TileInfo>().X;
-            var y = cell.GetComponent<TileInfo>().Y;
-            return new Cell(x, y);
-        }
+        public Cell GetCellCoordinates(GameObject cell) => new Cell(Tile.Get(cell).X, Tile.Get(cell).Y);
 
         public void CheckBounds(GameObject tileToCheck) {
             var tilePos = GetCellCoordinates(tileToCheck);
@@ -87,10 +79,7 @@ namespace Code.Game
             _scaleInited = true;
         }
 
-        private bool Free(Cell v) {
-            var cell = GameObject.Find("cell#" + v.X + ":" + v.Y);
-            return cell == null;
-        }
+        private static bool Free(Cell v) => GameObject.Find("cell#" + v.X + ":" + v.Y) == null;
 
         private void Add(Cell v) {
             if (Free(v)) AddCell(new Cell(v.X, v.Y));

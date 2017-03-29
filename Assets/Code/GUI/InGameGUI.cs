@@ -55,12 +55,12 @@ namespace Code.GUI {
 
         #region Actions
         private static void DeckClick() {
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
                 Net.Game.DeckClick(Camera.main.transform.position, GameObject.Find(DeckButton).GetComponent<RectTransform>().anchoredPosition);
                 return;
             }
             if (MainGame.Player.Stage != GameStage.Start) return;
-            if (IsEmpty()) return;
+            if (IsEmpty) return;
             Tile.Pick();
             Tile.AttachToMouse();
             MainGame.Player.Stage = GameStage.PlacingTile;

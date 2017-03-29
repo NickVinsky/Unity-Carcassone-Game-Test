@@ -3,16 +3,14 @@ using Code.Game.FollowerSubs;
 
 namespace Code.Game.Building {
     public class Road : Construction {
-        protected int NodesToFinish;
         public bool HasInn { get; set; }
 
         public Road(int id, Cell v, Location loc) : base(id, v) {
-            NodesToFinish = loc.GetNodes().Length;
-            Nodes += loc.GetNodes().Length;
+            Nodes += loc.Nodes.Length;
             Type = Area.Road;
         }
 
-        public override bool NotFinished() { return 2 * Edges != Nodes; }
+        public override bool NotFinished => 2 * Edges != Nodes;
 
         private void CalcScore() {
             ScoreCalc.Road(this);
@@ -22,24 +20,19 @@ namespace Code.Game.Building {
             if (location.HasInn) HasInn = true;
         }
 
-        protected override void AddNodesToFinish(int value) {
-            NodesToFinish -= 2;
-            NodesToFinish += value;
-        }
-
         public override void CalcNodesToFinish(PlayerColor founder) { FinalNodesCalcToFinish(founder); }
 
         private void FinalNodesCalcToFinish(PlayerColor founder) {
-            if (NotFinished()) return;
+            if (NotFinished) return;
             PlayerWhoFinished = founder;
             Finished = true;
 
-            if (Builder.BiggestRoadSize < Size()) {
-                Builder.BiggestRoadSize = Size();
+            if (Builder.BiggestRoadSize < Size) {
+                Builder.BiggestRoadSize = Size;
                 Builder.BiggestRoadFounder = PlayerWhoFinished;
             }
 
-            if (!HasOwner()) return;
+            if (!HasOwner) return;
             CalcScore();
         }
 

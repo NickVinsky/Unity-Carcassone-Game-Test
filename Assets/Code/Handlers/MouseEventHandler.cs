@@ -11,7 +11,7 @@ namespace Code.Handlers {
 
         }
         private void OnMouseOver() {
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
                 Net.Game.OnMouseOver(gameObject);
                 return;
             }
@@ -27,7 +27,7 @@ namespace Code.Handlers {
         }
 
         private void OnMouseExit() {
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
                 Net.Game.OnMouseExit(gameObject);
                 return;
             }
@@ -38,7 +38,7 @@ namespace Code.Handlers {
         }
 
         private void OnMouseUp() {
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
                 Net.Game.OnMouseUp(gameObject);
                 return;
             }

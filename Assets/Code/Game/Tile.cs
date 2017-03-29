@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Code.Game.Data;
 using Code.Game.TileSubs;
 using Code.Network;
@@ -18,31 +19,19 @@ namespace Code.Game {
         public static GameObject LastPlacedTile { get; set; }
         private static bool LastPlacedTileFounderHided { get; set; }
 
+        public static TileInfo GetStarting => GameObject.Find("cell#0:0").GetComponent<TileInfo>();
         public static TileInfo LastCheckedTile { get; private set; }
+        public static TileInfo LastPlaced => LastPlacedTile.GetComponent<TileInfo>();
 
-        public static TileInfo LastPlaced() { return LastPlacedTile.GetComponent<TileInfo>(); }
+        public static TileInfo GetParent(GameObject o) => o.transform.parent.gameObject.GetComponent<TileInfo>();
+        public static TileInfo Get(GameObject o) => o.GetComponent<TileInfo>();
+        public static TileInfo Get(string name) => GameObject.Find(name).GetComponent<TileInfo>();
+        public static TileInfo Get(Cell cell) => GameObject.Find("cell#" + cell.X + ":" + cell.Y).GetComponent<TileInfo>();
+        public static GameObject GetGameObject(Cell cell) => GameObject.Find("cell#" + cell.X + ":" + cell.Y);
 
-        public static TileInfo GetParent(GameObject o) { return o.transform.parent.gameObject.GetComponent<TileInfo>(); }
+        public static Cell GetCoordinates(GameObject o) => new Cell(Get(o).X, Get(o).Y);
 
-        public static TileInfo GetStarting() { return GameObject.Find("cell#0:0").GetComponent<TileInfo>(); }
-
-        public static TileInfo Get(GameObject o) { return o.GetComponent<TileInfo>(); }
-
-        public static TileInfo Get(string name) { return GameObject.Find(name).GetComponent<TileInfo>(); }
-
-        public static TileInfo Get(Cell cell) { return GameObject.Find("cell#" + cell.X + ":" + cell.Y).GetComponent<TileInfo>(); }
-
-        public static GameObject GetGameObject(Cell cell) { return GameObject.Find("cell#" + cell.X + ":" + cell.Y); }
-
-        public static Cell GetCoordinates(GameObject o) {
-            var x = o.GetComponent<TileInfo>().X;
-            var y = o.GetComponent<TileInfo>().Y;
-            return new Cell(x, y);
-        }
-
-        public static bool Exist(GameObject cell) {
-            return cell.GetComponent<TileInfo>().Type != 0;
-        }
+        public static bool Exist(GameObject cell) => cell.GetComponent<TileInfo>().Type != 0;
 
         public static bool Exist(Cell v) {
             var cell = GameObject.Find("cell#" + v.X + ":" + v.Y);
@@ -60,7 +49,7 @@ namespace Code.Game {
 
         public static void ShowLastPlaced() {
             if (LastPlacedTile == null) return;
-            LastPlacedTile.GetComponent<SpriteRenderer>().color = Net.CombineColors(Net.Color(LastPlaced().Founder), new Color(0.8f,0.8f,0.8f,0.8f));
+            LastPlacedTile.GetComponent<SpriteRenderer>().color = Net.CombineColors(Net.Color(LastPlaced.Founder), new Color(0.8f,0.8f,0.8f,0.8f));
             LastPlacedTile.transform.localScale = MainGame.Grid.EnlargedScale;
             LastPlacedTile.GetComponent<SpriteRenderer>().sortingOrder = 2;
             LastPlacedTileFounderHided = false;
@@ -82,11 +71,16 @@ namespace Code.Game {
             var testerTile = Get(tester);
             testerTile.InitTile(testerTileID);
 
-            foreach (var emptyCell in GameObject.FindGameObjectsWithTag(GameRegulars.EmptyCellTag)) {
-                if (!Nearby.CanBeAttachedTo(emptyCell, testerTile)) continue;
+            if (GameObject.FindGameObjectsWithTag(GameRegulars.EmptyCellTag).Any(emptyCell => Nearby.CanBeAttachedTo(emptyCell, testerTile))) {
                 Object.Destroy(tester);
                 return false;
             }
+
+            /*foreach (var emptyCell in GameObject.FindGameObjectsWithTag(GameRegulars.EmptyCellTag)) {
+                if (!Nearby.CanBeAttachedTo(emptyCell, testerTile)) continue;
+                Object.Destroy(tester);
+                return false;
+            }*/
 
             //GameObject.FindGameObjectsWithTag(GameRegulars.EmptyCellTag).All(emptyCell => !Nearby.CanBeAttachedTo(emptyCell, testerTile))
             Object.Destroy(tester);
@@ -146,43 +140,42 @@ namespace Code.Game {
             var tp = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
             tp = new Vector3(tp.x, tp.y, 0f);
             OnMouse.SetPosition(tp);
-            if (Net.Game.IsOnline()) Net.Client.Action(Command.MouseCoordinates, tp);
+            if (Net.Game.IsOnline) Net.Client.Action(Command.MouseCoordinates, tp);
         }
 
         public static void AttachToCoordinates(Vector3 t) {
-            if (OnMouse.Exist()) OnMouse.Get().transform.position = t;
+            if (OnMouse.Exist) OnMouse.GetGameObject.transform.position = t;
         }
 
         public static void Pick() {
-            var tileID = Deck.GetRandomTile();
+            var tileID = Deck.GetRandomTile;
             //pickedTile = Deck.Get(22);
-            var rotates = Rotate.Random();
-            ApplyPicking(tileID, rotates);
+            ApplyPicking(tileID, Rotate.Random);
         }
 
         public static void Pick(int index, byte rotates) {
             var tileID = Deck.GetTileByIndex(index);
             ApplyPicking(tileID, rotates);
-            OnMouse.Get().transform.position = new Vector3(Screen.width * 2, 0f, 0f);
+            OnMouse.GetGameObject.transform.position = new Vector3(Screen.width * 2, 0f, 0f);
         }
 
         public static void PickWithID(int tileId, byte rotates) {
             ApplyPicking(tileId, rotates);
-            OnMouse.Get().transform.position = new Vector3(Screen.width * 2, 0f, 0f);
+            OnMouse.GetGameObject.transform.position = new Vector3(Screen.width * 2, 0f, 0f);
         }
 
         private static void ApplyPicking(int tileType, byte rotates) {
-            if (Deck.IsEmpty()) return;
+            if (Deck.IsEmpty) return;
             OnMouse.Create();
-            OnMouse.Get().transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
-            OnMouse.Get().AddComponent<SpriteRenderer>();
-            OnMouse.Get().AddComponent<TileInfo>();
-            OnMouse.GetTile().InitTile(tileType);
-            OnMouse.GetTile().Rotates = (sbyte) rotates;
-            OnMouse.GetSprite().sprite = Resources.Load<Sprite>("Tiles/" + GetVariation(tileType)); // 80-All, 24-Vanilla
-            OnMouse.GetSprite().sortingOrder = 100;
-            Rotate.Sprite(rotates, OnMouse.Get());
-            if (Net.Game.IsOnline() && !Net.Game.MyTurn()) {
+            OnMouse.GetGameObject.transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
+            OnMouse.GetGameObject.AddComponent<SpriteRenderer>();
+            OnMouse.GetGameObject.AddComponent<TileInfo>();
+            OnMouse.Get.InitTile(tileType);
+            OnMouse.Get.Rotates = (sbyte) rotates;
+            OnMouse.GetSprite.sprite = Resources.Load<Sprite>("Tiles/" + GetVariation(tileType)); // 80-All, 24-Vanilla
+            OnMouse.GetSprite.sortingOrder = 100;
+            Rotate.Sprite(rotates, OnMouse.GetGameObject);
+            if (Net.Game.IsOnline && !Net.Game.MyTurn) {
                 Cursor.visible = true;
             } else {
                 Cursor.visible = false;
@@ -191,7 +184,7 @@ namespace Code.Game {
         }
 
         public static void Return() {
-            var type = OnMouse.GetTile().Type;
+            var type = OnMouse.Get.Type;
             Deck.Add(type);
             OnMouse.Destroy();
             Cursor.visible = true;

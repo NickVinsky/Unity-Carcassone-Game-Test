@@ -53,9 +53,7 @@ namespace Code.Game.Building {
         public static int BiggestRoadSize;
         public static PlayerColor BiggestRoadFounder = PlayerColor.NotPicked;
 
-        public static string ArrayToString(byte[] array) {
-            return array.Length == 0 ? "Array is empty!" : array.Aggregate(string.Empty, (current, a) => current + a);
-        }
+        public static string ArrayToString(byte[] array) => array.Length == 0 ? "Array is empty!" : array.Aggregate(string.Empty, (current, a) => current + a);
 
         private static void SetPattern(Area area) {
             switch (area) {
@@ -124,7 +122,7 @@ namespace Code.Game.Building {
             return output;
         }
         private static byte[] Opposite(Location loc) {
-            var nodes = loc.GetNodes();
+            var nodes = loc.Nodes;
             var l = nodes.Length;
             var output = new byte[l];
             for (var i = 0; i < l; i++) {
@@ -154,21 +152,21 @@ namespace Code.Game.Building {
         public static City GetCity(Location loc) {
             var city = Cities.FirstOrDefault(p => p.ID == loc.Link);
             if (city != null) return city;
-            Cities.Add(new City(Counter.Next(Area.City), loc.Parent.IntVector(), loc));
+            Cities.Add(new City(Counter.Next(Area.City), loc.Parent.IntVector, loc));
             loc.Link = Counter.Cities;
             return Cities.Last();
         }
         public static Road GetRoad(Location loc) {
             var road = Roads.FirstOrDefault(p => p.ID == loc.Link);
             if (road != null) return road;
-            Roads.Add(new Road(Counter.Next(Area.Road), loc.Parent.IntVector(), loc));
+            Roads.Add(new Road(Counter.Next(Area.Road), loc.Parent.IntVector, loc));
             loc.Link = Counter.Roads;
             return Roads.Last();
         }
         public static Field GetField(Location loc) {
             var field = Fields.FirstOrDefault(p => p.ID == loc.Link);
             if (field != null) return field;
-            Fields.Add(new Field(Counter.Next(Area.Field), loc.Parent.IntVector()));
+            Fields.Add(new Field(Counter.Next(Area.Field), loc.Parent.IntVector));
             loc.Link = Counter.Fields;
             return Fields.Last();
         }
@@ -196,8 +194,8 @@ namespace Code.Game.Building {
             for (byte i = 0; i < 4; i++) {
                 var side = (Side) i;
                 if (Tile.Nearby.Exist(v, side)) {
-                    var neighborTile = Tile.Nearby.GetLast();
-                    foreach (var loc in neighborTile.GetLocations()) {
+                    var neighborTile = Tile.Nearby.GetLast;
+                    foreach (var loc in neighborTile.GetLocations) {
                         Connect(putedTile, side, loc, founder);
                     }
                 } else {
@@ -238,9 +236,9 @@ namespace Code.Game.Building {
         }
 
         public static void Init() {
-            var startingTile = Tile.GetStarting();
-            var v = startingTile.IntVector();
-            foreach (var loc in startingTile.GetLocations()) {
+            var startingTile = Tile.GetStarting;
+            var v = startingTile.IntVector;
+            foreach (var loc in startingTile.GetLocations) {
                 Add(loc, v);
             }
             LogConstructions();
@@ -271,7 +269,7 @@ namespace Code.Game.Building {
         private static byte[] FindCommonNodes(Location pLoc, Location nLoc, Side nSide) {
             var pattern = ApplyPattern(pLoc.Type, Tile.Nearby.GetOppositeSide(nSide));
             var reversedNLoc = Opposite(nLoc);
-            return (from pNode in pLoc.GetNodes()
+            return (from pNode in pLoc.Nodes
                     let founded = reversedNLoc.Any(nNode => pNode == nNode)
                     where founded
                     where pattern.Any(p => pNode == p)
@@ -279,14 +277,11 @@ namespace Code.Game.Building {
         }
 
         private static void MonasteriesChecker(TileInfo pivotTile) {
-            //Debug.Log("pivot " + pivotTile.IntVector().XY());
-            var corner = pivotTile.IntVector().CornerLeftBot();
+            var corner = pivotTile.IntVector.CornerLeftBot;
             for (var iX = 0; iX < 3; iX++) {
                 for (var iY = 0; iY < 3; iY++) {
-                    //var d = new Cell(corner, iX, iY);
-                    //Debug.logger.Log("X" + d.X + ";Y" + d.Y);
                     if (!Tile.Exist(new Cell(corner, iX, iY))) continue;
-                    foreach (var loc in Tile.LastCheckedTile.GetLocations()) {
+                    foreach (var loc in Tile.LastCheckedTile.GetLocations) {
                         if (loc.Type != Area.Monastery) continue;
                         GetMonastery(loc).CalcSurroundings();
                     }
@@ -296,11 +291,10 @@ namespace Code.Game.Building {
 
 
         private static void Connect(TileInfo pTile, Side side, Location nLoc, PlayerColor founder) {
-            //if (nLoc.Type == Area.Monastery) GetMonastery(nLoc).CalcSurroundings();
-            foreach (var pLoc in pTile.GetLocations()) {
+            foreach (var pLoc in pTile.GetLocations) {
 
                 if (pLoc.Type == Area.Monastery) {
-                    Add(pLoc, pTile.IntVector());
+                    Add(pLoc, pTile.IntVector);
                     continue;
                 }
 
@@ -313,11 +307,11 @@ namespace Code.Game.Building {
         }
 
         private static void Create(TileInfo tile, List<byte> freeSides) {
-            foreach (var loc in tile.GetLocations()) {
+            foreach (var loc in tile.GetLocations) {
                 var pattern = ApplyPattern(loc.Type, freeSides);
                 if (loc.Type == Area.Monastery) continue;
                 if (loc.Conform(pattern)) {
-                    Add(loc, tile.IntVector());
+                    Add(loc, tile.IntVector);
                 }
             }
         }

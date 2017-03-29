@@ -15,7 +15,7 @@ namespace Code.Network.Commands {
         [ServerCommand(NetCmd.RegisterMe)]
         public static void RegisterNewPlayer(NetworkMessage message) {
             var m = message.ReadMessage<NetPackPlayerInfo>();
-            if (Net.Game.InLobby()) AddLobbyPlayer(m);
+            if (Net.Game.InLobby) AddLobbyPlayer(m);
             else ReturnPlayerToGame(m);
         }
 
@@ -145,7 +145,7 @@ namespace Code.Network.Commands {
 
             Net.PlayersList[index] = curPlayer;
 
-            if (AllIsReady()) Net.StartCountdown();
+            if (AllIsReady) Net.StartCountdown();
             else Net.StopCountdown();
             FormAndSendLobbyPlayersList();
         }
@@ -184,8 +184,8 @@ namespace Code.Network.Commands {
 
             //if (lastID != curPlayer.ConnectionId || lastColor != curPlayer.Color) Net.Server.SendToAll(NetCmd.RefreshPlayersInfoAndReformPlayersList, NullMsg);
             if(index != -1) Net.PlayersList[index] = curPlayer;
-            if (Net.Game.IsStarted()) return;
-            if (AllIsReady()) Net.StartCountdown();
+            if (Net.Game.IsStarted) return;
+            if (AllIsReady) Net.StartCountdown();
             //if (!Net.Game.IsStarted() && AllIsReady()) Net.StartCountdown();
             //else Net.StopCountdown();
         }
@@ -247,7 +247,7 @@ namespace Code.Network.Commands {
                 case Command.FinishTurn:
                     //Net.Server.SendToAll(NetCmd.Game, m);
                     //Debug.Log("LastTilesLeft = " + Net.Game.TilesLeftBeforeAdditionalTurn + "; DeckSize = " + Deck.DeckSize());
-                    if (Net.Game.HasAdditionalTurn && Net.Game.TilesLeftBeforeAdditionalTurn - 1 == Deck.DeckSize()) {
+                    if (Net.Game.HasAdditionalTurn && Net.Game.TilesLeftBeforeAdditionalTurn - 1 == Deck.DeckSize) {
                         Net.Server.SendToAll(NetCmd.Game, new NetPackGame {
                             Command = Command.NextPlayer,
                             Value = Net.Game.CurrentPlayerIndex,
@@ -257,7 +257,7 @@ namespace Code.Network.Commands {
                         Net.Game.HasAdditionalTurn = false;
                     } else {
                         Net.Game.HasAdditionalTurn = false;
-                        Net.Game.TilesLeftBeforeAdditionalTurn = Deck.DeckSize();
+                        Net.Game.TilesLeftBeforeAdditionalTurn = Deck.DeckSize;
                         Net.Server.NextPlayerTurn();
                     }
                     break;
@@ -304,21 +304,10 @@ namespace Code.Network.Commands {
             //Net.Server.SendToAll(NetCmd.FormPlayersList, new NetPackMessage{Message = pList});
         }
 
-        private static PlayerInfo GetPlayer(string uniKey) {
-            return Net.PlayersList.First(p => p.UniKey == uniKey);
-        }
-
-        private static int GetIndexOfPlayer(string uniKey) {
-            return Net.PlayersList.IndexOf(GetPlayer(uniKey));
-        }
-
-        private static bool PlayerWithNameExist(string playerName) {
-            return Net.PlayersList.Any(p => p.PlayerName == playerName);
-        }
-
-        private static bool PlayerWithUniKeyExist(string uniKey) {
-            return Net.PlayersList.Any(player => player.UniKey.Equals(uniKey));
-        }
+        private static PlayerInfo GetPlayer(string uniKey) => Net.PlayersList.First(p => p.UniKey == uniKey);
+        private static int GetIndexOfPlayer(string uniKey) => Net.PlayersList.IndexOf(GetPlayer(uniKey));
+        private static bool PlayerWithNameExist(string playerName) => Net.PlayersList.Any(p => p.PlayerName == playerName);
+        private static bool PlayerWithUniKeyExist(string uniKey) => Net.PlayersList.Any(player => player.UniKey.Equals(uniKey));
 
         private static int PlayerIndex(string playerName) {
             for (var i = 0; i < Net.PlayersList.Count; i++) {
@@ -329,9 +318,8 @@ namespace Code.Network.Commands {
             return -1;
         }
 
-        private static bool AllIsReady() {
-            return Net.PlayersList.All(p => p.IsReady);
-        }
+        private static bool AllIsReady => Net.PlayersList.All(p => p.IsReady);
+
         #endregion
     }
 }

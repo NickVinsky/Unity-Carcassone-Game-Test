@@ -7,49 +7,41 @@ using Random = UnityEngine.Random;
 namespace Code.Game {
     public static class Deck {
         private static TilesPack<int> _tilesPack = new TilesPack<int>();
-        private static int _lastPickedIndex;
 
         public static void Add(int type) {
             _tilesPack.Add(type);
         }
 
-        public static int LastPickedIndex() { return _lastPickedIndex; }
+        public static int LastPickedIndex { get; private set; }
 
-        public static int GenerateIndex() {
-            var maxIndex = _tilesPack.Count;
-            var rnd = Random.Range(0, maxIndex);
-            return rnd;
-        }
+        public static int GenerateIndex => Random.Range(0, _tilesPack.Count);
 
         public static int GenerateIndexSafe() {
-            var maxIndex = _tilesPack.Count;
-            var rnd = Random.Range(0, maxIndex);
-
+            var rnd = Random.Range(0, _tilesPack.Count);
             return Tile.CannotBePlacedOnBoard(rnd) ? GenerateIndexSafe() : rnd;
         }
 
-        public static int GetRandomTile() {
-            var rnd = GenerateIndex();
-            int result = _tilesPack[rnd];
-            _lastPickedIndex = rnd;
-            //_tilesPack.RemoveAt(rnd);
-            return result;
+        public static int GetRandomTile {
+            get {
+                var rnd = GenerateIndex;
+                var result = _tilesPack[rnd];
+                LastPickedIndex = rnd;
+                return result;
+            }
         }
 
         public static int GetAndSaveIndex(int tileId) {
-            for (int i = 0; i < _tilesPack.Count; i++) {
-                if (_tilesPack[i] == tileId) {
-                    _lastPickedIndex = i;
-                    return i;
-                }
+            for (var i = 0; i < _tilesPack.Count; i++) {
+                if (_tilesPack[i] != tileId) continue;
+                LastPickedIndex = i;
+                return i;
             }
             return 0;
         }
 
         public static int GetTileByIndex(int index) {
-            int result = _tilesPack[index];
-            _lastPickedIndex = index;
-            //_tilesPack.RemoveAt(index);
+            var result = _tilesPack[index];
+            LastPickedIndex = index;
             return result;
         }
 
@@ -61,24 +53,18 @@ namespace Code.Game {
             }
         }
 
-        public static void SetLastPickedIndex(int index) { _lastPickedIndex = index; }
+        public static void SetLastPickedIndex(int index) { LastPickedIndex = index; }
 
-
-        public static void DeleteLastPicked() { _tilesPack.RemoveAt(_lastPickedIndex); }
+        public static void DeleteLastPicked() { _tilesPack.RemoveAt(LastPickedIndex); }
 
         public static void DeleteFirst() {
             _tilesPack.RemoveAt(0);
         }
 
-        public static int DeckSize() {
-            return _tilesPack.Count;
-        }
-        public static bool IsEmpty() {
-            return _tilesPack.Count == 0;
-        }
-        public static bool LastTile() {
-            return _tilesPack.Count == 1;
-        }
+        public static int DeckSize => _tilesPack.Count;
+        public static bool IsEmpty => _tilesPack.Count == 0;
+        public static bool LastTile => _tilesPack.Count == 1;
+
         public static void InitVanillaDeck() {
             _tilesPack.OnAddOrRemove += EventOnAddOrRemove;
             _tilesPack.Clear();
@@ -205,7 +191,7 @@ namespace Code.Game {
 
         public static void EventOnAddOrRemove(object sender, EventArgs e) {
             if (GameObject.Find(GameRegulars.DeckCounter) == null) return;
-            GameObject.Find(GameRegulars.DeckCounter).GetComponent<Text>().text = DeckSize() + "x";
+            GameObject.Find(GameRegulars.DeckCounter).GetComponent<Text>().text = DeckSize + "x";
         }
     }
 }

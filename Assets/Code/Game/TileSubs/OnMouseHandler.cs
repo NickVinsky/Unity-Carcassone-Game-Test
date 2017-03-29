@@ -3,54 +3,42 @@ using UnityEngine;
 
 namespace Code.Game.TileSubs {
     public class OnMouseHandler {
-        private GameObject _tileOnMouse;
-
         public void Create() {
-            if (!Exist()) _tileOnMouse = new GameObject(GameRegulars.TileOnMouseName);
+            if (!Exist) GetGameObject = new GameObject(GameRegulars.TileOnMouseName);
         }
 
-        public GameObject Get() { return _tileOnMouse; }
+        public GameObject GetGameObject { get; private set; }
 
-        public SpriteRenderer GetSprite() {
-            return _tileOnMouse.GetComponent<SpriteRenderer>();
-        }
+        public SpriteRenderer GetSprite => GetGameObject.GetComponent<SpriteRenderer>();
 
-        public TileInfo GetTile() {
-            return _tileOnMouse.GetComponent<TileInfo>();
-        }
+        public TileInfo Get => GetGameObject.GetComponent<TileInfo>();
 
-        public sbyte GetRotation() {
-            return GetTile().Rotates;
-        }
+        public sbyte GetRotation => Get.Rotates;
 
-        public Area GetSide(int side) {
-            return GetTile().GetSide(side);
-        }
+        public Area GetSide(int side) => Get.GetSide(side);
 
         public void SetPosition(Vector3 pos) {
-            if (!Exist()) return;
-            _tileOnMouse.transform.position = pos;
+            if (!Exist) return;
+            GetGameObject.transform.position = pos;
         }
 
         public void SetRotation(int r) {
-            Tile.Rotate.Sprite(r, _tileOnMouse);
-            GetTile().Rotates = (sbyte)r;
+            Tile.Rotate.Sprite(r, GetGameObject);
+            Get.Rotates = (sbyte)r;
         }
 
-        public bool Exist() {
-            return _tileOnMouse != null;
-        }
+        public bool Exist => GetGameObject != null;
 
         public void Focus() {
-            if (!Exist()) return;
-            var tomPos = _tileOnMouse.transform.localPosition;
-            var locScale = _tileOnMouse.transform.localScale;
+            if (!Exist) return;
+            var tomPos = GetGameObject.transform.localPosition;
+            var locScale = GetGameObject.transform.localScale;
             var newPos = new Vector3(tomPos.x / locScale.x, tomPos.y / locScale.y, -1f);
             Camera.main.transform.position = newPos;
         }
 
         public void Destroy() {
-            Object.DestroyImmediate(_tileOnMouse);
+            Object.DestroyImmediate(GetGameObject);
         }
 
         // Вызывается из локальной игры
@@ -69,20 +57,20 @@ namespace Code.Game.TileSubs {
             gridCell.tag = GameRegulars.TileTag;
             Object.Destroy(gridCell.GetComponent<BoxCollider2D>());
             var cSprite = gridCell.GetComponent<SpriteRenderer>();
-            cSprite.sprite = GetSprite().sprite;
-            cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(_tileOnMouse));
+            cSprite.sprite = GetSprite.sprite;
+            cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(GetGameObject));
             cSprite.color = GameRegulars.NormalColor;
             var cTileInfo = gridCell.GetComponent<TileInfo>();
             cTileInfo.Founder = founder;
-            cTileInfo.Rotates = GetTile().Rotates;
-            cTileInfo.InitTile(GetTile().Type);
+            cTileInfo.Rotates = Get.Rotates;
+            cTileInfo.InitTile(Get.Type);
             cTileInfo.ApplyRotation();
             Destroy();
 
             var reconstructInfo = new ReconstructionInfo {
-                Cell = cTileInfo.IntVector(),
+                Cell = cTileInfo.IntVector,
                 TileID = cTileInfo.Type,
-                TileIndex = Deck.LastPickedIndex(),
+                TileIndex = Deck.LastPickedIndex,
                 Rotation = (byte) cTileInfo.Rotates,
                 Founder = founder
             };

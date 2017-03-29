@@ -12,8 +12,6 @@ using Object = UnityEngine.Object;
 
 namespace Code.Network.Composition {
     public class GameMaster {
-        private bool _offline = true;
-        private bool _isStarted;
         public bool InitComplite { get; private set; }
 
         public PlayerColor CurrentPlayerColor = PlayerColor.NotPicked;
@@ -21,7 +19,7 @@ namespace Code.Network.Composition {
         public string CurrentPlayerName;
 
         public bool TilePicked;
-        public Vector2 TPos;
+        public Vector2 Pos;
 
         public bool HasAdditionalTurn { get; set; }
         public int TilesLeftBeforeAdditionalTurn { get; set; }
@@ -34,15 +32,15 @@ namespace Code.Network.Composition {
 
         public bool ChatDisfocused { get; set; }
 
-        public void SetOnline() { _offline = false; }
-        public void SetOffline() { _offline = true; }
-        public bool IsOnline() { return !_offline; }
-        public bool IsOffline() { return _offline; }
+        public void SetOnline() { IsOffline = false; }
+        public void SetOffline() { IsOffline = true; }
+        public bool IsOnline => !IsOffline;
+        public bool IsOffline { get; private set; } = true;
 
-        public void GameStarted() { _isStarted = true; }
-        public void GameEnded() { _isStarted = false; }
-        public bool IsStarted() { return _isStarted; }
-        public bool InLobby() { return !_isStarted; }
+        public void GameStarted() { IsStarted = true; }
+        public void GameEnded() { IsStarted = false; }
+        public bool IsStarted { get; private set; }
+        public bool InLobby => !IsStarted;
 
         public GameObject[] Pointer;
 
@@ -66,7 +64,7 @@ namespace Code.Network.Composition {
             var sprite = Resources.Load<Sprite>("Pointer");
             _streamingCursorOffsetX = sprite.rect.width / 200;
             _streamingCursorOffsetY = sprite.rect.height / 200;
-            for (int i = 1; i <= Net.ColorsCount; i++) {
+            for (var i = 1; i <= Net.ColorsCount; i++) {
                 var curColor = (PlayerColor) i;
                 Pointer[i] = new GameObject(i + "//" + curColor);
                 Object.DontDestroyOnLoad(Pointer[i]);
@@ -83,7 +81,7 @@ namespace Code.Network.Composition {
             InitComplite = true;
         }
 
-        public bool MyTurn() { return CurrentPlayerColor == Player.Color; }
+        public bool MyTurn => CurrentPlayerColor == Player.Color;
 
         public void StreamCursor(PlayerColor playerColor, Vector3 vector) {
             if (!InitComplite) return;
@@ -139,7 +137,7 @@ namespace Code.Network.Composition {
 
 
             if (Player.Stage == GameStage.Wait)
-                if (TileOnMouseExist()) Tile.AttachToCoordinates(TPos);
+                if (TileOnMouseExist) Tile.AttachToCoordinates(Pos);
             if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
             switch (Player.Stage) {
                 case GameStage.Wait:
@@ -148,9 +146,9 @@ namespace Code.Network.Composition {
                     break;
                 case GameStage.Start:
                     if (Input.GetKeyDown(k.PickTileFromDeck)) {
-                        if (!Deck.IsEmpty()) {
+                        if (!Deck.IsEmpty) {
                             var i = Deck.GenerateIndexSafe();
-                            Net.Client.Action(Command.TilePicked, i, Tile.Rotate.Random());
+                            Net.Client.Action(Command.TilePicked, i, Tile.Rotate.Random);
                             AttachTileToMouse();
                             Player.Stage = GameStage.PlacingTile;
                         }
@@ -166,10 +164,10 @@ namespace Code.Network.Composition {
                     break;
                 case GameStage.PlacingFollower:
                     if (Input.GetKeyDown(KeyCode.Tab)) {
-                        Tile.LastPlaced().ShowNextPossiblePlacement();
+                        Tile.LastPlaced.ShowNextPossiblePlacement();
                     }
                     if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(k.ReturnTileToDeck)) {
-                        Tile.LastPlaced().HideAll();
+                        Tile.LastPlaced.HideAll();
                         Player.Stage = GameStage.Finish;
                     }
                     break;
@@ -215,13 +213,13 @@ namespace Code.Network.Composition {
         }
 
         public void OnMouseOver(GameObject c) {
-            if (!MyTurn()) return; // Проверка - мой ли сейчас ход
-            if (Tile.Nearby.TileOnMouseCanBeAttachedTo(c) && TileOnMouseExist()) {
+            if (!MyTurn) return; // Проверка - мой ли сейчас ход
+            if (Tile.Nearby.TileOnMouseCanBeAttachedTo(c) && TileOnMouseExist) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                 Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 1});
                 return;
             }
-            if (TileOnMouseExist()) {
+            if (TileOnMouseExist) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CantAttachlColor;
                 Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 2});
                 return;
@@ -229,13 +227,13 @@ namespace Code.Network.Composition {
             c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
         }
         public void OnMouseExit(GameObject c) {
-            if (!MyTurn()) return; // Проверка - мой ли сейчас ход
+            if (!MyTurn) return; // Проверка - мой ли сейчас ход
             if (c.GetComponent<SpriteRenderer>().color == GameRegulars.NormalColor) return;
             c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
             Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 0});
         }
         public void OnMouseUp(GameObject c) {
-            if (!MyTurn()) return; // Проверка - мой ли сейчас ход
+            if (!MyTurn) return; // Проверка - мой ли сейчас ход
             if (!Tile.Nearby.TileOnMouseCanBeAttachedTo(c) || MouseState == State.Dragging) return;
             PutTileFromMouse(c);
         }
@@ -251,9 +249,9 @@ namespace Code.Network.Composition {
         }
 
         public void DeckClick(Vector2 t, Vector2 m) {
-            if (!MyTurn()) return;
+            if (!MyTurn) return;
             if (Player.Stage != GameStage.Start) return;
-            if (Deck.IsEmpty()) return;
+            if (Deck.IsEmpty) return;
             var i = Deck.GenerateIndexSafe();
             Net.Client.Action(Command.TilePicked, i);
             AttachTileToMouse();
@@ -261,7 +259,7 @@ namespace Code.Network.Composition {
             Player.Stage = GameStage.PlacingTile;
         }
 
-        private bool TileOnMouseExist() { return TilePicked; }
+        private bool TileOnMouseExist => TilePicked;
 
         private void PutTileFromMouse(GameObject o) {
             TilePicked = false;
@@ -271,12 +269,12 @@ namespace Code.Network.Composition {
 
         private void RotateClockwise() {
             Tile.Rotate.Clockwise();
-            Net.Client.Action(Command.RotateTile, Tile.OnMouse.GetRotation());
+            Net.Client.Action(Command.RotateTile, Tile.OnMouse.GetRotation);
         }
 
         private void RotateCounterClockwise() {
             Tile.Rotate.CounterClockwise();
-            Net.Client.Action(Command.RotateTile, Tile.OnMouse.GetRotation());
+            Net.Client.Action(Command.RotateTile, Tile.OnMouse.GetRotation);
         }
 
         private void AttachTileToMouse() {

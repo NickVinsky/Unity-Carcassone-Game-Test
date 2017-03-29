@@ -14,20 +14,20 @@ namespace Code.Game.Building {
 
         public Monastery(int id, Location loc) {
             ID = id;
-            Cell = loc.Parent.IntVector();
+            Cell = loc.Parent.IntVector;
             Owner = PlayerColor.NotPicked;
             loc.Link = ID;
             SurroundingsCount = 0;
         }
 
         public void SetOwner(Location construct) {
-            Owner = construct.GetOwner();
+            Owner = construct.Owner;
             CalcSurroundings();
         }
 
         public void CalcSurroundings() {
             SurroundingsCount = 0;
-            var corner = Cell.CornerLeftBot();
+            var corner = Cell.CornerLeftBot;
             for (var iX = 0; iX < 3; iX++) {
                 for (var iY = 0; iY < 3; iY++) {
                     if (Tile.Exist(new Cell(corner, iX, iY))) SurroundingsCount++;
@@ -52,7 +52,7 @@ namespace Code.Game.Building {
             var vs = "(" + Cell.X + ";" + Cell.Y + ")";
             var log = "[" + Type + "#" + ID + "][" + SurroundingsCount + "] " + s + "/" + vs;
             Debug.Log(log);
-            if (Net.Game.IsOnline()) Net.Client.ChatMessage(log);
+            if (Net.Game.IsOnline) Net.Client.ChatMessage(log);
         }
     }
 }

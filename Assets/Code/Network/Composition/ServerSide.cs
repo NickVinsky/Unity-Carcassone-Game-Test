@@ -87,7 +87,7 @@ namespace Code.Network.Composition {
         }
 
         public void ReformPlayersList() {
-            if (Net.Game.IsStarted()) {
+            if (Net.Game.IsStarted) {
                 RefreshInGamePlayersList();
             } else {
                 ServerRegister.FormAndSendLobbyPlayersList();

@@ -168,23 +168,8 @@ namespace Code.Network.Composition {
                 AddPatron(hasKingsPatronage, o.transform.FindChild("King"), ref patronsCount, (PlayerColor) pColor);
                 AddPatron(hasAtamansPatronage, o.transform.FindChild("Ataman"), ref patronsCount, (PlayerColor) pColor);
 
-                /*var king = o.transform.FindChild("King");
-                if (hasKingsPatronage) {
-                    king.GetComponent<Image>().enabled = true;
-                    v = king.transform.localPosition;
-                    king.transform.localPosition = new Vector3(OffsetFromMeeple, v.y, v.z);
-                    king.GetComponent<Outline>().effectColor = Net.Color((PlayerColor) pColor);
-                    patronsCount++;
-                } else king.GetComponent<Image>().enabled = false;*/
-
                 v = o.transform.FindChild("Panel").GetComponent<RectTransform>().anchoredPosition;
                 o.transform.FindChild("Panel").GetComponent<RectTransform>().anchoredPosition = new Vector3(OffsetFromLeft + PatronIconWidth * patronsCount, v.y, v.z);
-
-
-                //o.transform.FindChild("MeepleStack").GetComponent<Image>().color = Net.Color((PlayerColor) pColor);
-                //o.transform.FindChild("MeepleStack").GetComponent<Image>().sprite = Resources.Load<Sprite>("MeepleStack/" + pFollowersNumber);
-
-
 
                 if (pMoves) {
                     o.GetComponent<Image>().color = GameRegulars.CurMovingPlayerColor;
@@ -231,7 +216,6 @@ namespace Code.Network.Composition {
                     break;
                 case Follower.BigMeeple:
                     renderInterval = 6f;
-                    //containerName = "BigMeepleContainer";
                     containerName = "MeepleContainer";
                     followerName = "BigMeeple";
                     spriteName = "MeepleShadowed";
@@ -240,7 +224,6 @@ namespace Code.Network.Composition {
                     break;
                 case Follower.Mayor:
                     renderInterval = 8f;
-                    //containerName = "MayorContainer";
                     containerName = "MeepleContainer";
                     followerName = "Mayor";
                     spriteName = "MayorShadowed";
@@ -249,7 +232,6 @@ namespace Code.Network.Composition {
                     break;
                 case Follower.Pig:
                     renderInterval = 5f;
-                    //containerName = "PigContainer";
                     containerName = "MeepleContainer";
                     followerName = "Pig";
                     spriteName = "PigShadowed";
@@ -276,16 +258,14 @@ namespace Code.Network.Composition {
             var nLen = followerName.Length - 1;
 
             var parent = slot.transform.FindChild("Panel").FindChild(containerName);
-            //if (parent.childCount == quantity) return;
 
             var children = (from Transform child in parent
                             where child.name.Substring(0, 3) == followerName.Substring(0, 3)
                             select child.gameObject).ToList();
-            //parent.DetachChildren();
+
             children.ForEach(Object.Destroy);
 
             Meeples = new GameObject[quantity];
-            // for (var meepleCounter = quantity - 1; meepleCounter >= 0; meepleCounter--) {
             for (var meepleCounter = 0; meepleCounter < quantity; meepleCounter++) {
                 renderOffset += renderInterval + 5f;
                 Meeples[meepleCounter] = new GameObject(followerName + meepleCounter);
@@ -295,7 +275,6 @@ namespace Code.Network.Composition {
                 Meeples[meepleCounter].GetComponent<RectTransform>().anchorMin = new Vector2(0f, 0.5f);
                 Meeples[meepleCounter].GetComponent<RectTransform>().anchorMax = new Vector2(0f, 0.5f);
                 Meeples[meepleCounter].GetComponent<RectTransform>().anchoredPosition = new Vector3(renderOffset, 0f, 0f);
-                // 10 + meepleCounter * renderInterval
                 Meeples[meepleCounter].GetComponent<RectTransform>().localScale = scale;
                 Meeples[meepleCounter].GetComponent<RectTransform>().sizeDelta = new Vector2(0.8f, 0.9f);
                 Meeples[meepleCounter].AddComponent<SpriteRenderer>();
@@ -321,7 +300,7 @@ namespace Code.Network.Composition {
             ChatInfo(infoType, extraMessage, string.Empty);
         }
         public void ChatInfo(ConnInfo infoType, string extraMessage, string fromPlayer) {
-            string sInfo = string.Empty;
+            var sInfo = string.Empty;
             switch (infoType) {
                 case ConnInfo.PlayerRegistred:
                     sInfo = Player.PlayerName + " joined the lobby";

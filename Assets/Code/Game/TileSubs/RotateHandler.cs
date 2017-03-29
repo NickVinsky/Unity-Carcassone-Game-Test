@@ -4,24 +4,19 @@ using UnityEngine;
 namespace Code.Game.TileSubs {
     public class RotateHandler {
 
-        public byte Random() {
-            return (byte) UnityEngine.Random.Range(0, 4);
-        }
+        public byte Random => (byte) UnityEngine.Random.Range(0, 4);
 
-        public float GetAngle(GameObject tile) {
-            var rotates = tile.GetComponent<TileInfo>().Rotates;
-            return Convert.ToSingle(rotates) * 90;
-        }
+        public float GetAngle(GameObject tile) => Convert.ToSingle(Tile.Get(tile).Rotates) * 90;
 
         public sbyte Set(sbyte turnsToDo, sbyte rotates) {
-            sbyte r = Convert.ToSByte(rotates + turnsToDo);
+            var r = Convert.ToSByte(rotates + turnsToDo);
             while (r > 3) r -= 4;
             while (r < 0) r += 4;
             return r;
         }
 
         public int Set(int n) {
-            int r = n;
+            var r = n;
             while (r > 3) r -= 4;
             while (r < 0) r += 4;
             return r;
@@ -62,8 +57,8 @@ namespace Code.Game.TileSubs {
         }
 
         public void Clockwise() {
-            Tile.OnMouse.GetSprite().transform.Rotate(Vector3.back * 90);
-            Tile.OnMouse.GetTile().Rotates = Set(1, Tile.OnMouse.GetTile().Rotates);
+            Tile.OnMouse.GetSprite.transform.Rotate(Vector3.back * 90);
+            Tile.OnMouse.Get.Rotates = Set(1, Tile.OnMouse.Get.Rotates);
         }
 
         public void Clockwise(GameObject tile) {
@@ -72,8 +67,8 @@ namespace Code.Game.TileSubs {
         }
 
         public void CounterClockwise(){
-            Tile.OnMouse.GetSprite().transform.Rotate(Vector3.back * -90);
-            Tile.OnMouse.GetTile().Rotates = Set(-1, Tile.OnMouse.GetTile().Rotates);
+            Tile.OnMouse.GetSprite.transform.Rotate(Vector3.back * -90);
+            Tile.OnMouse.Get.Rotates = Set(-1, Tile.OnMouse.Get.Rotates);
         }
 
         public void CounterClockwise(GameObject tile){

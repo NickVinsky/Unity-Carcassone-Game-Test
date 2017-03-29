@@ -98,7 +98,7 @@ namespace Code.Network {
             try {
                 var discPlayer = Net.PlayersList.First(p => p.ID == conn.connectionId);
                 var index = Net.PlayersList.IndexOf(discPlayer);
-                if (Net.Game.InLobby()) Net.PlayersList.RemoveAt(index);
+                if (Net.Game.InLobby) Net.PlayersList.RemoveAt(index);
             } catch (Exception ex) {
                 // ignored
             }

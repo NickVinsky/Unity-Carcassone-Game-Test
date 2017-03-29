@@ -74,7 +74,7 @@ namespace Code.Game {
 
         //After follower assignment
         public static void ApplyFollower(Location loc, Follower type) {
-            if (Net.Game.IsOnline()) Net.Client.SubtractFollower(loc.GetOwner(), type);
+            if (Net.Game.IsOnline) Net.Client.SubtractFollower(loc.Owner, type);
             RecalcFollowersNumber(type, Player, -1);
             Builder.SetOwner(loc);
             UpdateGUI();
@@ -86,7 +86,7 @@ namespace Code.Game {
         }
 
         private static void UpdateGUI() {
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
                 if (Net.IsServer) Net.Server.RefreshInGamePlayersList();
             } else {
                 UpdateLocalPlayer();
@@ -99,7 +99,7 @@ namespace Code.Game {
             var index = Net.PlayersList.IndexOf(player);
             if (pFollowersQuantity == followersToControl) {
                 if (construct != null && construct.GetType() == typeof(Field)) {
-                    var field = (Field) construct;
+                    var field = construct.GetAsField;
                     if (construct.HasPigOrBuilder(playerColor)) score += field.LinkedCities.Count;
                 }
                 player.Score += score;
@@ -110,7 +110,7 @@ namespace Code.Game {
         private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
             if (myFollowersQuantity == followersToControl) Player.Score += score;
             if (construct != null && construct.GetType() == typeof(Field)) {
-                var field = (Field) construct;
+                var field = construct.GetAsField;
                 if (construct.HasPigOrBuilder(Player.Color)) Player.Score += field.LinkedCities.Count;
             }
         }
@@ -119,7 +119,7 @@ namespace Code.Game {
             for (var i = 0; i < ownerFollowers.Length; i++) {
                 if (ownerFollowers[i] == 0) continue;
                 var curPlayer = (PlayerColor) i;
-                if (Net.Game.IsOnline()) {
+                if (Net.Game.IsOnline) {
                     if (Net.IsServer) AddScoreServer(curPlayer, ownerFollowers[i], followersToControl, score, construct);
                 }
                 if (curPlayer != Player.Color) continue;
@@ -128,10 +128,10 @@ namespace Code.Game {
         }
 
         public static void ReturnFollower(Location location) {
-            var owner = location.GetOwnership();
+            var owner = location.Ownership;
 
             if (owner.Color == PlayerColor.NotPicked) return;
-            if (Net.Game.IsOnline()) {
+            if (Net.Game.IsOnline) {
 
                 var player = Net.PlayersList.First(p => p.Color == owner.Color);
                 var index = Net.PlayersList.IndexOf(player);
@@ -155,7 +155,7 @@ namespace Code.Game {
 
             var score = monastery.SurroundingsCount;
 
-            if (Net.Game.IsOnline() && Net.IsServer) AddScoreServer(owner, 1, 1, score);
+            if (Net.Game.IsOnline && Net.IsServer) AddScoreServer(owner, 1, 1, score);
             if (owner == Player.Color) AddScoreLocal(1, 1, score);
 
             if (!final) monastery.Finished = true;
@@ -168,7 +168,7 @@ namespace Code.Game {
             CalcExtraPoints(road, 0);
 
             var score = road.LinkedTiles.Count;
-            score += innCoefficient * road.Size();
+            score += innCoefficient * road.Size;
             if (final) if (road.HasInn) score = 0;
             AddScore(oArray, oArray.Max(), score);
 
@@ -184,7 +184,7 @@ namespace Code.Game {
             var oArray = OwnersArray(city);
 
 
-            var score = city.ExtraPoints + city.Size() * (2 + cathedralCoefficient);
+            var score = city.ExtraPoints + city.Size * (2 + cathedralCoefficient);
             if (final) {
                 if (city.HasCathedral) score = 0;
                 else score /= 2;
@@ -198,8 +198,8 @@ namespace Code.Game {
 
         public static void Field(Field field, bool final = false) {
             foreach (var linkedCell in field.LinkedTiles) {
-                var linkedTile = linkedCell.Get();
-                foreach (var loc in linkedTile.GetLocations()) {
+                var linkedTile = linkedCell.GetTile;
+                foreach (var loc in linkedTile.GetLocations) {
                     if (loc.Type != Area.Field) continue;
                     if (loc.Link != field.ID) continue;
 
@@ -233,19 +233,19 @@ namespace Code.Game {
                 var curOwner = (int) owner.Color;
                 if (owner.FollowerType == Follower.Meeple) oArray[curOwner]++;
                 if (owner.FollowerType == Follower.BigMeeple) oArray[curOwner] += 2;
-                if (owner.FollowerType == Follower.Mayor) oArray[curOwner] += construct.GetAsCity().CoatOfArmsQuantity;
+                if (owner.FollowerType == Follower.Mayor) oArray[curOwner] += construct.GetAsCity.CoatOfArmsQuantity;
             }
             return oArray;
         }
 
         private static void RemovePlacements(Construction construct) {
             foreach (var tile in construct.LinkedTiles) {
-                foreach (var loc in tile.Get().GetLocations()) {
+                foreach (var loc in tile.GetTile.GetLocations) {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
-                        if (loc.GetOwnership().FollowerType == Follower.Barn) continue;
-                        if (Net.Game.IsOnline()) {
+                        if (loc.Ownership.FollowerType == Follower.Barn) continue;
+                        if (Net.Game.IsOnline) {
                             if (Net.IsServer) ReturnFollower(loc);
-                            Net.Client.Action(Command.RemovePlacement, tile, loc.GetID());
+                            Net.Client.Action(Command.RemovePlacement, tile, loc.ID);
                         } else {
                             loc.RemovePlacement();
                             //loc.MakeTransparent();
@@ -257,7 +257,7 @@ namespace Code.Game {
 
         private static void CalcExtraPoints(Construction construct, int extraPoints) {
             foreach (var tile in construct.LinkedTiles) {
-                foreach (var loc in tile.Get().GetLocations()) {
+                foreach (var loc in tile.GetTile.GetLocations) {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
                         construct.AddExtraPoints(loc, extraPoints);
                     }
@@ -266,8 +266,8 @@ namespace Code.Game {
         }
 
         private static void RemovePlacement(Monastery monastery) {
-            if (Net.Game.IsOnline()) {
-                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetMonastery());
+            if (Net.Game.IsOnline) {
+                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetMonastery);
                 Net.Client.Action(Command.RemovePlacementMonk, monastery.Cell, monastery.ID);
             } else {
                 Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);

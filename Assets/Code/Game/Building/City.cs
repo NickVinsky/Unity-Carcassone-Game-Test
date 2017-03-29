@@ -7,12 +7,11 @@ namespace Code.Game.Building {
         public bool HasCathedral { get; private set; }
 
         public City(int id, Cell v, Location loc) : base(id, v) {
-            Nodes += loc.GetNodes().Length;
+            Nodes += loc.Nodes.Length;
             Type = Area.City;
         }
 
-        //public bool Finished() { return NodesToFinish == 0; }
-        public override bool NotFinished() { return 2 * Edges != Nodes; }
+        public override bool NotFinished => 2 * Edges != Nodes;
 
         private void CalcScore() {
             ScoreCalc.City(this);
@@ -33,16 +32,16 @@ namespace Code.Game.Building {
         public override void CalcNodesToFinish(PlayerColor founder) { FinalNodesCalcToFinish(founder); }
 
         private void FinalNodesCalcToFinish(PlayerColor founder) {
-            if (NotFinished()) return;
+            if (NotFinished) return;
             PlayerWhoFinished = founder;
             Finished = true;
 
-            if (Builder.BiggestCitySize < Size()) {
-                Builder.BiggestCitySize = Size();
+            if (Builder.BiggestCitySize < Size) {
+                Builder.BiggestCitySize = Size;
                 Builder.BiggestCityFounder = PlayerWhoFinished;
             }
 
-            if (!HasOwner()) return;
+            if (!HasOwner) return;
             CalcScore();
         }
 

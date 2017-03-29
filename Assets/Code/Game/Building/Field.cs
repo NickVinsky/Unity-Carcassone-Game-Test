@@ -13,9 +13,9 @@ namespace Code.Game.Building {
         }
 
         protected override void PostAddingAction(Location location) {
-            if (location.Type != Area.Field || HasBarn()) return;
+            if (location.Type != Area.Field || HasBarn) return;
 
-            var center = location.Parent.IntVector();
+            var center = location.Parent.IntVector;
             var hasLinks = new bool[4, 3];
 
 
@@ -34,72 +34,72 @@ namespace Code.Game.Building {
 
 
             if (location.Contains(new byte[] {0, 7})) {
-                if (HasCells(center.Left(), center.CornerLeftTop(), center.Top())) {
-                    foreach (var l in Tile.Get(center.Left()).GetLocations()) {
+                if (HasCells(center.Left, center.CornerLeftTop, center.Top)) {
+                    foreach (var l in Tile.Get(center.Left).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {2})) hasLinks[0, 0] = true;
                     }
 
-                    foreach (var l in Tile.Get(center.CornerLeftTop()).GetLocations()) {
+                    foreach (var l in Tile.Get(center.CornerLeftTop).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {3, 4})) hasLinks[0, 1] = true;
                     }
 
-                    foreach (var l in Tile.Get(center.Top()).GetLocations()) {
+                    foreach (var l in Tile.Get(center.Top).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {5})) hasLinks[0, 2] = true;
                     }
                 }
             }
             if (location.Contains(new byte[] {1, 2})) {
-                if (HasCells(center.Top(), center.CornerRightTop(), center.Right())) {
-                    foreach (var l in Tile.Get(center.Top()).GetLocations()) {
+                if (HasCells(center.Top, center.CornerRightTop, center.Right)) {
+                    foreach (var l in Tile.Get(center.Top).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {4})) hasLinks[1, 0] = true;
                     }
 
-                    foreach (var l in Tile.Get(center.CornerRightTop()).GetLocations()) {
+                    foreach (var l in Tile.Get(center.CornerRightTop).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {5, 6})) hasLinks[1, 1] = true;
                     }
 
-                    foreach (var l in Tile.Get(center.Right()).GetLocations()) {
+                    foreach (var l in Tile.Get(center.Right).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {7})) hasLinks[1, 2] = true;
                     }
                 }
             }
             if (location.Contains(new byte[] {3, 4})) {
-                if (HasCells(center.Right(), center.CornerRightBot(), center.Bot())) {
-                    foreach (var l in Tile.Get(center.Right()).GetLocations()) {
+                if (HasCells(center.Right, center.CornerRightBot, center.Bot)) {
+                    foreach (var l in Tile.Get(center.Right).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {6})) hasLinks[2, 0] = true;
                     }
 
-                    foreach (var l in Tile.Get(center.CornerRightBot()).GetLocations()) {
+                    foreach (var l in Tile.Get(center.CornerRightBot).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {7, 0})) hasLinks[2, 1] = true;
                     }
 
-                    foreach (var l in Tile.Get(center.Bot()).GetLocations()) {
+                    foreach (var l in Tile.Get(center.Bot).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {1})) hasLinks[2, 2] = true;
                     }
                 }
             }
             if (location.Contains(new byte[] {5, 6})) {
-                if (HasCells(center.Bot(), center.CornerLeftBot(), center.Left())) {
-                    foreach (var l in Tile.Get(center.Bot()).GetLocations()) {
+                if (HasCells(center.Bot, center.CornerLeftBot, center.Left)) {
+                    foreach (var l in Tile.Get(center.Bot).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {0})) hasLinks[3, 0] = true;
                     }
 
-                    foreach (var l in Tile.Get(center.CornerLeftBot()).GetLocations()) {
+                    foreach (var l in Tile.Get(center.CornerLeftBot).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {1, 2})) hasLinks[3, 1] = true;
                     }
 
-                    foreach (var l in Tile.Get(center.Left()).GetLocations()) {
+                    foreach (var l in Tile.Get(center.Left).GetLocations) {
                         if (l.Type != Area.Field) continue;
                         if (l.Contains(new byte[] {3})) hasLinks[3, 2] = true;
                     }

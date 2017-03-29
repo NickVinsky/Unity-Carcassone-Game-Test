@@ -21,7 +21,7 @@ namespace Code.Network {
         public static string NetworkAddress;
         public static float Timer = 3f;
         public static int MaxPlayers = 5;
-        public static int ColorsCount = Enum.GetNames(typeof(PlayerColor)).Length - 1;
+        public static readonly int ColorsCount = Enum.GetNames(typeof(PlayerColor)).Length - 1;
 
         static Net() {}
 
@@ -50,9 +50,7 @@ namespace Code.Network {
             NetworkPort = 0;
         }
 
-        public static string ColorString(PlayerColor pColor, string text) {
-            return "<color=#" + ColorCode(pColor) + ">" + text + "</color>";
-        }
+        public static string ColorString(PlayerColor pColor, string text) => "<color=#" + ColorCode(pColor) + ">" + text + "</color>";
 
         public static Color Color(PlayerColor pColor) {
             switch (pColor) {

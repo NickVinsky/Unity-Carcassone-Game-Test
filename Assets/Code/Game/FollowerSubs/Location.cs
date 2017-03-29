@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Code.Game.Data;
 using Code.Network;
 using UnityEngine;
@@ -11,7 +10,6 @@ namespace Code.Game.FollowerSubs {
         public District District { get; }
         public bool Indexed { get; set; }
 
-        private readonly byte _id;
         public Area Type { get; }
 
         public int Link { get; set; }
@@ -32,9 +30,7 @@ namespace Code.Game.FollowerSubs {
         //    |      |
         //    |6    3|
         //    | 5  4 |
-        private byte[] _nodes;
 
-        private PlayerColor _owner = PlayerColor.NotPicked;
         public Follower FollowerType { get; set; }
         public bool ReadyForMeeple { get; set; }
         public bool ReadyForPigOrBuilder { get; set; }
@@ -49,26 +45,22 @@ namespace Code.Game.FollowerSubs {
         private Vector2 _meeplePos;
         private GameObject _sprite;
 
-        public string GetMeeplePos() { return "[" + _meeplePos.x + ";" + _meeplePos.y + "]"; }
+        public string TextMeeplePos => "[" + _meeplePos.x + ";" + _meeplePos.y + "]";
 
-        public int GetDistrictSize() { return District.GetSize(); }
-        public bool LastInDistrict() { return District.GetSize() == _id + 1; }
+        public int DistrictSize => District.Size;
+        public bool LastInDistrict => District.Size == ID + 1;
 
         public Location(TileInfo parent, District district, LocationInfo locInfo) {
             Parent = parent;
             District = district;
 
-            _id = locInfo.LocID;
+            ID = locInfo.LocID;
             Type = locInfo.Type;
             _meeplePos = locInfo.MeeplePos;
 
-            if (locInfo.Nodes == null) locInfo.Nodes = new List<byte>();
-            var nLen = locInfo.Nodes.Count;
-            _nodes = new byte[nLen];
-            for (var i = 0; i < nLen; i++) _nodes[i] = locInfo.Nodes[i];
+            Nodes = locInfo.Nodes?.ToArray();
 
             LinkedToCity = locInfo.LinkedToCity;
-
             CoatOfArms = locInfo.CoatOfArms;
             HasCathedral = locInfo.HasCathedral;
             HasInn = locInfo.HasInn;
@@ -78,46 +70,38 @@ namespace Code.Game.FollowerSubs {
             ReadyForBarn = new bool[4];
         }
 
-        public byte[] GetNodes() { return _nodes; }
-        public bool CompareID(byte id){ return id == _id;}
-        public bool IsLinkedTo(int id) { return Link == id; }
-        public byte GetID() { return _id; }
+        public byte ID { get; }
+        public byte[] Nodes { get; private set; }
+        public bool CompareID(byte id) => id == ID;
+        public bool IsLinkedTo(int id) => Link == id;
 
-        public PlayerColor GetOwner() { return _owner; }
-        public Ownership GetOwnership() { return new Ownership{Color = _owner, FollowerType = FollowerType }; }
+        public PlayerColor Owner { get; private set; } = PlayerColor.NotPicked;
+        public Ownership Ownership => new Ownership{Color = Owner, FollowerType = FollowerType };
 
-        public bool IsBarrier() { return Type == Area.Road;}
+        public bool IsBarrier => Type == Area.Road;
 
-        public bool Contains(byte[] pattern) {
+        public bool Contains(byte[] pattern) => pattern.Select(p => Nodes.Any(n => n == p)).All(founded => founded);
             /*foreach (var p in pattern) {
                 bool founded = _nodes.Any(n => n == p);
                 if (!founded) return false;
             }*/
             //return pattern.All(p => _nodes.Contains(p));
-            return pattern.Select(p => _nodes.Any(n => n == p)).All(founded => founded);
-        }
 
-        public bool ContainsAnyOf(byte[] pattern) {
-            return _nodes.Any(n => pattern.Any(p => n == p));
-        }
+        public bool ContainsAnyOf(byte[] pattern) => Nodes.Any(n => pattern.Any(p => n == p));
 
-        public bool ContainsOnly(byte[] pattern) {
+        public bool ContainsOnly(byte[] pattern) => Nodes.Select(n => pattern.Any(p => n == p)).All(founded => founded);
             /*foreach (var n in _nodes) {
                 bool founded = pattern.Any(p => n == p);
                 if (!founded) return false;
             }*/
-            return _nodes.Select(n => pattern.Any(p => n == p)).All(founded => founded);
-        }
 
-        public bool Conform(byte[] pattern) {
+        public bool Conform(byte[] pattern) => Nodes.Select(n => pattern.Any(p => n == p)).All(founded => founded);
             /*foreach (var n in _nodes) {
                 bool founded = pattern.Any(p => n == p);
                 if (!founded) return false;
             }
             return true;*/
             //return _nodes.All(pattern.Contains);
-            return _nodes.Select(n => pattern.Any(p => n == p)).All(founded => founded);
-        }
 
         private byte Trim(byte node, byte rotate) {
             var rNode = node;
@@ -139,59 +123,58 @@ namespace Code.Game.FollowerSubs {
             while (rNode > cap) {
                 rNode -= (byte) (cap + 1);
             }
-            //Debug.Log("r" + rotate + ": " + node + " => " + rNode + " " + _type);
             return rNode;
         }
 
         public void Rotate(byte rotate) {
-            if (_nodes == null) return;
-            var l = _nodes.Length;
+            if (Nodes == null) return;
+            var l = Nodes.Length;
             var rNodes = new byte[l];
             for (var i = 0; i < l; i++) {
-                rNodes[i] = Trim(_nodes[i], rotate);
+                rNodes[i] = Trim(Nodes[i], rotate);
             }
-            _nodes = rNodes;
+            Nodes = rNodes;
         }
 
         public void SetOwner(PlayerColor owner, Follower type) {
             //if (owner == _owner) return;
             ReadyForMeeple = false;
-            _owner = owner;
+            Owner = owner;
             FollowerType = type;
             ScoreCalc.ApplyOpponentFollower(this);
             if (type == Follower.Barn) {
                 for (var i = 0; i < 4; i++) {
                     if (!ReadyForBarn[i]) continue;
                     ShowBarn(i, Parent.Rotates);
-                    _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+                    _sprite.GetComponent<SpriteRenderer>().color = Net.Color(Owner);
                     return;
                 }
             } else {
                 SpriteInit(type);
-                _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+                _sprite.GetComponent<SpriteRenderer>().color = Net.Color(Owner);
             }
         }
 
         public void SetOwner(Follower type) {
             ReadyForMeeple = false;
             FollowerType = type;
-            _owner = MainGame.Player.Color;
+            Owner = MainGame.Player.Color;
             //if (_sprite.GetComponent<Rigidbody2D>() != null) {Object.Destroy(_sprite.GetComponent<Rigidbody2D>());}
             //if (_sprite.GetComponent<BoxCollider2D>() != null) {Object.Destroy(_sprite.GetComponent<BoxCollider2D>());}
             Object.Destroy(_sprite.GetComponent<Rigidbody2D>());
             Object.Destroy(_sprite.GetComponent<BoxCollider2D>());
-            _sprite.GetComponent<SpriteRenderer>().color = Net.Color(_owner);
+            _sprite.GetComponent<SpriteRenderer>().color = Net.Color(Owner);
 
             ScoreCalc.ApplyFollower(this, type);
             MainGame.ChangeGameStage(GameStage.Finish);
 
-            Tile.Cache.Last().LocactionID = (sbyte) _id;
-            Tile.Cache.Last().LocationOwner = _owner;
+            Tile.Cache.Last().LocactionID = (sbyte) ID;
+            Tile.Cache.Last().LocationOwner = Owner;
             Tile.Cache.Last().FollowerType = FollowerType;
 
-            if (!Net.Game.IsOnline()) return;
+            if (Net.Game.IsOffline) return;
             var name = _sprite.transform.parent.gameObject.name;
-            Net.Client.SendFollower(_owner, _id, name, FollowerType);
+            Net.Client.SendFollower(Owner, ID, name, FollowerType);
         }
 
         public void ShowMeeple(sbyte rotates, Follower type) {
@@ -225,7 +208,7 @@ namespace Code.Game.FollowerSubs {
             _sprite.AddComponent<Rigidbody2D>();
             _sprite.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             _sprite.AddComponent<FollowerHook>();
-            _sprite.GetComponent<FollowerHook>().Id = _id;
+            _sprite.GetComponent<FollowerHook>().Id = ID;
             _sprite.GetComponent<FollowerHook>().Type = type;
         }
 
@@ -255,7 +238,7 @@ namespace Code.Game.FollowerSubs {
 
         public void Cleanup() {
             Indexed = true;
-            if (Type == Area.Field) _owner = PlayerColor.NotPicked;
+            if (Type == Area.Field) Owner = PlayerColor.NotPicked;
         }
 
         private static string GetSpriteName(Follower type, bool variation = false) {
@@ -299,9 +282,9 @@ namespace Code.Game.FollowerSubs {
         }
 
         public void MakeTransparent() {
-            if (_owner == PlayerColor.NotPicked) return;
-            var c = _sprite.GetComponent<SpriteRenderer>().color;
-            var transColor = new Color(c.r, c.g, c.b, 0.6f);
+            if (Owner == PlayerColor.NotPicked) return;
+            //var c = _sprite.GetComponent<SpriteRenderer>().color;
+            //var transColor = new Color(c.r, c.g, c.b, 0.6f);
             _sprite.GetComponent<SpriteRenderer>().color = Color.black;
         }
     }

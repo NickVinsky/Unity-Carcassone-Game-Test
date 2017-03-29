@@ -30,42 +30,34 @@ namespace Code.Game.Building {
             LinkedTiles = new List<Cell> {v};
         }
 
-        protected bool HasOwner() { return Owners.Count > 0; }
+        protected bool Equals(Area type) => type == Type;
 
-        public bool HasPlayerMeeples(PlayerColor playerColor) {
-            return Owners.Where(owner => owner.Color == playerColor)
+        protected bool HasOwner => Owners.Count > 0;
+
+        public bool HasPlayerMeeples(PlayerColor playerColor) => Owners.Where(owner => owner.Color == playerColor)
                          .Any(owner => owner.FollowerType == Follower.Meeple || owner.FollowerType == Follower.BigMeeple ||
                                        owner.FollowerType == Follower.Mayor || owner.FollowerType == Follower.Wagon);
-        }
 
-        public bool HasMeeples() { return Owners.Any(owner => owner.FollowerType == Follower.Meeple || owner.FollowerType == Follower.BigMeeple); }
+        public bool HasMeeples => Owners.Any(owner => owner.FollowerType == Follower.Meeple || owner.FollowerType == Follower.BigMeeple);
+        public bool HasPigOrBuilder(PlayerColor playerColor) => Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Pig || owner.FollowerType == Follower.Builder);
+        public bool HasBuilder(PlayerColor playerColor) => Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Builder);
+        public bool HasBarn => Owners.Any(owner => owner.FollowerType == Follower.Barn);
+        public bool HasOnlyBarns => Owners.All(owner => owner.FollowerType == Follower.Barn);
 
-        public bool HasPigOrBuilder(PlayerColor playerColor) {
-            return Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Pig || owner.FollowerType == Follower.Builder);
-        }
+        protected bool HasCell(Cell cell) => Enumerable.Contains(LinkedTiles, cell);
+        protected bool HasCells(params Cell[] cell) => cell.Intersect(LinkedTiles).Count() == cell.Length;
 
-        public bool HasBuilder(PlayerColor playerColor) {
-            return Owners.Where(owner => owner.Color == playerColor).Any(owner => owner.FollowerType == Follower.Builder);
-        }
-
-        public bool HasBarn() { return Owners.Any(owner => owner.FollowerType == Follower.Barn); }
-
-        public bool HasOnlyBarns() { return Owners.All(owner => owner.FollowerType == Follower.Barn); }
-
-        protected bool HasCell(Cell cell) { return Enumerable.Contains(LinkedTiles, cell); }
-
-        protected bool HasCells(params Cell[] cell) {
+        /*protected bool HasCells(params Cell[] cell) {
             var cellNotFound = false;
             foreach (var c in cell) {
                 if (HasCell(c)) continue;
                 cellNotFound = true;
             }
             return !cellNotFound;
-        }
+        }*/
 
-        public int Size() { return LinkedTiles.Count; }
-
-        public virtual bool NotFinished() { return true; }
+        public int Size => LinkedTiles.Count;
+        public virtual bool NotFinished => true;
 
         protected void LinkTile(Cell cell) {
             if (!HasCell(cell)) LinkedTiles.Add(cell);
@@ -76,9 +68,9 @@ namespace Code.Game.Building {
             CheckForSpecialBuildings(location);
             if (linkedConstruct == ID) {
             } else if (linkedConstruct == -1) {
-                Nodes += location.GetNodes().Length;
+                Nodes += location.Nodes.Length;
                 location.Link = ID;
-                LinkTile(location.Parent.IntVector());
+                LinkTile(location.Parent.IntVector);
             } else {
                 Merge(location);
             }
@@ -86,15 +78,15 @@ namespace Code.Game.Building {
             CalcNodesToFinish(founder);
 
 
-            if (HasOwner()) location.ReadyForMeeple = false;
-            if (HasBarn()) {
-                if (Type == Area.Field && !HasOnlyBarns()) NeedBarnRecalc = true;
+            if (HasOwner) location.ReadyForMeeple = false;
+            if (HasBarn) {
+                if (Type == Area.Field && !HasOnlyBarns) NeedBarnRecalc = true;
                 location.ReadyForMeeple = false;
                 location.ReadyForPigOrBuilder = false;
             }
             else {
                 if (HasPlayerMeeples(founder)) {
-                    if (!HasPigOrBuilder(founder) && NotFinished()) location.ReadyForPigOrBuilder = true;
+                    if (!HasPigOrBuilder(founder) && NotFinished) location.ReadyForPigOrBuilder = true;
                     if (HasBuilder(founder)) {
                         Net.Client.RequestAdditionalTurn();
                     }
@@ -105,12 +97,11 @@ namespace Code.Game.Building {
         }
 
         public void SetOwner(Location construct) {
-            Owners.Add(construct.GetOwnership());
-            CalcNodesToFinish(construct.GetOwner());
+            Owners.Add(construct.Ownership);
+            CalcNodesToFinish(construct.Owner);
 
-            if (construct.GetOwnership().FollowerType != Follower.Barn) return;
-            var field = (Field) this;
-            ScoreCalc.Field(field);
+            if (construct.Ownership.FollowerType != Follower.Barn) return;
+            ScoreCalc.Field(GetAsField);
         }
 
         protected virtual void PostAddingAction(Location location) {}
@@ -127,8 +118,6 @@ namespace Code.Game.Building {
 
         protected virtual void MergeExtraPoints(int value){}
 
-        protected bool Equals(Area type) { return type == Type;}
-
         protected virtual void Delete(Construction construct) {}
 
         protected virtual void Merge(Location construct) {
@@ -137,33 +126,22 @@ namespace Code.Game.Building {
         }
 
         protected void Merge(Construction former, Location formerLoc) {
-            //var barnDetected = false;
             Edges += former.Edges;
             Nodes += former.Nodes;
-            if (former.Type == Area.Field) {
-                var field = (Field) this;
-                var formerField = (Field) former;
-                if (formerField.Gathered) field.Gathered = formerField.Gathered;
-            }
+            if (former.Type == Area.Field) if (former.GetAsField.Gathered) GetAsField.Gathered = former.GetAsField.Gathered;
             foreach (var tile in former.LinkedTiles) {
-                foreach (var fLoc in tile.Get().GetLocations()) {
+                foreach (var fLoc in tile.GetTile.GetLocations) {
                     if (!Equals(fLoc.Type)) continue;
                     if (fLoc.Link != former.ID) continue;
-                    //if (fLoc.GetOwnership().FollowerType == Follower.Barn) barnDetected = true;
 
                     CheckForSpecialBuildings(fLoc);
 
                     fLoc.Link = ID;
-                    LinkTile(fLoc.Parent.IntVector());
-                    if (fLoc.GetOwner() != PlayerColor.NotPicked) Owners.Add(fLoc.GetOwnership());
+                    LinkTile(fLoc.Parent.IntVector);
+                    if (fLoc.Owner != PlayerColor.NotPicked) Owners.Add(fLoc.Ownership);
                 }
             }
-            /*if (barnDetected) {
-                var field = (Field) this;
-                field.Gathered = true;
-                Debug.Log("ReGathering Field...");
-                ScoreCalc.Field(field);
-            }*/
+
             Delete(former);
         }
 
@@ -172,11 +150,11 @@ namespace Code.Game.Building {
             var vs = LinkedTiles.Aggregate(string.Empty, (current, v) => current + "(" + v.X + ";" + v.Y + ")");
             var log = "[" + Type + "#" + ID + "][" + Nodes + "/" + Edges + "][" + LinkedTiles.Count + "] " + s + "/" + vs;
             Debug.Log(log);
-            if (Net.Game.IsOnline()) Net.Client.ChatMessage(log);
+            if (Net.Game.IsOnline) Net.Client.ChatMessage(log);
         }
 
-        public City GetAsCity() { return this as City; }
-        public Road GetAsRoad() { return this as Road; }
-        public Field GetAsField() { return this as Field; }
+        public City GetAsCity  => this as City;
+        public Road GetAsRoad => this as Road;
+        public Field GetAsField => this as Field;
     }
 }
