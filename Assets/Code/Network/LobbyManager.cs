@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Code.Game;
 using Code.Game.Data;
 using Code.GUI;
 using Code.Network.Commands;
@@ -99,8 +100,10 @@ namespace Code.Network {
                 var discPlayer = Net.PlayersList.First(p => p.ID == conn.connectionId);
                 var index = Net.PlayersList.IndexOf(discPlayer);
                 if (Net.Game.InLobby) Net.PlayersList.RemoveAt(index);
+                else discPlayer.Left = true;
             } catch (Exception ex) {
                 // ignored
+                Debug.logger.Log(LogType.Exception, ex.Message);
             }
 
             Net.Server.ReformPlayersList();

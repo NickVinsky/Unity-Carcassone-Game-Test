@@ -112,10 +112,17 @@ namespace Code.Network.Commands {
             //Net.Client.Send(NetCmd.CurrentPlayerIs, new NetPackGame { Value = Net.Game.CurrentPlayerIndex, Color = Net.Game.CurrentPlayer});
         }
 
+        [ClientCommand(NetCmd.TileOnMouseInfo)]
+        public static void ReconstructTileOnMouse(NetworkMessage message) {
+            var m = message.ReadMessage<NetPackGame>();
+            Tile.RePickLast(m.Value, m.Byte);
+            Player.Stage = GameStage.PlacingTile;
+        }
+
         [ClientCommand(NetCmd.TileCache)]
         public static void ReconstructTilesOnGrid(NetworkMessage message) {
             var m = message.ReadMessage<NetPackTileCache>();
-            Tile.Reconstruct(m.Cell, m.TileID, m.TileIndex, m.Founder, m.Rotation, m.LocactionID, m.LocationOwner, m.FollowerType);
+            Tile.Reconstruct(m.Cell, m.TileID, m.TileIndex, m.Founder, m.Rotation, m.LocactionID, m.LocationOwner, m.FollowerType, m.ReadyForBarn);
         }
 
         [ClientCommand(NetCmd.TileCacheFinish)]

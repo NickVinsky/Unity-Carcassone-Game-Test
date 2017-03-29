@@ -38,5 +38,6 @@
         public const short TileCache = 83;
         public const short TileCacheFinish = 84;
         public const short Finalists = 85;
+        public const short TileOnMouseInfo = 86;
     }
 }

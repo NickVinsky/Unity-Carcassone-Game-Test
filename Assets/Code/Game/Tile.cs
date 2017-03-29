@@ -153,6 +153,10 @@ namespace Code.Game {
             ApplyPicking(tileID, Rotate.Random);
         }
 
+        public static void RePickLast(int tileId, byte rotates) {
+            ApplyPicking(tileId, rotates, false);
+        }
+
         public static void Pick(int index, byte rotates) {
             var tileID = Deck.GetTileByIndex(index);
             ApplyPicking(tileID, rotates);
@@ -164,7 +168,7 @@ namespace Code.Game {
             OnMouse.GetGameObject.transform.position = new Vector3(Screen.width * 2, 0f, 0f);
         }
 
-        private static void ApplyPicking(int tileType, byte rotates) {
+        private static void ApplyPicking(int tileType, byte rotates, bool withDeleting = true) {
             if (Deck.IsEmpty) return;
             OnMouse.Create();
             OnMouse.GetGameObject.transform.SetParent(GameObject.Find(GameRegulars.GameTable).transform);
@@ -175,12 +179,11 @@ namespace Code.Game {
             OnMouse.GetSprite.sprite = Resources.Load<Sprite>("Tiles/" + GetVariation(tileType)); // 80-All, 24-Vanilla
             OnMouse.GetSprite.sortingOrder = 100;
             Rotate.Sprite(rotates, OnMouse.GetGameObject);
-            if (Net.Game.IsOnline && !Net.Game.MyTurn) {
-                Cursor.visible = true;
-            } else {
-                Cursor.visible = false;
-            }
-            Deck.DeleteLastPicked();
+
+            if (Net.Game.IsOnline && !Net.Game.MyTurn) Cursor.visible = true;
+            else Cursor.visible = false;
+
+            if (withDeleting) Deck.DeleteLastPicked();
         }
 
         public static void Return() {
@@ -190,12 +193,13 @@ namespace Code.Game {
             Cursor.visible = true;
         }
 
-        public static void Reconstruct(Cell cell, int id, int tileIndex, PlayerColor founder, byte rotation, sbyte locId, PlayerColor owner, Follower followerType) {
-            Cache.Add(new ReconstructionInfo(cell, id, tileIndex, rotation, locId, owner));
+        public static void Reconstruct(Cell cell, int id, int tileIndex, PlayerColor founder, byte rotation, sbyte locId, PlayerColor owner, Follower followerType, bool[] barnReady) {
+            Cache.Add(new ReconstructionInfo(cell, id, tileIndex, rotation, locId, owner, barnReady));
             Deck.SetLastPickedIndex(tileIndex);
             OnMouse.Destroy();
             PickWithID(id, rotation);
             OnMouse.Put(cell, founder);
+            if (locId >= 0) Get(cell).BarnReadiness((byte) locId, barnReady);
             Get(cell).AssignOpponentFollower(owner, (byte) locId, followerType);
         }
 

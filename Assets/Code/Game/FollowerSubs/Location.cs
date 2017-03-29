@@ -136,6 +136,13 @@ namespace Code.Game.FollowerSubs {
             Nodes = rNodes;
         }
 
+        public void CacheLocation() {
+            Tile.Cache.Last().LocactionID = (sbyte) ID;
+            Tile.Cache.Last().LocationOwner = Owner;
+            Tile.Cache.Last().FollowerType = FollowerType;
+            Tile.Cache.Last().ReadyForBarn = ReadyForBarn;
+        }
+
         public void SetOwner(PlayerColor owner, Follower type) {
             //if (owner == _owner) return;
             ReadyForMeeple = false;
@@ -153,6 +160,7 @@ namespace Code.Game.FollowerSubs {
                 SpriteInit(type);
                 _sprite.GetComponent<SpriteRenderer>().color = Net.Color(Owner);
             }
+            CacheLocation();
         }
 
         public void SetOwner(Follower type) {
@@ -168,13 +176,11 @@ namespace Code.Game.FollowerSubs {
             ScoreCalc.ApplyFollower(this, type);
             MainGame.ChangeGameStage(GameStage.Finish);
 
-            Tile.Cache.Last().LocactionID = (sbyte) ID;
-            Tile.Cache.Last().LocationOwner = Owner;
-            Tile.Cache.Last().FollowerType = FollowerType;
-
             if (Net.Game.IsOffline) return;
             var name = _sprite.transform.parent.gameObject.name;
             Net.Client.SendFollower(Owner, ID, name, FollowerType);
+
+            CacheLocation();
         }
 
         public void ShowMeeple(sbyte rotates, Follower type) {

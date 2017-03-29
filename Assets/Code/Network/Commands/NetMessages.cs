@@ -103,6 +103,7 @@ namespace Code.Network.Commands {
         public sbyte LocactionID;
         public PlayerColor LocationOwner;
         public Follower FollowerType;
+        public bool[] ReadyForBarn = new bool[4];
     }
 
     public class NetPackRespond : MessageBase {

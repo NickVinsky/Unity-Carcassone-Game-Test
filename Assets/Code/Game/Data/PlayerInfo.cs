@@ -29,6 +29,8 @@
 
         public bool IsMyTurn;
 
+        public bool Left;
+
         public PlayerInfo() {
             InitGameRules();
             Score = 0;

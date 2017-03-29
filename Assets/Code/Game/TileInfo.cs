@@ -28,6 +28,8 @@ namespace Code.Game {
         public Location GetLocation(int id) => _follower.GetLocation((byte) id);
         public Location GetMonastery => _follower.GetMonastery;
 
+        public void BarnReadiness(byte id, bool[] barnReady) => _follower.BarnReadiness(id, barnReady);
+
         public Cell IntVector => new Cell(X, Y);
 
         private static byte[] A(params byte[] a) => a;

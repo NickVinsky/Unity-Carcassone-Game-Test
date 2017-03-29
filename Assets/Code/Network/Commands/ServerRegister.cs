@@ -3,6 +3,7 @@ using System.Linq;
 using Code.Game;
 using Code.Game.Data;
 using Code.Network.Attributes;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 
@@ -41,12 +42,13 @@ namespace Code.Network.Commands {
                 var player = GetPlayer(m.UniKey);
                 var index = GetIndexOfPlayer(m.UniKey);
                 player.ID = m.ID;
-                if (player.Stage == GameStage.PlacingTile) {
-                    player.Stage = GameStage.Start;
+                player.Left = false;
+                //if (player.Stage == GameStage.PlacingTile) {
+                    //player.Stage = GameStage.Start;
                     // TODO
                     // Уничтожить Tile.OnMouse у всех остальных участников игры
                     // Создать новый Tile.OnMouse по последнему Net.Game.LastPickedTileIndex
-                }
+                //}
                 Net.PlayersList[index] = player;
 
                 Net.Server.SendTo(m.ID, NetCmd.ReturnIntoGame, new NetPackPlayer { Player = player});
@@ -65,7 +67,8 @@ namespace Code.Network.Commands {
                     Rotation = tile.Rotation,
                     LocactionID = tile.LocactionID,
                     LocationOwner = tile.LocationOwner,
-                    FollowerType = tile.FollowerType
+                    FollowerType = tile.FollowerType,
+                    ReadyForBarn = tile.ReadyForBarn
                 };
                 Net.Server.SendTo(id, NetCmd.TileCache, cachedTile);
             }
@@ -167,7 +170,7 @@ namespace Code.Network.Commands {
 
 
 
-        [ServerCommand(NetCmd.UpdatePlayerInfo)]
+        /*[ServerCommand(NetCmd.UpdatePlayerInfo)]
         public static void UpdatePlayerInfo(NetworkMessage message) {
             var sender = message.ReadMessage<NetPackPlayerInfo>();
 
@@ -182,19 +185,16 @@ namespace Code.Network.Commands {
             curPlayer.MeeplesQuantity = sender.FollowersNumber;
             curPlayer.Score = sender.Score;
 
-            //if (lastID != curPlayer.ConnectionId || lastColor != curPlayer.Color) Net.Server.SendToAll(NetCmd.RefreshPlayersInfoAndReformPlayersList, NullMsg);
             if(index != -1) Net.PlayersList[index] = curPlayer;
             if (Net.Game.IsStarted) return;
             if (AllIsReady) Net.StartCountdown();
-            //if (!Net.Game.IsStarted() && AllIsReady()) Net.StartCountdown();
-            //else Net.StopCountdown();
         }
 
         [ServerCommand(NetCmd.UpdatePlayerInfoAndReformPList)]
         public static void UpdatePlayerInfoAndReformPList(NetworkMessage message) {
             UpdatePlayerInfo(message);
             ReformLobbyPlayersList(message);
-        }
+        }*/
 
         [ServerCommand(NetCmd.ReformLobbyPlayersList)] // This Command Used For Form Players List With Full knowlege about player (color etc.)
         public static void ReformLobbyPlayersList(NetworkMessage message) {
@@ -209,6 +209,7 @@ namespace Code.Network.Commands {
             SendCachedTiles(m.RequesterID);
             Net.Server.SendTo(m.RequesterID, NetCmd.GameData, new NetPackGame { Byte = (byte) Net.Game.CurrentPlayerIndex,
                 Color = Net.Game.CurrentPlayerColor, Trigger = Net.Game.TilePicked, Value = Net.Game.LastPickedTileIndex});
+            if (Tile.OnMouse.Exist) Net.Server.SendTo(m.RequesterID, NetCmd.TileOnMouseInfo, new NetPackGame { Value = Tile.OnMouse.Get.Type, Byte = (byte) Tile.OnMouse.GetRotation});
             Net.Server.RefreshInGamePlayersList();
         }
 
@@ -245,8 +246,6 @@ namespace Code.Network.Commands {
             var m = message.ReadMessage<NetPackGame>();
             switch (m.Command) {
                 case Command.FinishTurn:
-                    //Net.Server.SendToAll(NetCmd.Game, m);
-                    //Debug.Log("LastTilesLeft = " + Net.Game.TilesLeftBeforeAdditionalTurn + "; DeckSize = " + Deck.DeckSize());
                     if (Net.Game.HasAdditionalTurn && Net.Game.TilesLeftBeforeAdditionalTurn - 1 == Deck.DeckSize) {
                         Net.Server.SendToAll(NetCmd.Game, new NetPackGame {
                             Command = Command.NextPlayer,
@@ -266,6 +265,7 @@ namespace Code.Network.Commands {
                     break;
                 case Command.TilePicked:
                     Net.Server.SendToAll(NetCmd.Game, m);
+                    GetPlayer(Net.Game.CurrentPlayerColor).Stage = GameStage.PlacingTile;
                     break;
                 case Command.PutTile:
                     // TODO Просчет возможных вариантов размещения последователей только на сервере
@@ -294,30 +294,16 @@ namespace Code.Network.Commands {
 
         #region Private Methods
         public static void FormAndSendLobbyPlayersList() {
-            string pList = Net.PlayersList.Aggregate(string.Empty, (current, p) => current + (int)p.Color + Convert.ToInt32(p.IsReady) + p.PlayerName + Environment.NewLine);
+            var pList = Net.PlayersList.Aggregate(string.Empty, (current, p) => current + (int)p.Color + Convert.ToInt32(p.IsReady) + p.PlayerName + Environment.NewLine);
             pList = pList.TrimEnd('\r', '\n');
             Net.Server.SendToAll(NetCmd.FormLobbyPlayersList, new NetPackMessage{ Message = pList});
-
-            // Code for RichTextList
-            //string pList = Net.Player.Aggregate(string.Empty, (current, p) => current + ColorString(p.Color, p.PlayerName) + Environment.NewLine);
-            //pList = pList.TrimEnd('\r', '\n');
-            //Net.Server.SendToAll(NetCmd.FormPlayersList, new NetPackMessage{Message = pList});
         }
 
         private static PlayerInfo GetPlayer(string uniKey) => Net.PlayersList.First(p => p.UniKey == uniKey);
+        private static PlayerInfo GetPlayer(PlayerColor color) => Net.PlayersList.First(p => p.Color == color);
         private static int GetIndexOfPlayer(string uniKey) => Net.PlayersList.IndexOf(GetPlayer(uniKey));
         private static bool PlayerWithNameExist(string playerName) => Net.PlayersList.Any(p => p.PlayerName == playerName);
         private static bool PlayerWithUniKeyExist(string uniKey) => Net.PlayersList.Any(player => player.UniKey.Equals(uniKey));
-
-        private static int PlayerIndex(string playerName) {
-            for (var i = 0; i < Net.PlayersList.Count; i++) {
-                if (Net.PlayersList[i].PlayerName == playerName) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
         private static bool AllIsReady => Net.PlayersList.All(p => p.IsReady);
 
         #endregion

@@ -239,13 +239,8 @@ namespace Code.Network.Composition {
         }
 
         public void PostTilePut() {
-            //if (Player.MeeplesQuantity > 0) {
-                Player.Stage = GameStage.PlacingFollower;
-                //var c  = GameObject.Find("cell#" + v.X + ":" + v.Y);
-                Tile.ShowPossibleFollowersLocations(Tile.LastPlacedTile, Follower.Meeple);
-            //} else {
-                //Player.Stage = GameStage.Finish;
-            //}
+            Player.Stage = GameStage.PlacingFollower;
+            Tile.ShowPossibleFollowersLocations(Tile.LastPlacedTile, Follower.Meeple);
         }
 
         public void DeckClick(Vector2 t, Vector2 m) {

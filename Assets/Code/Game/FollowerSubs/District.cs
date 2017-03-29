@@ -23,6 +23,14 @@ namespace Code.Game.FollowerSubs {
 
         public bool SideFree(byte side) => LocationsList.Where(loc => loc.IsBarrier).Any(loc => loc.Nodes.Any(node => node == side));
 
+        public void BarnReadiness(byte id, bool[] barnReady) {
+            foreach (var loc in LocationsList) {
+                if (!loc.CompareID(id)) continue;
+                loc.ReadyForBarn = barnReady;
+                return;
+            }
+        }
+
         public void Opponent(PlayerColor owner, byte id, Follower type) {
             foreach (var loc in LocationsList) {
                 if (!loc.CompareID(id)) continue;

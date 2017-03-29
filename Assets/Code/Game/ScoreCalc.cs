@@ -96,7 +96,7 @@ namespace Code.Game {
         private static void AddScoreServer(PlayerColor playerColor, byte pFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
             if (playerColor == PlayerColor.NotPicked) return;
             var player = Net.PlayersList.First(p => p.Color == playerColor);
-            var index = Net.PlayersList.IndexOf(player);
+            //var index = Net.PlayersList.IndexOf(player);
             if (pFollowersQuantity == followersToControl) {
                 if (construct != null && construct.GetType() == typeof(Field)) {
                     var field = construct.GetAsField;
@@ -104,7 +104,7 @@ namespace Code.Game {
                 }
                 player.Score += score;
             }
-            Net.PlayersList[index] = player;
+            //Net.PlayersList[index] = player;
         }
 
         private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
