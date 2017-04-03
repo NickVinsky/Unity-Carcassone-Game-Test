@@ -111,28 +111,28 @@ namespace Code.Game {
             // В оригинале всех тайлов по одной штуке, кроме собора (#26), их два
             AddTilesToDeck(25, 1, multiplier);
             AddTilesToDeck(26, 2, multiplier);
-            AddTilesToDeck(27, 2, multiplier);
-            AddTilesToDeck(28, 2, multiplier);
-            AddTilesToDeck(29, 2, multiplier);
-            AddTilesToDeck(30, 2, multiplier);
-            AddTilesToDeck(31, 2, multiplier);
-            AddTilesToDeck(32, 2, multiplier);
+            AddTilesToDeck(27, 1, multiplier);
+            AddTilesToDeck(28, 1, multiplier);
+            AddTilesToDeck(29, 1, multiplier);
+            AddTilesToDeck(30, 1, multiplier);
+            AddTilesToDeck(31, 1, multiplier);
+            AddTilesToDeck(32, 1, multiplier);
             AddTilesToDeck(33, 1, multiplier);
-            AddTilesToDeck(34, 3, multiplier);
+            AddTilesToDeck(34, 1, multiplier);
             AddTilesToDeck(35, 1, multiplier);
             AddTilesToDeck(36, 1, multiplier);
             AddTilesToDeck(37, 1, multiplier);
             AddTilesToDeck(38, 1, multiplier);
             AddTilesToDeck(39, 1, multiplier);
             AddTilesToDeck(40, 1, multiplier);
-            AddTilesToDeck(41, 4, multiplier);
+            AddTilesToDeck(41, 1, multiplier);
         }
 
         private static void AddKingsTiles(int multiplier = 1) {
             // В оригинале всех тайлов по одной штуке
             AddTilesToDeck(52, 1, multiplier);
             AddTilesToDeck(53, 1, multiplier);
-            AddTilesToDeck(54, 2, multiplier);
+            AddTilesToDeck(54, 1, multiplier);
             AddTilesToDeck(55, 1, multiplier);
             AddTilesToDeck(56, 1, multiplier);
         }
@@ -140,28 +140,28 @@ namespace Code.Game {
         private static void AddTradersAndBuildersTiles(int multiplier = 1) {
             // В оригинале всех тайлов по одной штуке
             AddTilesToDeck(57, 1, multiplier);
-            AddTilesToDeck(58, 2, multiplier);
+            AddTilesToDeck(58, 1, multiplier);
             AddTilesToDeck(59, 1, multiplier);
-            AddTilesToDeck(60, 2, multiplier);
+            AddTilesToDeck(60, 1, multiplier);
         }
 
         private static void AddCustomTiles(int multiplier = 1) {
-            AddTilesToDeck(81, 2, multiplier);
-            AddTilesToDeck(82, 2, multiplier);
-            AddTilesToDeck(83, 3, multiplier);
-            AddTilesToDeck(84, 5, multiplier);
+            AddTilesToDeck(81, 1, multiplier);
+            AddTilesToDeck(82, 1, multiplier);
+            AddTilesToDeck(83, 1, multiplier);
+            AddTilesToDeck(84, 4, multiplier);
             AddTilesToDeck(85, 1, multiplier);
-            AddTilesToDeck(86, 2, multiplier);
-            AddTilesToDeck(87, 2, multiplier);
-            AddTilesToDeck(88, 2, multiplier);
-            AddTilesToDeck(89, 2, multiplier);
+            AddTilesToDeck(86, 1, multiplier);
+            AddTilesToDeck(87, 1, multiplier);
+            AddTilesToDeck(88, 1, multiplier);
+            AddTilesToDeck(89, 1, multiplier);
             AddTilesToDeck(90, 1, multiplier);
-            AddTilesToDeck(91, 2, multiplier);
-            AddTilesToDeck(92, 2, multiplier);
+            AddTilesToDeck(91, 1, multiplier);
+            AddTilesToDeck(92, 1, multiplier);
             AddTilesToDeck(93, 1, multiplier);
-            AddTilesToDeck(94, 2, multiplier);
-            AddTilesToDeck(95, 2, multiplier);
-            AddTilesToDeck(96, 2, multiplier);
+            AddTilesToDeck(94, 1, multiplier);
+            AddTilesToDeck(95, 1, multiplier);
+            AddTilesToDeck(96, 1, multiplier);
             AddTilesToDeck(97, 1, multiplier);
             AddTilesToDeck(98, 1, multiplier);
             AddTilesToDeck(99, 1, multiplier);
@@ -169,8 +169,8 @@ namespace Code.Game {
             AddTilesToDeck(101, 1, multiplier);
             AddTilesToDeck(102, 1, multiplier);
             AddTilesToDeck(103, 1, multiplier);
-            AddTilesToDeck(104, 2, multiplier);
-            AddTilesToDeck(105, 2, multiplier);
+            AddTilesToDeck(104, 1, multiplier);
+            AddTilesToDeck(105, 1, multiplier);
             AddTilesToDeck(106, 1, multiplier);
             AddTilesToDeck(107, 1, multiplier);
             AddTilesToDeck(108, 1, multiplier);

@@ -184,32 +184,6 @@ namespace Code.Network.Composition {
                     Debug.Log("ArgumentOutOfRangeException");
                     break;
             }
-
-            #region OldLogic
-
-            /*if (TileOnMouseExist()) Tile.AttachToCoordinates(tPos);
-
-            if (CurrentPlayer != PlayerSync.PlayerInfo.Color) return;  // Проверка - мой ли сейчас ход
-            if (TileOnMouseExist()) AttachTileToMouse();
-            if (LobbyInspector.ChatField.GetComponent<InputField>().isFocused) return;
-            if ((Input.GetKeyDown(k.RotateTileClockwise) || Input.GetMouseButtonDown(1)) && TileOnMouseExist())
-                RotateClockwise();
-            if (Input.GetKeyDown(k.RotateTileCounterClockwise) && TileOnMouseExist()) RotateCounterClockwise();
-            if (Input.GetKeyDown(k.PickTileFromDeck)) {
-                if (!TileOnMouseExist() && !Deck.DeckIsEmpty()) {
-                    var i = Deck.GenerateIndex();
-                    Net.Client.Action(Command.TilePicked, i);
-                    AttachTileToMouse();
-                }
-                if (TileOnMouseExist()) RotateClockwise();
-            }
-            if (Input.GetKeyDown(k.ReturnTileToDeck)) {
-                if (TileOnMouseExist()) {
-                    ReturnTileToDeck();
-                }
-            }*/
-
-            #endregion
         }
 
         public void OnMouseOver(GameObject c) {

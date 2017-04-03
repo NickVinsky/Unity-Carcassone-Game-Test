@@ -19,8 +19,6 @@ namespace Code.Game.FollowerSubs {
 
         public Location GetLocation(byte id) => LocationsList.First(l => l.CompareID(id));
 
-        public Location GetMonastery => LocationsList.First(l => l.Type == Area.Monastery);
-
         public bool SideFree(byte side) => LocationsList.Where(loc => loc.IsBarrier).Any(loc => loc.Nodes.Any(node => node == side));
 
         public void BarnReadiness(byte id, bool[] barnReady) {

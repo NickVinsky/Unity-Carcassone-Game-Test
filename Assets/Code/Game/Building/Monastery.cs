@@ -7,6 +7,7 @@ namespace Code.Game.Building {
     public class Monastery {
         public const Area Type = Area.Monastery;
         public int ID { get; }
+        public int LocID { get; }
         public Cell Cell { get; }
         public byte SurroundingsCount { get; set; }
         public PlayerColor Owner { get; set; }
@@ -14,6 +15,7 @@ namespace Code.Game.Building {
 
         public Monastery(int id, Location loc) {
             ID = id;
+            LocID = loc.ID;
             Cell = loc.Parent.IntVector;
             Owner = PlayerColor.NotPicked;
             loc.Link = ID;

@@ -151,14 +151,15 @@ namespace Code.Game {
             if (final && monastery.Finished) return;
             var owner = monastery.Owner;
             if (owner == PlayerColor.NotPicked) return;
-            if (!final) RemovePlacement(monastery);
 
             var score = monastery.SurroundingsCount;
 
             if (Net.Game.IsOnline && Net.IsServer) AddScoreServer(owner, 1, 1, score);
             if (owner == Player.Color) AddScoreLocal(1, 1, score);
 
-            if (!final) monastery.Finished = true;
+            if (final) return;
+            monastery.Finished = true;
+            RemovePlacement(monastery);
         }
 
         public static void Road(Road road, bool final = false) {
@@ -267,17 +268,11 @@ namespace Code.Game {
 
         private static void RemovePlacement(Monastery monastery) {
             if (Net.Game.IsOnline) {
-                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetMonastery);
-                Net.Client.Action(Command.RemovePlacementMonk, monastery.Cell, monastery.ID);
+                if (Net.IsServer) ReturnFollower(Tile.Get(monastery.Cell).GetLocation(monastery.LocID));
+                Net.Client.Action(Command.RemovePlacement, monastery.Cell, monastery.LocID);
             } else {
-                Tile.Get(monastery.Cell).RemovePlacement(monastery.ID);
+                Tile.Get(monastery.Cell).GetLocation(monastery.LocID).RemovePlacement();
             }
-
-            /*(var locs = Tile.Get(monastery.Cell).GetLocations();
-            foreach (var loc in locs) {
-                if (loc.Type != Area.Monastery) continue;
-                loc.RemovePlacement();
-            }*/
         }
     }
 }

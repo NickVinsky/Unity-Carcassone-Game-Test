@@ -207,10 +207,7 @@ namespace Code.Network.Commands {
                         Tile.Get(m.Text).AssignOpponentFollower(m.Color, (byte) m.Value, m.Follower);
                     break;
                 case Command.RemovePlacement:
-                    Tile.Get(m.Vector).GetLocation(m.Byte).RemovePlacement();
-                    break;
-                case Command.RemovePlacementMonk:
-                    Tile.Get(m.Vector).RemovePlacement(m.Value);
+                    Tile.Get(m.Vector).GetLocation(m.Value).RemovePlacement();
                     break;
                 case Command.NextPlayer:
                     Net.Game.CurrentPlayerIndex = m.Value;

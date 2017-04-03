@@ -223,11 +223,23 @@ namespace Code.Game.FollowerSubs {
             Vector2 position;
             placement -= rotates;
             if (placement < 0) placement += 4;
-            if (placement == 0) position = new Vector2(-space, space);
-            else if (placement == 1) position = new Vector2(space, space);
-            else if (placement == 2) position = new Vector2(space, -space);
-            else if (placement == 3) position = new Vector2(-space, -space);
-            else position = new Vector2(0, 0);
+            switch (placement) {
+                case 0:
+                    position = new Vector2(-space, space);
+                    break;
+                case 1:
+                    position = new Vector2(space, space);
+                    break;
+                case 2:
+                    position = new Vector2(space, -space);
+                    break;
+                case 3:
+                    position = new Vector2(-space, -space);
+                    break;
+                default:
+                    position = new Vector2(0, 0);
+                    break;
+            }
 
             SpriteInit(Follower.Barn, position);
         }

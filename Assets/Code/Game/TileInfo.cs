@@ -26,7 +26,6 @@ namespace Code.Game {
 
         public List<Location> GetLocations => _follower.LocationsList;
         public Location GetLocation(int id) => _follower.GetLocation((byte) id);
-        public Location GetMonastery => _follower.GetMonastery;
 
         public void BarnReadiness(byte id, bool[] barnReady) => _follower.BarnReadiness(id, barnReady);
 
@@ -46,8 +45,8 @@ namespace Code.Game {
                     AddFields("01234567", 0.261f * k, -0.241f * k);
                     break;
                 case 2:
-                    AddRoads("2", -0.0095f, -0.92f);
                     AddMonastery();
+                    AddRoads("2", -0.0095f, -0.92f);
                     AddFields("01234567", 0.279f * k, 0.271f * k);
                     break;
                 case 3:

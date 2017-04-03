@@ -32,7 +32,6 @@ namespace Code.Network.Commands {
         FinishTurn,
         AssignFollower,
         RemovePlacement,
-        RemovePlacementMonk,
         BuilderCheck,
         NextPlayer
 }

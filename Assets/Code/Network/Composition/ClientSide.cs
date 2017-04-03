@@ -77,8 +77,8 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Value = value, Byte = byteVal});
         }
 
-        public void Action(Command command, PlayerColor color, byte value, string text) {
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Color = color, Value = value, Text = text});
+        public void Action(Command command, PlayerColor color, byte byteValue, string text) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Color = color, Value = byteValue, Text = text});
         }
 
         public void Action(Command command, string text, int value) {
@@ -97,8 +97,8 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Color = color});
         }
 
-        public void Action(Command command, Cell vector, byte value) {
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Byte = value});
+        public void Action(Command command, Cell vector, byte byteValue) {
+            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Byte = byteValue});
         }
 
         public void Action(Command command, Cell vector, int value) {
