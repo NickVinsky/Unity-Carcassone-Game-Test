@@ -97,10 +97,6 @@ namespace Code.Network.Composition {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Color = color});
         }
 
-        public void Action(Command command, Cell vector, byte byteValue) {
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Byte = byteValue});
-        }
-
         public void Action(Command command, Cell vector, int value) {
             Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vector = vector, Value = value});
         }

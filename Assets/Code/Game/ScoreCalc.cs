@@ -96,23 +96,17 @@ namespace Code.Game {
         private static void AddScoreServer(PlayerColor playerColor, byte pFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
             if (playerColor == PlayerColor.NotPicked) return;
             var player = Net.PlayersList.First(p => p.Color == playerColor);
-            //var index = Net.PlayersList.IndexOf(player);
-            if (pFollowersQuantity == followersToControl) {
-                if (construct != null && construct.GetType() == typeof(Field)) {
-                    var field = construct.GetAsField;
-                    if (construct.HasPigOrBuilder(playerColor)) score += field.LinkedCities.Count;
-                }
-                player.Score += score;
-            }
-            //Net.PlayersList[index] = player;
+
+            if (pFollowersQuantity != followersToControl) return;
+            if (construct != null && construct.GetType() == typeof(Field))
+                if (construct.HasPigOrBuilder(playerColor)) score += construct.GetAsField.LinkedCities.Count;
+            player.Score += score;
         }
 
         private static void AddScoreLocal(byte myFollowersQuantity, byte followersToControl, int score, Construction construct = null) {
             if (myFollowersQuantity == followersToControl) Player.Score += score;
-            if (construct != null && construct.GetType() == typeof(Field)) {
-                var field = construct.GetAsField;
-                if (construct.HasPigOrBuilder(Player.Color)) Player.Score += field.LinkedCities.Count;
-            }
+            if (construct != null && construct.GetType() == typeof(Field))
+                if (construct.HasPigOrBuilder(Player.Color)) Player.Score += construct.GetAsField.LinkedCities.Count;
         }
 
         private static void AddScore(byte[] ownerFollowers, byte followersToControl, int score, Construction construct = null) {
