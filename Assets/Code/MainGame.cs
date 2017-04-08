@@ -182,9 +182,7 @@ namespace Code {
         }
 
         public void FixedUpdate() {
-            if (Net.Game.IsOnline) {
-                Net.Game.FixedUpdate(_k);
-            }
+            if (Net.Game.IsOnline) Net.Game.FixedUpdate(_k);
         }
 
         #region Click&Drag
@@ -196,8 +194,8 @@ namespace Code {
 
         private void MoveCamera() {
             //Vector3 actualPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -Camera.main.transform.position.z));
-            Vector3 actualPos = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
-            Vector3 dragDelta = actualPos - _dragStartPos;
+            var actualPos = Camera.main.ScreenToWorldPoint(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
+            var dragDelta = actualPos - _dragStartPos;
 
             if (Math.Abs(dragDelta.x) < DragDelta && Math.Abs(dragDelta.y) < 0.00001f) return;
 

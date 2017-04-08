@@ -121,8 +121,7 @@ namespace Code.Network.Commands {
 
         [ClientCommand(NetCmd.TileCache)]
         public static void ReconstructTilesOnGrid(NetworkMessage message) {
-            var m = message.ReadMessage<NetPackTileCache>();
-            Tile.Reconstruct(m.Cell, m.TileID, m.TileIndex, m.Founder, m.Rotation, m.LocactionID, m.LocationOwner, m.FollowerType, m.ReadyForBarn);
+            Tile.Reconstruct(new ReconstructionInfo(message.ReadMessage<NetPackTileCache>()));
         }
 
         [ClientCommand(NetCmd.TileCacheFinish)]

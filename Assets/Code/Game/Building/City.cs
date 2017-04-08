@@ -9,6 +9,7 @@ namespace Code.Game.Building {
         public City(int id, Cell v, Location loc) : base(id, v) {
             Nodes += loc.Nodes.Length;
             Type = Area.City;
+            if (loc.HasCathedral) HasCathedral = true;
         }
 
         public override bool NotFinished => 2 * Edges != Nodes;

@@ -89,37 +89,37 @@ namespace Code.Game.Building {
         }
         private static byte[] ApplyPattern(Area area, List<byte> freeSides) {
             SetPattern(area);
-            var l = 0;
+            //var l = 0;
             var pattern = new List<byte[]>();
             foreach (var side in freeSides) {
                 switch ((Side) side) {
                     case Side.Bot:
                         pattern.Add(Pattern.Bot);
-                        l += Pattern.Bot.Length;
+                        //l += Pattern.Bot.Length;
                         break;
                     case Side.Left:
                         pattern.Add(Pattern.Left);
-                        l += Pattern.Left.Length;
+                        //l += Pattern.Left.Length;
                         break;
                     case Side.Top:
                         pattern.Add(Pattern.Top);
-                        l += Pattern.Top.Length;
+                        //l += Pattern.Top.Length;
                         break;
                     case Side.Right:
                         pattern.Add(Pattern.Right);
-                        l += Pattern.Right.Length;
+                        //l += Pattern.Right.Length;
                         break;
                 }
             }
-            var output = new byte[l];
+            /*var output = new byte[l];
             var i = 0;
             foreach (var p in pattern) {
                 foreach (var b in p) {
                     output[i] = b;
                     i++;
                 }
-            }
-            return output;
+            }*/
+            return pattern.SelectMany(p => p).ToArray();
         }
         private static byte[] Opposite(Location loc) {
             var nodes = loc.Nodes;
@@ -173,17 +173,6 @@ namespace Code.Game.Building {
         public static Monastery GetMonastery(Location loc) {
             var monastery = Monasteries.FirstOrDefault(p => p.ID == loc.Link);
             return monastery;
-        }
-        public static Construction GetConstruction(Location loc) {
-            switch (loc.Type) {
-                case Area.Field:
-                    return GetField(loc);
-                case Area.Road:
-                    return GetRoad(loc);
-                case Area.City:
-                    return GetCity(loc);
-            }
-            return null;
         }
 
         public static void Assimilate(GameObject putedTileGameObject, PlayerColor founder) { // putedTile - координаты только что поставленного тайла

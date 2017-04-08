@@ -8,6 +8,7 @@ namespace Code.Game.Building {
         public Road(int id, Cell v, Location loc) : base(id, v) {
             Nodes += loc.Nodes.Length;
             Type = Area.Road;
+            if (loc.HasInn) HasInn = true;
         }
 
         public override bool NotFinished => 2 * Edges != Nodes;

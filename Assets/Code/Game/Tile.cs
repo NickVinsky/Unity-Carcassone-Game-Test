@@ -193,14 +193,14 @@ namespace Code.Game {
             Cursor.visible = true;
         }
 
-        public static void Reconstruct(Cell cell, int id, int tileIndex, PlayerColor founder, byte rotation, sbyte locId, PlayerColor owner, Follower followerType, bool[] barnReady) {
-            Cache.Add(new ReconstructionInfo(cell, id, tileIndex, rotation, locId, owner, barnReady));
-            Deck.SetLastPickedIndex(tileIndex);
+        public static void Reconstruct(ReconstructionInfo recInf) {
+            Cache.Add(recInf);
+            Deck.SetLastPickedIndex(recInf.TileIndex);
             OnMouse.Destroy();
-            PickWithID(id, rotation);
-            OnMouse.Put(cell, founder);
-            if (locId >= 0) Get(cell).BarnReadiness((byte) locId, barnReady);
-            Get(cell).AssignOpponentFollower(owner, (byte) locId, followerType);
+            PickWithID(recInf.TileID, recInf.Rotation);
+            OnMouse.Put(recInf.Cell, recInf.Founder);
+            if (recInf.LocactionID >= 0) Get(recInf.Cell).BarnReadiness((byte) recInf.LocactionID, recInf.ReadyForBarn);
+            Get(recInf.Cell).AssignOpponentFollower(recInf.LocationOwner, (byte) recInf.LocactionID, recInf.FollowerType);
         }
 
         public static void ShowPossibleFollowersLocations(GameObject o, Follower type) {

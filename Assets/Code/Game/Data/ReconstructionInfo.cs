@@ -1,18 +1,22 @@
-﻿namespace Code.Game.Data {
+﻿using Code.Network.Commands;
+
+namespace Code.Game.Data {
     public class ReconstructionInfo {
         public ReconstructionInfo() {
             LocactionID = -1;
             LocationOwner = PlayerColor.NotPicked;
         }
 
-        public ReconstructionInfo(Cell cell, int tileID, int tileIndex, byte rotation, sbyte locactionID, PlayerColor locationOwner, bool[] barnReady) {
-            Cell = cell;
-            TileID = tileID;
-            TileIndex = tileIndex;
-            Rotation = rotation;
-            LocactionID = locactionID;
-            LocationOwner = locationOwner;
-            ReadyForBarn = barnReady;
+        public ReconstructionInfo(NetPackTileCache cache) {
+            Cell = cache.Cell;
+            TileID = cache.TileID;
+            TileIndex = cache.TileIndex;
+            Founder = cache.Founder;
+            Rotation = cache.Rotation;
+            LocactionID = cache.LocactionID;
+            LocationOwner = cache.LocationOwner;
+            FollowerType = cache.FollowerType;
+            ReadyForBarn = cache.ReadyForBarn;
         }
 
         public Cell Cell { get; set; }
