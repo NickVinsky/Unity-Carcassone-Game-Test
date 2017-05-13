@@ -12,10 +12,13 @@ namespace Code.Network {
         public static GameObject ChatHistory;
         public static GameObject ChatField;
         public static GameObject PlayersList;
+        public static GameObject ChatScroll;
 
         public static float Timer;
         public static int TimerTicks;
         public static bool Countdown;
+
+        private static bool _firstLoad = true;
 
         //public static GameObject PlayerInLobby = (GameObject) Resources.Load("Prefabs/PlayerLobby");
         //public static GameObject newPlayer;
@@ -26,6 +29,8 @@ namespace Code.Network {
             ChatHistory = GameObject.Find(GameRegulars.ChatHistoryName);
             ChatField = GameObject.Find(GameRegulars.ChatFieldName);
             PlayersList = GameObject.Find(GameRegulars.PlayersListField);
+            ChatScroll = GameObject.Find(GameRegulars.ChatScrollVertical);
+
             //newPlayer = Object.Instantiate(PlayerInLobby, Vector3.zero, Quaternion.identity, GameObject.Find("PlayersPanel").transform);
             //newPlayer.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(_halfX, -_halfY, 0f);
             //Debug.Log("anchoredPosition" + test.GetComponent<RectTransform>().anchoredPosition);
@@ -121,6 +126,10 @@ namespace Code.Network {
             if (m.IsInfoMessage) newMessage = "<color=#" + GameRegulars.ServerInfoColor + ">" + "[INFO] " + m.Message + "</color>";
             else newMessage = m.Player + ": " + m.Message;
             ChatHistory.GetComponent<Text>().text = h + newMessage;
+
+            if (!_firstLoad) return;
+            ChatScroll.GetComponent<Scrollbar>().size = 1;
+            ChatScroll.GetComponent<Scrollbar>().value = 0;
         }
 
         public static void AddCountdownMsg(NetworkMessage message) {

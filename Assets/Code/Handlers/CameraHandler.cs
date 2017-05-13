@@ -8,6 +8,7 @@ namespace Code.Handlers {
 
         void Start () {
             //foreach (var go in GameObject.FindGameObjectsWithTag("EditorOnly")) Destroy(go);
+//            Time.timeScale = 1;
             _mainGame.Init();
             _inGameGui.Make();
         }

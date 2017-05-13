@@ -56,6 +56,7 @@ namespace Code.Game.Data {
         public const string PortField = "PortInputField";
         public const string ChatFieldName = "ChatInput";
         public const string ChatHistoryName = "ChatHistory";
+        public const string ChatScrollVertical = "ChatScrollVertical";
         public const string PlayersListField = "PlayersList";
 
         public const string OverlayBackground = "Overlay Background";

@@ -556,7 +556,7 @@ namespace Code.Game {
             var meeplePos = new Vector2(x, y);
             var newLoc = new LocationInfo {
                 Type = Area.Monastery,
-                MeeplePos = meeplePos,
+                MeeplePos = meeplePos
             };
 
             _follower.AddLocation(this, newLoc);
