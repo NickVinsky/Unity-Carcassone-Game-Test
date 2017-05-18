@@ -139,6 +139,10 @@ namespace Code.GUI {
             AddListener(_quitGameButton);
             AddListener(_saveNameButton);
             AddListener(_saveServerButton);
+
+            SetInvisible(PanelNetGame);
+            SetInvisible(PanelMultiplayer);
+            SetInvisible(PanelLobby);
             /*
             InitTextButton(_newGameButton);
             InitTextButton(_hostGameButton);
@@ -211,11 +215,12 @@ namespace Code.GUI {
         }
 
         private void NewGameClick() {
-            SceneManager.LoadScene(SceneGame);
-            Net.Game.SetOffline();
+/*            SceneManager.LoadScene(SceneGame);
+            Net.Game.SetOffline();*/
         }
         private void NetGameClick() {
-            SetVisibility(PanelNetGame, 22.0f);
+            SetVisible(PanelNetGame);
+            SetVisible(PanelMultiplayer);
         }
         private void HostGameClick() {
             if (!GetPlayerName()) {

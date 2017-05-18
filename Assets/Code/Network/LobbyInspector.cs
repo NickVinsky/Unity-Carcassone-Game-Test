@@ -130,6 +130,7 @@ namespace Code.Network {
             if (!_firstLoad) return;
             ChatScroll.GetComponent<Scrollbar>().size = 1;
             ChatScroll.GetComponent<Scrollbar>().value = 0;
+            _firstLoad = !_firstLoad;
         }
 
         public static void AddCountdownMsg(NetworkMessage message) {
