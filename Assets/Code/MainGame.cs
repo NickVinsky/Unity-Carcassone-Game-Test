@@ -94,11 +94,9 @@ namespace Code {
             Zoom = Camera.main.orthographicSize / ZoomToOrthRatio;
 
             if (!MouseOnChat) {
-                if (Input.mouseScrollDelta.y != 0) {
-                    _cameraDistance -= Input.mouseScrollDelta.y * ScrollSpeed * Zoom;
-                    _cameraDistance = Mathf.Clamp(_cameraDistance, CameraDistanceMin, CameraDistanceMax);
-                    Camera.main.orthographicSize = _cameraDistance;
-                }
+                if (Input.GetKey(_k.ZoomCameraUp)) ChangeCameraZoom(-1);
+                else if (Input.GetKey(_k.ZoomCameraDown)) ChangeCameraZoom(1);
+                else if (Input.mouseScrollDelta.y != 0) ChangeCameraZoom(Input.mouseScrollDelta.y);
             }
 
             //_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -179,6 +177,12 @@ namespace Code {
             }
 
             #endregion
+        }
+
+        private void ChangeCameraZoom(float delta) {
+            _cameraDistance -= delta * ScrollSpeed * Zoom;
+            _cameraDistance = Mathf.Clamp(_cameraDistance, CameraDistanceMin, CameraDistanceMax);
+            Camera.main.orthographicSize = _cameraDistance;
         }
 
         public void FixedUpdate() {

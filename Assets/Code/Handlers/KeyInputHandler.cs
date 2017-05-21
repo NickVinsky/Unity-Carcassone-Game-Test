@@ -6,6 +6,8 @@ namespace Code.Handlers {
         public KeyCode MoveCameraRight { get; set; }
         public KeyCode MoveCameraDown { get; set; }
         public KeyCode MoveCameraUp { get; set; }
+        public KeyCode ZoomCameraUp { get; set; }
+        public KeyCode ZoomCameraDown { get; set; }
         public KeyCode RotateTileClockwise { get; set; }
         public KeyCode RotateTileCounterClockwise { get; set; }
         public KeyCode PickTileFromDeck { get; set; }
@@ -20,6 +22,8 @@ namespace Code.Handlers {
             MoveCameraRight = KeyCode.D;
             MoveCameraDown = KeyCode.S;
             MoveCameraUp = KeyCode.W;
+            ZoomCameraUp = KeyCode.KeypadMinus;
+            ZoomCameraDown = KeyCode.KeypadPlus;
             RotateTileClockwise = KeyCode.E;
             RotateTileCounterClockwise = KeyCode.Q;
             PickTileFromDeck = KeyCode.Space;
