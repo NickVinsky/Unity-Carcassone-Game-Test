@@ -86,7 +86,7 @@ namespace Code.Network.Composition {
         }
 
         public void Action(Command command, Vector3 vector) {
-            Net.Client.Send(NetCmd.Game, new NetPackGame{ Command = command, Vect3 = vector});
+            Net.Client.SendUnreliable(NetCmd.Game, new NetPackGame{ Command = command, Vect3 = vector});
         }
 
         public void Action(Command command, Cell vector) {

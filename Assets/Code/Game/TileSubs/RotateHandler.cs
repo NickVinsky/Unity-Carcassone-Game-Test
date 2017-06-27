@@ -57,7 +57,7 @@ namespace Code.Game.TileSubs {
         }
 
         public void Clockwise() {
-            Tile.OnMouse.GetSprite.transform.Rotate(Vector3.back * 90);
+            Tile.OnMouse.GetSpriteRenderer.transform.Rotate(Vector3.back * 90);
             Tile.OnMouse.Get.Rotates = Set(1, Tile.OnMouse.Get.Rotates);
         }
 
@@ -67,7 +67,7 @@ namespace Code.Game.TileSubs {
         }
 
         public void CounterClockwise(){
-            Tile.OnMouse.GetSprite.transform.Rotate(Vector3.back * -90);
+            Tile.OnMouse.GetSpriteRenderer.transform.Rotate(Vector3.back * -90);
             Tile.OnMouse.Get.Rotates = Set(-1, Tile.OnMouse.Get.Rotates);
         }
 

@@ -176,8 +176,8 @@ namespace Code.Game {
             OnMouse.GetGameObject.AddComponent<TileInfo>();
             OnMouse.Get.InitTile(tileType);
             OnMouse.Get.Rotates = (sbyte) rotates;
-            OnMouse.GetSprite.sprite = Resources.Load<Sprite>("Tiles/" + GetVariation(tileType)); // 80-All, 24-Vanilla
-            OnMouse.GetSprite.sortingOrder = 100;
+            OnMouse.GetSpriteRenderer.sprite = Resources.Load<Sprite>("Tiles/" + GetVariation(tileType)); // 80-All, 24-Vanilla
+            OnMouse.GetSpriteRenderer.sortingOrder = 100;
             Rotate.Sprite(rotates, OnMouse.GetGameObject);
 
             if (Net.Game.IsOnline && !Net.Game.MyTurn) Cursor.visible = true;

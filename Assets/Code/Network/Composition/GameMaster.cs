@@ -190,12 +190,12 @@ namespace Code.Network.Composition {
             if (!MyTurn) return; // Проверка - мой ли сейчас ход
             if (Tile.Nearby.TileOnMouseCanBeAttachedTo(c) && TileOnMouseExist) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
-                Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 1});
+                Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 1}, 1);
                 return;
             }
             if (TileOnMouseExist) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CantAttachlColor;
-                Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 2});
+                Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 2}, 1);
                 return;
             }
             c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
@@ -204,7 +204,7 @@ namespace Code.Network.Composition {
             if (!MyTurn) return; // Проверка - мой ли сейчас ход
             if (c.GetComponent<SpriteRenderer>().color == GameRegulars.NormalColor) return;
             c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
-            Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 0});
+            Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 0}, 1);
         }
         public void OnMouseUp(GameObject c) {
             if (!MyTurn) return; // Проверка - мой ли сейчас ход

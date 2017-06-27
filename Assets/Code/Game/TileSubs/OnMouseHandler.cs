@@ -9,7 +9,7 @@ namespace Code.Game.TileSubs {
 
         public GameObject GetGameObject { get; private set; }
 
-        public SpriteRenderer GetSprite => GetGameObject.GetComponent<SpriteRenderer>();
+        public SpriteRenderer GetSpriteRenderer => GetGameObject.GetComponent<SpriteRenderer>();
 
         public TileInfo Get => GetGameObject.GetComponent<TileInfo>();
 
@@ -57,7 +57,7 @@ namespace Code.Game.TileSubs {
             gridCell.tag = GameRegulars.TileTag;
             Object.Destroy(gridCell.GetComponent<BoxCollider2D>());
             var cSprite = gridCell.GetComponent<SpriteRenderer>();
-            cSprite.sprite = GetSprite.sprite;
+            cSprite.sprite = GetSpriteRenderer.sprite;
             cSprite.transform.Rotate(Vector3.back * Tile.Rotate.GetAngle(GetGameObject));
             cSprite.color = GameRegulars.NormalColor;
             var cTileInfo = gridCell.GetComponent<TileInfo>();
