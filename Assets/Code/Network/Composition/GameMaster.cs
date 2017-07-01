@@ -191,14 +191,11 @@ namespace Code.Network.Composition {
             if (Tile.Nearby.TileOnMouseCanBeAttachedTo(c) && TileOnMouseExist) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CanAttachColor;
                 Net.Server.SendToAll(NetCmd.Game, new NetPackGame{ Command = Command.HighlightCell, Text = c.name, Value = 1}, 1);
-                return;
-            }
-            if (TileOnMouseExist) {
+            } else if (TileOnMouseExist) {
                 c.GetComponent<SpriteRenderer>().color = GameRegulars.CantAttachlColor;
                 Net.Server.SendToAll(NetCmd.Game, new NetPackGame {Command = Command.HighlightCell, Text = c.name, Value = 2}, 1);
-                return;
-            }
-            c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
+            } else 
+                c.GetComponent<SpriteRenderer>().color = GameRegulars.NormalColor;
         }
         public void OnMouseExit(GameObject c) {
             if (!MyTurn) return; // Проверка - мой ли сейчас ход

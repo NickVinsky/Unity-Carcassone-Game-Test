@@ -17,7 +17,7 @@ namespace Code {
             int maxX;
             int maxY;
 
-            maxX = (int) Math.Ceiling(sW / bgW);
+	        maxX = (int) Math.Ceiling(sW / bgW);
             //if (Math.Abs(sW % bgW) > 0) maxX++;
             maxY = (int) Math.Ceiling(sH / bgH);
             //if (Math.Abs(sH % bgH) > 0) maxY++;
