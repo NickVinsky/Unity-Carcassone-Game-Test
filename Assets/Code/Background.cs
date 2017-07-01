@@ -10,8 +10,8 @@ namespace Code {
 
         // Use this for initialization
         void Start () {
-            float sW = 1920f; //Screen.width;
-            float sH = 1080f; //Screen.height;
+            float sW = Screen.width; //Screen.width;
+            float sH = Screen.height; //Screen.height;
             float bgW = GetComponent<RectTransform>().sizeDelta.x;
             float bgH = GetComponent<RectTransform>().sizeDelta.y;
             int maxX;
