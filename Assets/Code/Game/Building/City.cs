@@ -19,11 +19,9 @@ namespace Code.Game.Building {
         }
 
         public override void AddExtraPoints(Location loc, int overPoints) {
-            ExtraPoints += overPoints;
-
             if (!loc.CoatOfArms) return;
             CoatOfArmsQuantity++;
-            ExtraPoints += 2;
+            ExtraPoints += 2 + overPoints;
         }
 
         protected override void CheckForSpecialBuildings(Location location) {

@@ -251,6 +251,7 @@ namespace Code.Game {
         }
 
         private static void CalcExtraPoints(Construction construct, int extraPoints) {
+//            construct.LinkedTiles.ForEach(tile => tile.GetTile.GetLocations.Any(loc => loc.Type == construct.Type));
             foreach (var tile in construct.LinkedTiles) {
                 foreach (var loc in tile.GetTile.GetLocations) {
                     if (loc.Type == construct.Type && loc.IsLinkedTo(construct.ID)) {
